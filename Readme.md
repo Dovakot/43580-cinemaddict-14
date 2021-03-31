@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
-* Студент: [Анастасия Яковлева](https://up.htmlacademy.ru/ecmascript/14/user/43580).
-* Наставник: [Артём Рудов](https://up.htmlacademy.ru/ecmascript/14/user/345377).
+* Студент: [Анастасия Яковлева](https://htmlacademy.ru/profile/id43580).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/id345377).
 
 ---
 
