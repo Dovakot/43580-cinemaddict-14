@@ -1,16 +1,22 @@
 const path = require('path');
-const pathProject = path.resolve(__dirname, 'public');
+
+const Options = {
+  ENTRY: './src/main.js',
+  PATH_PROJECT: path.resolve(__dirname, 'public'),
+  OUTPUT_FILE: 'bundle.js',
+};
 
 module.exports = {
   mode: 'development',
-  entry: './src/main.js',
+  entry: Options.ENTRY,
   output: {
-    filename: 'bundle.js',
-    path: pathProject,
+    filename: Options.OUTPUT_FILE,
+    path: Options.PATH_PROJECT,
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: pathProject,
-    watchContentBase: true,
-  }
+    contentBase: Options.PATH_PROJECT,
+    hot: true,
+    open: true,
+  },
 };
