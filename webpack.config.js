@@ -4,6 +4,10 @@ const Options = {
   ENTRY: './src/main.js',
   PATH_PROJECT: path.resolve(__dirname, 'public'),
   OUTPUT_FILE: 'bundle.js',
+  ALIAS: {
+    utils: path.resolve(__dirname, './src/utils'),
+    view: path.resolve(__dirname, './src/view'),
+  },
 };
 
 module.exports = {
@@ -18,5 +22,8 @@ module.exports = {
     contentBase: Options.PATH_PROJECT,
     hot: true,
     open: true,
+  },
+  resolve: {
+    alias: Options.ALIAS,
   },
 };
