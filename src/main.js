@@ -19,8 +19,10 @@ import createFilmsListContainerTemplate from 'view/films-list-container';
 import createFooterStatisticsTemplate from 'view/footer-statistics';
 import createFilmDetailsTemplate from 'view/film-details';
 
-const MAX_CARDS_LOAD = 5;
-const AMOUNT_POPULAR_CARDS = 2;
+const AppConfig = {
+  CARD_COUNT: 5,
+  EXTRA_CARD_COUNT: 2,
+};
 
 const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
@@ -59,15 +61,16 @@ const createFilmCards = (amountCards) => {
 
 const renderFilmsLists = () => {
   const filmsLists = films.querySelectorAll('.films-list');
-
-  filmsLists.forEach((list) => {
+  const createFilmsList = (list) => {
     if (list.classList.contains('films-list--extra')) {
-      render(list, createFilmCards(AMOUNT_POPULAR_CARDS));
+      render(list, createFilmCards(AppConfig.EXTRA_CARD_COUNT));
     } else {
-      render(list, createFilmCards(MAX_CARDS_LOAD));
+      render(list, createFilmCards(AppConfig.CARD_COUNT));
       render(list, showButton);
     }
-  });
+  };
+
+  filmsLists.forEach(createFilmsList);
 
   render(containerMain, films);
 };
