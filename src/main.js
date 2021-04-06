@@ -6,18 +6,18 @@ import {
   getElement,
   render,
   replaceElement
-} from './utils';
+} from 'utils';
 
-import createUserLevelTemplate from './view/user-level';
-import createMenuTemplate from './view/menu';
-import createFiltersTemplate from './view/filters';
-import createSortTemplate from './view/sorts';
-import createShowButtonTemplate from './view/show-button';
-import createFilmsTemplate from './view/films';
-import createFilmCardTemplate from './view/film-card';
-import createFilmsListContainerTemplate from './view/films-list-container';
-import createFooterStatisticsTemplate from './view/footer-statistics';
-import createFilmDetailsTemplate from './view/film-details';
+import createUserLevelTemplate from 'view/user-level';
+import createMenuTemplate from 'view/menu';
+import createFiltersTemplate from 'view/filters';
+import createSortTemplate from 'view/sorts';
+import createShowButtonTemplate from 'view/show-button';
+import createFilmsTemplate from 'view/films';
+import createFilmCardTemplate from 'view/film-card';
+import createFilmsListContainerTemplate from 'view/films-list-container';
+import createFooterStatisticsTemplate from 'view/footer-statistics';
+import createFilmDetailsTemplate from 'view/film-details';
 
 const MAX_CARDS_LOAD = 5;
 const AMOUNT_POPULAR_CARDS = 2;
@@ -75,7 +75,7 @@ const renderFilmsLists = () => {
 renderFilmsLists();
 
 if (module.hot) {
-  module.hot.accept('./view/user-level', () => {
+  module.hot.accept('view/user-level', () => {
     userLevel = replaceElement(
       userLevel,
       getElement(createUserLevelTemplate()),
@@ -83,8 +83,8 @@ if (module.hot) {
   });
 
   module.hot.accept([
-    './view/menu',
-    './view/filters',
+    'view/menu',
+    'view/filters',
   ], () => {
     filters = createFiltersTemplate();
     menu = replaceElement(
@@ -93,7 +93,7 @@ if (module.hot) {
     );
   });
 
-  module.hot.accept('./view/sorts', () => {
+  module.hot.accept('view/sorts', () => {
     sort = replaceElement(
       sort,
       getElement(createSortTemplate()),
@@ -101,9 +101,9 @@ if (module.hot) {
   });
 
   module.hot.accept([
-    './view/films',
-    './view/film-card',
-    './view/films-list-container',
+    'view/films',
+    'view/film-card',
+    'view/films-list-container',
   ], () => {
     films = replaceElement(
       films,
@@ -112,21 +112,21 @@ if (module.hot) {
     renderFilmsLists();
   });
 
-  module.hot.accept('./view/show-button', () => {
+  module.hot.accept('view/show-button', () => {
     showButton = replaceElement(
       showButton,
       getElement(createShowButtonTemplate()),
     );
   });
 
-  module.hot.accept('./view/footer-statistics', () => {
+  module.hot.accept('view/footer-statistics', () => {
     footerStatistics = replaceElement(
       footerStatistics,
       getElement(createFooterStatisticsTemplate()),
     );
   });
 
-  module.hot.accept('./view/film-details', () => {
+  module.hot.accept('view/film-details', () => {
     filmDetails = replaceElement(
       filmDetails,
       getElement(createFilmDetailsTemplate()),
