@@ -1,7 +1,7 @@
-const createFooterStatisticsTemplate = () => {
+const createFooterStatisticsTemplate = (count) => {
   return `
     <section class="footer__statistics">
-      <p>130 291 movies inside</p>
+      <p>${count} ${count === 1 ? 'movie' : 'movies'} inside</p>
     </section>
   `;
 };

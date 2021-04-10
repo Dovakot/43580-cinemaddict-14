@@ -1,9 +1,17 @@
-const createFiltersTemplate = () => {
+const getFilterLink = ({
+  key,
+  title,
+  count,
+}) => {
   return `
-    <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>
-    <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">4</span></a>
-    <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
+    <a href="#${key}" class="main-navigation__item">
+      ${title} <span class="main-navigation__item-count">${count}</span>
+    </a>
   `;
+};
+
+const createFiltersTemplate = (filters) => {
+  return filters.map((filter) => getFilterLink(filter)).join('');
 };
 
 export default createFiltersTemplate;
