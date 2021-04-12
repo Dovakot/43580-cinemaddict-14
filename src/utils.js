@@ -2,7 +2,9 @@ import {
   MAX_HOURS
 } from 'const';
 
-const DATE_OFFSET = 60 * 60 * 1000;
+const DATE_OFFSET = 3600000;
+const MAX_MINUTES = 60;
+const BASE_DEGREE  = 10;
 
 const Position = {
   AFTERBEGIN: 'afterbegin',
@@ -17,13 +19,9 @@ const getElement = (string) => {
   return documentFragment.firstElementChild;
 };
 
-const replaceElement = (element, newElement) => {
-  element.replaceWith(newElement);
-
-  return newElement;
-};
-
 const render = (container, element, place = Position.BEFOREEND) => {
+  if (!element) return;
+
   if (typeof element === 'string') {
     container.insertAdjacentHTML(place, element);
   } else {
@@ -31,21 +29,13 @@ const render = (container, element, place = Position.BEFOREEND) => {
   }
 };
 
-const getRandomNumber = (min, max, maxInc = 0) => {
-  const diff = max - min;
+const getRandomNumber = (min, max, maxInclusive = 0) => {
+  const diff = Math.abs(max - min);
 
-  if (diff < 0) {
-    throw new Error(`Значение max(${max}) не должно быть меньше min(${min})`);
-  }
-
-  return (diff === 0) ? min : Math.random() * (diff + maxInc) + min;
+  return diff === 0 ? min : Math.random() * (diff + maxInclusive) + min;
 };
 
 const getRandomInt = (min, max) => {
-  if (!Number.isInteger(min) || !Number.isInteger(max)) {
-    throw new Error(`Значения min(${min}) и max(${max}) должны быть целочисленными`);
-  }
-
   const randomNumber = getRandomNumber(min, max, 1);
 
   return Math.floor(randomNumber);
@@ -53,53 +43,23 @@ const getRandomInt = (min, max) => {
 
 const getRandomFloat = (min, max, digits = 1) => {
   const randomNumber = getRandomNumber(min, max);
-  const numberRank = 10 ** digits;
+  const numberRank = BASE_DEGREE ** digits;
 
-  return Math.floor(randomNumber * numberRank) / numberRank;
-};
-
-const getRandomArrayIndex = (length) => {
-  if (length < 0) {
-    throw new Error(`Значение length(${length}) не должно быть отрицательным`);
-  }
-
-  const newArray = [];
-
-  for (let counter = 0; counter < length; counter++) {
-    const index = getRandomInt(0, length - 1);
-
-    newArray.push(index);
-  }
-
-  return newArray;
+  return Math.ceil(randomNumber * numberRank) / numberRank;
 };
 
 const getRandomArrayElement = (array) => {
   const length = array.length - 1;
-  const index = (length >= 0) ? getRandomInt(0, length) : 0;
+  const index = length >= 0 ? getRandomInt(0, length) : 0;
 
   return array[index];
 };
 
-const getRandomArray = (array, amount = array.length) => {
-  const length = array.length;
+const getRandomArrayIndex = (length) => new Array(length).fill().map(() => getRandomInt(0, length - 1));
 
-  if (amount > length || amount < 0) {
-    throw new Error(`Значение amount(${amount}) не должно быть отрицательным и больше array.length(${length})`);
-  }
+const getRandomArray = (array, length = array.length) => new Array(length).fill().map(() => getRandomArrayElement(array));
 
-  const newArray = [];
-
-  for (let counter = 0; counter < amount; counter++) {
-    const item = getRandomArrayElement(array);
-
-    newArray.push(item);
-  }
-
-  return newArray;
-};
-
-const getRandomObjects = (generator, amount) => [...Array(amount)].map(() => generator());
+const getRandomObjects = (generator, length) => new Array(length).fill().map(() => generator());
 
 const getRandomDate = (days, hours = MAX_HOURS) => {
   const amountDays = DATE_OFFSET * hours * days;
@@ -131,8 +91,8 @@ const getFormattedDateTime = (date) => {
 };
 
 const getTimeFromMinutes = (amount) => {
-  const hours = Math.trunc(amount / 60);
-  const minutes = amount % 60;
+  const hours = Math.trunc(amount / MAX_MINUTES);
+  const minutes = amount % MAX_MINUTES;
 
   return `${hours}h ${minutes}m`;
 };
@@ -145,7 +105,6 @@ export {
   Position,
   getElement,
   render,
-  replaceElement,
   getRandomArrayIndex,
   getRandomArrayElement,
   getRandomArray,

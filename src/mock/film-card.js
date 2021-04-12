@@ -1,5 +1,4 @@
 import {
-  DAYS_YEARS,
   MAX_COMMENTS
 } from 'const';
 
@@ -11,6 +10,8 @@ import {
   getRandomArray,
   getRandomDate
 } from 'utils';
+
+const DAYS_YEARS = 365;
 
 const FilmInfo = {
   TITLES: [
@@ -94,12 +95,16 @@ const FilmInfo = {
 };
 
 const getDescription = ({text, max}) => {
-  const descriptionList = new Set(
-    getRandomArray(text.split('. '), max),
-  );
+  const descriptionList = getRandomArray(text.split('. '), max);
   const textDescription = [...descriptionList].join('. ');
 
   return textDescription.slice(-1) === '.' ? textDescription : `${textDescription}.`;
+};
+
+const getRating = (min, max) => {
+  const randomRating = getRandomFloat(min, max);
+
+  return randomRating > 1 ? randomRating : min;
 };
 
 const generateCard = () => ({
@@ -108,7 +113,7 @@ const generateCard = () => ({
     title: getRandomArrayElement(FilmInfo.TITLES),
     poster: getRandomArrayElement(FilmInfo.POSTERS),
     description: getDescription(FilmInfo.DESCRIPTION),
-    rating: getRandomFloat(1, FilmInfo.MAX_RATING),
+    rating: getRating(0, FilmInfo.MAX_RATING),
     ageRating: getRandomArrayElement(FilmInfo.AGE_RATINGS),
     runtime: getRandomInt(FilmInfo.RUNTIME.min, FilmInfo.RUNTIME.max),
     director: getRandomArrayElement(FilmInfo.DIRECTORS),

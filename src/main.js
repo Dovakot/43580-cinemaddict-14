@@ -9,7 +9,6 @@ import {
   Position,
   getElement,
   render,
-  replaceElement,
   getRandomObjects
 } from 'utils';
 
@@ -44,6 +43,8 @@ const AppConfig = {
   MAX_CARDS: 21,
 };
 
+let shownCardCounter = 0;
+
 const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
 const containerFooter = document.querySelector('.footer');
@@ -54,168 +55,85 @@ const cardCount = cardData.length;
 const commentData = getRandomObjects(generateComment, MAX_COMMENTS);
 const filtertData = generateFilters(cardData);
 
-let userLevel = cardCount ? getElement(createUserLevelTemplate(filtertData[0])) : '';
+const userLevel = cardCount ? getElement(createUserLevelTemplate(filtertData[1])) : '';
 render(containerHeader, userLevel);
 
-let filters = createFiltersTemplate(filtertData);
-let menu = getElement(createMenuTemplate(filters));
+const filters = createFiltersTemplate(filtertData);
+const menu = getElement(createMenuTemplate(filters));
 render(containerMain, menu);
 
-let sort = cardCount ? getElement(createSortTemplate()) : '';
+const sort = cardCount ? getElement(createSortTemplate()) : '';
 render(containerMain, sort);
 
-let footerStatistics = getElement(createFooterStatisticsTemplate(cardCount));
+const footerStatistics = getElement(createFooterStatisticsTemplate(cardCount));
 render(containerFooter, footerStatistics);
 
-let films = cardCount
+const films = cardCount
   ? getElement(createFilmsTemplate())
   : getElement(createFilmsEmptyTemplate());
 
-const renderFilmsCards = () => {
-  if (!cardCount) {
-    render(containerMain, films);
+const baseFilmsList = films.querySelector('.films-list');
+const filmsCardsContainer = baseFilmsList.querySelector('.films-list__container');
 
-    return;
+const topFilmsList = films.querySelector('.films-list--top');
+const commentedFilmsList = films.querySelector('.films-list--commented');
+
+const createFilmsCards = (cards) => cards.map(createFilmCardTemplate).join('');
+
+const showCardsToContainer = () => {
+  const shownCards = cardData.slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
+  shownCardCounter += AppConfig.MAX_CARDS_SHOW;
+
+  render(filmsCardsContainer, createFilmsCards(shownCards));
+};
+
+const onShowButtonClick = (evt) => {
+  evt.preventDefault();
+
+  showCardsToContainer();
+
+  if (shownCardCounter >= AppConfig.MAX_CARDS) {
+    evt.target.remove();
   }
+};
 
-  const [
-    baseList,
-    topList,
-    commentedList,
-  ] = films.querySelectorAll('.films-list');
+const renderTopFilmsCards = () => {
+  const sortedByRating = getSortByRating(getFilterByRating(cardData));
 
-  const createFilmsCards = (cards) => {
-    const createdCards = cards.map((card) => createFilmCardTemplate(card)).join('');
+  if (!sortedByRating.length) return topFilmsList.remove();
 
-    return createdCards;
-  };
+  const container = topFilmsList.querySelector('.films-list__container');
+  const topFilms = sortedByRating.slice(0, AppConfig.EXTRA_CARD_COUNT);
 
-  const showFilmsCards = () => {
-    const showButton = getElement(createShowButtonTemplate());
-    const container = baseList.querySelector('.films-list__container');
-    let shownCardCounter = 0;
+  render(container, createFilmsCards(topFilms));
+};
 
-    const addCardsToContainer = () => {
-      const shownCards = cardData.slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
-      shownCardCounter += AppConfig.MAX_CARDS_SHOW;
+const renderCommentedFilmsCards = () => {
+  const sortedByComments = getSortByComments(getFilterByComments(cardData));
 
-      render(container, createFilmsCards(shownCards));
-    };
+  if (!sortedByComments.length) return commentedFilmsList.remove();
 
-    const onShowButtonClick = (evt) => {
-      evt.preventDefault();
+  const container = commentedFilmsList.querySelector('.films-list__container');
+  const commentedFilms = sortedByComments.slice(0, AppConfig.EXTRA_CARD_COUNT);
 
-      addCardsToContainer();
+  render(container, createFilmsCards(commentedFilms));
+};
 
-      if (shownCardCounter >= AppConfig.MAX_CARDS) {
-        showButton.remove();
-      }
-    };
+const renderFilmsCards = () => {
+  if (!cardCount) return render(containerMain, films);
 
-    addCardsToContainer();
-    render(baseList, showButton);
+  const showButton = getElement(createShowButtonTemplate());
 
-    showButton.addEventListener('click', onShowButtonClick);
-  };
+  showCardsToContainer();
+  render(baseFilmsList, showButton);
 
-  const showTopFilmsCards = () => {
-    const sortedByRating = getSortByRating(getFilterByRating(cardData));
+  showButton.addEventListener('click', onShowButtonClick);
 
-    if (!sortedByRating.length) {
-      topList.remove();
-
-      return;
-    }
-
-    const container = topList.querySelector('.films-list__container');
-    const topFilms = sortedByRating.slice(0, AppConfig.EXTRA_CARD_COUNT);
-
-    render(
-      container,
-      createFilmsCards(topFilms),
-    );
-  };
-
-  const showCommentedFilmsCards = () => {
-    const sortedByComments = getSortByComments(getFilterByComments(cardData));
-
-    if (!sortedByComments.length) {
-      commentedList.remove();
-
-      return;
-    }
-
-    const container = commentedList.querySelector('.films-list__container');
-    const commentedFilms = sortedByComments.slice(0, AppConfig.EXTRA_CARD_COUNT);
-
-    render(
-      container,
-      createFilmsCards(commentedFilms),
-    );
-  };
-
-  showFilmsCards();
-  showTopFilmsCards();
-  showCommentedFilmsCards();
+  renderTopFilmsCards();
+  renderCommentedFilmsCards();
 
   render(containerMain, films);
-  render(
-    containerFooter,
-    createFilmDetailsTemplate(cardData[0], commentData),
-    Position.AFTEREND,
-  );
+  render(containerFooter, createFilmDetailsTemplate(cardData[0], commentData), Position.AFTEREND);
 };
 
 renderFilmsCards();
-
-if (module.hot) {
-  module.hot.accept('view/user-level', () => {
-    userLevel = cardCount ? replaceElement(
-      userLevel,
-      getElement(createUserLevelTemplate(filtertData[0])),
-    ) : '';
-  });
-
-  module.hot.accept([
-    'view/menu',
-    'view/filters',
-  ], () => {
-    filters = createFiltersTemplate(cardData);
-    menu = replaceElement(
-      menu,
-      getElement(createMenuTemplate(filters)),
-    );
-  });
-
-  module.hot.accept('view/sorts', () => {
-    sort = cardCount ? replaceElement(
-      sort,
-      getElement(createSortTemplate()),
-    ) : '';
-  });
-
-  module.hot.accept([
-    'view/films',
-    'view/film-card',
-    'view/show-button',
-    'view/film-details',
-    'view/films-empty',
-  ], () => {
-    if (!cardCount) {
-      return;
-    }
-
-    films = replaceElement(
-      films,
-      getElement(createFilmsTemplate()),
-    );
-    renderFilmsCards();
-  });
-
-  module.hot.accept('view/footer-statistics', () => {
-    footerStatistics = replaceElement(
-      footerStatistics,
-      getElement(createFooterStatisticsTemplate(cardCount)),
-    );
-  });
-}

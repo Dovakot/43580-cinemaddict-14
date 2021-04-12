@@ -1,13 +1,25 @@
-const getUserRank = (count) => {
-  let defaultRank = 'movie buff';
+const UserRankList = {
+  DEFAULT: 'movie buff',
+  NOVICE: {
+    name: 'novice',
+    count: 10,
+  },
+  FAN: {
+    name: 'fan',
+    count: 20,
+  },
+};
 
-  if (count > 0 && count <= 10) {
-    defaultRank = 'novice';
-  } else if (count > 10 && count <= 20) {
-    defaultRank = 'fan';
+const getUserRank = (count) => {
+  let userRank = 'movie buff';
+
+  if (count <= UserRankList.NOVICE.count) {
+    userRank = UserRankList.NOVICE.name;
+  } else if (count > UserRankList.NOVICE.count && count <= UserRankList.FAN.count) {
+    userRank = UserRankList.FAN.name;
   }
 
-  return `<p class="profile__rating">${defaultRank}</p>`;
+  return `<p class="profile__rating">${userRank}</p>`;
 };
 
 const createUserLevelTemplate = ({count}) => {

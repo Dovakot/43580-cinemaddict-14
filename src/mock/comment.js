@@ -1,6 +1,5 @@
 import {
-  MAX_HOURS,
-  DAYS_WEEK
+  MAX_HOURS
 } from 'const';
 
 import {
@@ -8,6 +7,8 @@ import {
   getRandomInt,
   getRandomDate
 } from 'utils';
+
+const DAYS_WEEK = 7;
 
 const CommentInfo = {
   AUTHORS: [
