@@ -2,10 +2,14 @@
 /*eslint-env node*/
 
 import {
+  MAX_COMMENTS
+} from 'const';
+
+import {
   Position,
   getElement,
   render,
-  replaceElement
+  getRandomObjects
 } from 'utils';
 
 import createUserLevelTemplate from 'view/user-level';
@@ -14,125 +18,125 @@ import createFiltersTemplate from 'view/filters';
 import createSortTemplate from 'view/sorts';
 import createShowButtonTemplate from 'view/show-button';
 import createFilmsTemplate from 'view/films';
+import createFilmsEmptyTemplate from 'view/films-empty';
 import createFilmCardTemplate from 'view/film-card';
-import createFilmsListContainerTemplate from 'view/films-list-container';
 import createFooterStatisticsTemplate from 'view/footer-statistics';
 import createFilmDetailsTemplate from 'view/film-details';
 
+import {
+  generateFilters,
+  getFilterByRating,
+  getFilterByComments
+} from 'mock/filters';
+
+import {
+  getSortByRating,
+  getSortByComments
+} from 'mock/sorts';
+
+import generateCard from 'mock/film-card';
+import generateComment from 'mock/comment';
+
 const AppConfig = {
-  CARD_COUNT: 5,
+  MAX_CARDS_SHOW: 5,
   EXTRA_CARD_COUNT: 2,
+  MAX_CARDS: 21,
 };
+
+let shownCardCounter = 0;
 
 const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
 const containerFooter = document.querySelector('.footer');
 
-let userLevel = getElement(createUserLevelTemplate());
+const cardData = getRandomObjects(generateCard, AppConfig.MAX_CARDS);
+const cardCount = cardData.length;
+
+const commentData = getRandomObjects(generateComment, MAX_COMMENTS);
+const filterData = generateFilters(cardData);
+
+const userHistory = filterData[1];
+const userLevel = cardCount ? getElement(createUserLevelTemplate(userHistory)) : '';
 render(containerHeader, userLevel);
 
-let filters = createFiltersTemplate();
-let menu = getElement(createMenuTemplate(filters));
+const filters = createFiltersTemplate(filterData);
+const menu = getElement(createMenuTemplate(filters));
 render(containerMain, menu);
 
-let sort = getElement(createSortTemplate());
+const sort = cardCount ? getElement(createSortTemplate()) : '';
 render(containerMain, sort);
 
-let footerStatistics = getElement(createFooterStatisticsTemplate());
+const footerStatistics = getElement(createFooterStatisticsTemplate(cardCount));
 render(containerFooter, footerStatistics);
 
-let filmDetails = getElement(createFilmDetailsTemplate());
-render(containerFooter, filmDetails, Position.AFTEREND);
+const films = cardCount ?
+  getElement(createFilmsTemplate()) : getElement(createFilmsEmptyTemplate());
 
-let films = getElement(createFilmsTemplate());
-let showButton = getElement(createShowButtonTemplate());
+const baseFilmsList = films.querySelector('.films-list');
+const filmsCardsContainer = baseFilmsList.querySelector('.films-list__container');
 
-const createFilmCards = (amountCards) => {
-  const filmsListContainer = getElement(createFilmsListContainerTemplate());
+const topFilmsList = films.querySelector('.films-list--top');
+const commentedFilmsList = films.querySelector('.films-list--commented');
 
-  for (let counter = 0; counter < amountCards; counter++) {
-    const filmCard = getElement(createFilmCardTemplate());
+const createFilmsCards = (cards) => cards.map(createFilmCardTemplate).join('');
 
-    render(filmsListContainer, filmCard);
-  }
+const showCardsToContainer = () => {
+  const shownCards = cardData
+    .slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
 
-  return filmsListContainer;
+  shownCardCounter += AppConfig.MAX_CARDS_SHOW;
+
+  render(filmsCardsContainer, createFilmsCards(shownCards));
 };
 
-const renderFilmsLists = () => {
-  const filmsLists = films.querySelectorAll('.films-list');
-  const createFilmsList = (list) => {
-    if (list.classList.contains('films-list--extra')) {
-      render(list, createFilmCards(AppConfig.EXTRA_CARD_COUNT));
-    } else {
-      render(list, createFilmCards(AppConfig.CARD_COUNT));
-      render(list, showButton);
-    }
-  };
+const onShowButtonClick = (evt) => {
+  evt.preventDefault();
 
-  filmsLists.forEach(createFilmsList);
+  showCardsToContainer();
+
+  if (shownCardCounter >= AppConfig.MAX_CARDS) {
+    evt.target.remove();
+  }
+};
+
+const renderTopFilmsCards = () => {
+  const sortedByRating = getSortByRating(getFilterByRating(cardData));
+
+  if (!sortedByRating.length) return topFilmsList.remove();
+
+  const container = topFilmsList.querySelector('.films-list__container');
+  const topFilms = sortedByRating.slice(0, AppConfig.EXTRA_CARD_COUNT);
+
+  render(container, createFilmsCards(topFilms));
+};
+
+const renderCommentedFilmsCards = () => {
+  const sortedByComments = getSortByComments(getFilterByComments(cardData));
+
+  if (!sortedByComments.length) return commentedFilmsList.remove();
+
+  const container = commentedFilmsList.querySelector('.films-list__container');
+  const commentedFilms = sortedByComments.slice(0, AppConfig.EXTRA_CARD_COUNT);
+
+  render(container, createFilmsCards(commentedFilms));
+};
+
+const renderFilmsCards = () => {
+  if (!cardCount) return render(containerMain, films);
+
+  const showButton = getElement(createShowButtonTemplate());
+  const filmDetails = createFilmDetailsTemplate(cardData[0], commentData);
+
+  showCardsToContainer();
+  render(baseFilmsList, showButton);
+
+  showButton.addEventListener('click', onShowButtonClick);
+
+  renderTopFilmsCards();
+  renderCommentedFilmsCards();
 
   render(containerMain, films);
+  render(containerFooter, filmDetails, Position.AFTEREND);
 };
 
-renderFilmsLists();
-
-if (module.hot) {
-  module.hot.accept('view/user-level', () => {
-    userLevel = replaceElement(
-      userLevel,
-      getElement(createUserLevelTemplate()),
-    );
-  });
-
-  module.hot.accept([
-    'view/menu',
-    'view/filters',
-  ], () => {
-    filters = createFiltersTemplate();
-    menu = replaceElement(
-      menu,
-      getElement(createMenuTemplate(filters)),
-    );
-  });
-
-  module.hot.accept('view/sorts', () => {
-    sort = replaceElement(
-      sort,
-      getElement(createSortTemplate()),
-    );
-  });
-
-  module.hot.accept([
-    'view/films',
-    'view/film-card',
-    'view/films-list-container',
-  ], () => {
-    films = replaceElement(
-      films,
-      getElement(createFilmsTemplate()),
-    );
-    renderFilmsLists();
-  });
-
-  module.hot.accept('view/show-button', () => {
-    showButton = replaceElement(
-      showButton,
-      getElement(createShowButtonTemplate()),
-    );
-  });
-
-  module.hot.accept('view/footer-statistics', () => {
-    footerStatistics = replaceElement(
-      footerStatistics,
-      getElement(createFooterStatisticsTemplate()),
-    );
-  });
-
-  module.hot.accept('view/film-details', () => {
-    filmDetails = replaceElement(
-      filmDetails,
-      getElement(createFilmDetailsTemplate()),
-    );
-  });
-}
+renderFilmsCards();

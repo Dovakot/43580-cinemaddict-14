@@ -1,20 +1,63 @@
-const createFilmCardTemplate = () => {
+import {
+  truncateText,
+  getTimeFromMinutes
+} from 'utils';
+
+const MAX_NUMBER_CHAR = 140;
+
+const createFilmCardTemplate = (card) => {
+  const {
+    title,
+    poster,
+    description,
+    rating,
+    runtime,
+    genres,
+    release: {date},
+  } = card.filmInfo;
+
+  const {
+    isWatchlist,
+    isWatched,
+    isFavorite,
+  } = card.userDetails;
+
+  const commentCount = card.comments.size;
+
+  const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
+
   return `
     <article class="film-card">
-      <h3 class="film-card__title">The Dance of Life</h3>
-      <p class="film-card__rating">8.3</p>
+      <h3 class="film-card__title">${title}</h3>
+      <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">1929</span>
-        <span class="film-card__duration">1h 55m</span>
-        <span class="film-card__genre">Musical</span>
+        <span class="film-card__year">
+          ${new Date(date).getFullYear()}
+        </span>
+        <span class="film-card__duration">
+          ${getTimeFromMinutes(runtime)}
+        </span>
+        <span class="film-card__genre">
+          ${genres.values().next().value}
+        </span>
       </p>
-      <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
-      <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>
-      <a class="film-card__comments">5 comments</a>
+      <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+      <p class="film-card__description">
+        ${truncateText(description.trim(), MAX_NUMBER_CHAR)}
+      </p>
+      <a class="film-card__comments">
+        ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}
+      </a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isWatchlist)}" type="button">
+          Add to watchlist
+        </button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" type="button">
+          Mark as watched
+        </button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite ${isActive(isFavorite)}" type="button">
+          Mark as favorite
+        </button>
       </div>
     </article>
   `;
