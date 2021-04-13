@@ -53,12 +53,13 @@ const cardData = getRandomObjects(generateCard, AppConfig.MAX_CARDS);
 const cardCount = cardData.length;
 
 const commentData = getRandomObjects(generateComment, MAX_COMMENTS);
-const filtertData = generateFilters(cardData);
+const filterData = generateFilters(cardData);
 
-const userLevel = cardCount ? getElement(createUserLevelTemplate(filtertData[1])) : '';
+const userHistory = filterData[1];
+const userLevel = cardCount ? getElement(createUserLevelTemplate(userHistory)) : '';
 render(containerHeader, userLevel);
 
-const filters = createFiltersTemplate(filtertData);
+const filters = createFiltersTemplate(filterData);
 const menu = getElement(createMenuTemplate(filters));
 render(containerMain, menu);
 
@@ -68,9 +69,8 @@ render(containerMain, sort);
 const footerStatistics = getElement(createFooterStatisticsTemplate(cardCount));
 render(containerFooter, footerStatistics);
 
-const films = cardCount
-  ? getElement(createFilmsTemplate())
-  : getElement(createFilmsEmptyTemplate());
+const films = cardCount ?
+  getElement(createFilmsTemplate()) : getElement(createFilmsEmptyTemplate());
 
 const baseFilmsList = films.querySelector('.films-list');
 const filmsCardsContainer = baseFilmsList.querySelector('.films-list__container');
@@ -81,7 +81,9 @@ const commentedFilmsList = films.querySelector('.films-list--commented');
 const createFilmsCards = (cards) => cards.map(createFilmCardTemplate).join('');
 
 const showCardsToContainer = () => {
-  const shownCards = cardData.slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
+  const shownCards = cardData
+    .slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
+
   shownCardCounter += AppConfig.MAX_CARDS_SHOW;
 
   render(filmsCardsContainer, createFilmsCards(shownCards));
@@ -123,6 +125,7 @@ const renderFilmsCards = () => {
   if (!cardCount) return render(containerMain, films);
 
   const showButton = getElement(createShowButtonTemplate());
+  const filmDetails = createFilmDetailsTemplate(cardData[0], commentData);
 
   showCardsToContainer();
   render(baseFilmsList, showButton);
@@ -133,7 +136,7 @@ const renderFilmsCards = () => {
   renderCommentedFilmsCards();
 
   render(containerMain, films);
-  render(containerFooter, createFilmDetailsTemplate(cardData[0], commentData), Position.AFTEREND);
+  render(containerFooter, filmDetails, Position.AFTEREND);
 };
 
 renderFilmsCards();
