@@ -48,18 +48,19 @@ const getRandomFloat = (min, max, digits = 1) => {
   return Math.ceil(randomNumber * numberRank) / numberRank;
 };
 
-const getRandomArrayElement = (array) => {
-  const length = array.length - 1;
-  const index = length >= 0 ? getRandomInt(0, length) : 0;
+const getRandomArrayElement = (array) => array[getRandomInt(0, array.length - 1)];
 
-  return array[index];
-};
+const getRandomArrayIndex = (length) => new Array(length)
+  .fill()
+  .map(() => getRandomInt(0, length - 1));
 
-const getRandomArrayIndex = (length) => new Array(length).fill().map(() => getRandomInt(0, length - 1));
+const getRandomArray = (array, length) => new Array(length)
+  .fill()
+  .map(() => getRandomArrayElement(array));
 
-const getRandomArray = (array, length = array.length) => new Array(length).fill().map(() => getRandomArrayElement(array));
-
-const getRandomObjects = (generator, length) => new Array(length).fill().map(() => generator());
+const getRandomObjects = (generator, length) => new Array(length)
+  .fill()
+  .map(generator);
 
 const getRandomDate = (days, hours = MAX_HOURS) => {
   const amountDays = DATE_OFFSET * hours * days;
