@@ -117,9 +117,9 @@ const generateCard = () => ({
     ageRating: getRandomArrayElement(FilmInfo.AGE_RATINGS),
     runtime: getRandomInt(FilmInfo.RUNTIME.min, FilmInfo.RUNTIME.max),
     director: getRandomArrayElement(FilmInfo.DIRECTORS),
-    writers: new Set(getRandomArray(FilmInfo.WRITERS)),
-    actors: new Set(getRandomArray(FilmInfo.ACTORS)),
-    genres: new Set(getRandomArray(FilmInfo.GENRES)),
+    writers: new Set(getRandomArray(FilmInfo.WRITERS, FilmInfo.WRITERS.length)),
+    actors: new Set(getRandomArray(FilmInfo.ACTORS, FilmInfo.ACTORS.length)),
+    genres: new Set(getRandomArray(FilmInfo.GENRES, FilmInfo.GENRES.length)),
     release: {
       date: getRandomDate(-DAYS_YEARS * getRandomInt(1, FilmInfo.MAX_DATE)),
       country: getRandomArrayElement(FilmInfo.COUNTRIES),
