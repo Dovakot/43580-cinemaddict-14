@@ -6,26 +6,26 @@ const DATE_OFFSET = 3600000;
 const MAX_MINUTES = 60;
 const BASE_DEGREE  = 10;
 
-const Position = {
+const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
 };
 
-const getElement = (string) => {
+const createElement = (string) => {
   const range = document.createRange();
   const documentFragment = range.createContextualFragment(string);
 
   return documentFragment.firstElementChild;
 };
 
-const render = (container, element, place = Position.BEFOREEND) => {
-  if (!element) return;
-
-  if (typeof element === 'string') {
-    container.insertAdjacentHTML(place, element);
-  } else {
-    container.insertAdjacentElement(place, element);
+const render = (container, element, place = RenderPosition.BEFOREEND) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
   }
 };
 
@@ -103,8 +103,8 @@ const truncateText = (text, amount) => {
 };
 
 export {
-  Position,
-  getElement,
+  RenderPosition,
+  createElement,
   render,
   getRandomArrayIndex,
   getRandomArrayElement,

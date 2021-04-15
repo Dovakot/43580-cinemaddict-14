@@ -1,4 +1,4 @@
-const FILTERS_TITLES = [
+const FILTER_TITLES = [
   'Watchlist',
   'History',
   'Favorites',
@@ -20,11 +20,11 @@ const filterCount = {
   favorites: getFilterFavorites,
 };
 
-const generateFilters = (cards) => {
-  const filtersKeys = Object.keys(filterCount);
+const generateFilter = (cards) => {
+  const filterKeys = Object.keys(filterCount);
 
   const getFilteredCardCount = (title, index) => {
-    const filterKey = filtersKeys[index];
+    const filterKey = filterKeys[index];
 
     return {
       key: filterKey,
@@ -33,11 +33,11 @@ const generateFilters = (cards) => {
     };
   };
 
-  return FILTERS_TITLES.map(getFilteredCardCount);
+  return FILTER_TITLES.map(getFilteredCardCount);
 };
 
 export {
-  generateFilters,
+  generateFilter,
   getFilterByRating,
   getFilterByComments
 };
