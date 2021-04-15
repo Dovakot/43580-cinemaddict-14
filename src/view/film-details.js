@@ -1,7 +1,8 @@
 import {
   getTimeFromMinutes,
   getFormattedDate,
-  getFormattedDateTime
+  getFormattedDateTime,
+  createElement
 } from 'utils';
 
 const getCommentsItem = ({
@@ -67,7 +68,7 @@ const createFilmDetailsTemplate = (card, comments) => {
   const isActive = (flag) => flag ? 'checked' : '';
 
   return `
-    <section class="film-details" style="display: none;">
+    <section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -200,4 +201,28 @@ const createFilmDetailsTemplate = (card, comments) => {
   `;
 };
 
-export default createFilmDetailsTemplate;
+class FilmDetails {
+  constructor(card, comments) {
+    this._card = card;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._card, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default FilmDetails;

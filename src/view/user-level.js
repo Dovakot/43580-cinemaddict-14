@@ -1,3 +1,7 @@
+import {
+  createElement
+} from 'utils';
+
 const UserRankList = {
   DEFAULT: 'movie buff',
   NOVICE: {
@@ -32,4 +36,27 @@ const createUserLevelTemplate = ({count}) => {
   `;
 };
 
-export default createUserLevelTemplate;
+class UserLevel {
+  constructor(count) {
+    this._count = count;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserLevelTemplate(this._count);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default UserLevel;

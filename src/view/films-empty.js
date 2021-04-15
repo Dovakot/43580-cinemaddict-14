@@ -1,3 +1,7 @@
+import {
+  createElement
+} from 'utils';
+
 const createFilmsEmptyTemplate = () => {
   return `
     <section class="films">
@@ -8,4 +12,26 @@ const createFilmsEmptyTemplate = () => {
   `;
 };
 
-export default createFilmsEmptyTemplate;
+class FilmsEmpty {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmsEmptyTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default FilmsEmpty;
