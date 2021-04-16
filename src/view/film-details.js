@@ -29,6 +29,8 @@ const getComments = (commentIds, comments) => (`
   </ul>
 `);
 
+const isActive = (flag) => flag ? 'checked' : '';
+
 const createFilmDetailsTemplate = (card, comments) => {
   const {
     title,
@@ -55,8 +57,6 @@ const createFilmDetailsTemplate = (card, comments) => {
 
   const commentIds = [...card.comments];
   const commentCount = commentIds.length;
-
-  const isActive = (flag) => flag ? 'checked' : '';
 
   return `
     <section class="film-details">

@@ -8,6 +8,8 @@ import {
   createElement
 } from 'utils';
 
+const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
+
 const createFilmCardTemplate = (card) => {
   const {
     title,
@@ -26,8 +28,6 @@ const createFilmCardTemplate = (card) => {
   } = card.userDetails;
 
   const commentCount = card.comments.size;
-
-  const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
   return `
     <article class="film-card">
