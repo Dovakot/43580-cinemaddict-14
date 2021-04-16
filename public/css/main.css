@@ -363,6 +363,11 @@ button {
   margin-right: 0.5em;
 }
 
+.film-card__title:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
 .film-card__rating,
 .film-card__rating--good {
   color: var(--text-color-good);
@@ -390,6 +395,11 @@ button {
   transition: bottom 0.2s ease-out;
   width: 100%;
   z-index: 1;
+}
+
+.film-card__poster:hover {
+  opacity: 0.7;
+  cursor: pointer;
 }
 
 .film-card--no-controls .film-card__poster {
