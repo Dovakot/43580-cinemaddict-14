@@ -76,19 +76,19 @@ const commentedFilmsList = films.querySelector('.films-list--commented');
 const createFilmsCards = (cards) => {
   const cardFragment = document.createDocumentFragment();
 
-  const createCard = (card) => {
-    const cardComponent = new FilmCardView(card);
-    const detailsComponent = new DetailsComponentView(card, commentData);
-
-    render(cardFragment, cardComponent.getElement());
-
-    cardComponent.getElement()
-      .addEventListener('click', onFilmCardClick(detailsComponent));
-  };
-
-  cards.forEach(createCard);
+  cards.forEach(createCard(cardFragment));
 
   return cardFragment;
+};
+
+const createCard = (cardFragment) => (card) => {
+  const cardComponent = new FilmCardView(card);
+  const detailsComponent = new DetailsComponentView(card, commentData);
+
+  render(cardFragment, cardComponent.getElement());
+
+  cardComponent.getElement()
+    .addEventListener('click', onFilmCardClick(detailsComponent));
 };
 
 const onFilmCardClick = (detailsComponent) => (evt) => {

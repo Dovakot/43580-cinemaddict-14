@@ -20,21 +20,14 @@ const filterCount = {
   favorites: getFilterFavorites,
 };
 
-const generateFilter = (cards) => {
-  const filterKeys = Object.keys(filterCount);
+const getFilteredCardCount = (cards) => (key, index) => ({
+  key,
+  count: filterCount[key](cards).length,
+  title: FILTER_TITLES[index],
+});
 
-  const getFilteredCardCount = (title, index) => {
-    const filterKey = filterKeys[index];
-
-    return {
-      key: filterKey,
-      count: filterCount[filterKey](cards).length,
-      title,
-    };
-  };
-
-  return FILTER_TITLES.map(getFilteredCardCount);
-};
+const generateFilter = (cards) => Object.keys(filterCount)
+  .map(getFilteredCardCount(cards));
 
 export {
   generateFilter,
