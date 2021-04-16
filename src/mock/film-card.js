@@ -1,5 +1,6 @@
 import {
-  MAX_COMMENTS
+  DateConfig,
+  AppConfig
 } from 'const';
 
 import {
@@ -10,8 +11,6 @@ import {
   getRandomArray,
   getRandomDate
 } from 'utils';
-
-const DAYS_YEARS = 365;
 
 const FilmInfo = {
   TITLES: [
@@ -108,7 +107,7 @@ const getRating = (min, max) => {
 };
 
 const generateCard = () => ({
-  comments: new Set(getRandomArrayIndex(MAX_COMMENTS)),
+  comments: new Set(getRandomArrayIndex(AppConfig.MAX_COMMENTS)),
   filmInfo: {
     title: getRandomArrayElement(FilmInfo.TITLES),
     poster: getRandomArrayElement(FilmInfo.POSTERS),
@@ -121,7 +120,7 @@ const generateCard = () => ({
     actors: new Set(getRandomArray(FilmInfo.ACTORS, FilmInfo.ACTORS.length)),
     genres: new Set(getRandomArray(FilmInfo.GENRES, FilmInfo.GENRES.length)),
     release: {
-      date: getRandomDate(-DAYS_YEARS * getRandomInt(1, FilmInfo.MAX_DATE)),
+      date: getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(1, FilmInfo.MAX_DATE)),
       country: getRandomArrayElement(FilmInfo.COUNTRIES),
     },
   },

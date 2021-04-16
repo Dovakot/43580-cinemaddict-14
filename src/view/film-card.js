@@ -1,10 +1,12 @@
 import {
+  AppConfig
+} from 'const';
+
+import {
   truncateText,
   getTimeFromMinutes,
   createElement
 } from 'utils';
-
-const MAX_NUMBER_CHAR = 140;
 
 const createFilmCardTemplate = (card) => {
   const {
@@ -44,7 +46,7 @@ const createFilmCardTemplate = (card) => {
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">
-        ${truncateText(description.trim(), MAX_NUMBER_CHAR)}
+        ${truncateText(description.trim(), AppConfig.MAX_NUMBER_CHAR)}
       </p>
       <a class="film-card__comments">
         ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}

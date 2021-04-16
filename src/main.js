@@ -2,7 +2,7 @@
 /*eslint-env node*/
 
 import {
-  MAX_COMMENTS
+  AppConfig
 } from 'const';
 
 import {
@@ -41,12 +41,6 @@ const TARGET_CLASS_LIST = [
   'film-card__comments',
 ];
 
-const AppConfig = {
-  MAX_CARDS_SHOW: 5,
-  EXTRA_CARD_COUNT: 2,
-  MAX_CARDS: 21,
-};
-
 let shownCardCounter = 0;
 
 const containerHeader = document.querySelector('.header');
@@ -56,7 +50,7 @@ const containerFooter = document.querySelector('.footer');
 const cardData = getRandomObjects(generateCard, AppConfig.MAX_CARDS);
 const cardCount = cardData.length;
 
-const commentData = getRandomObjects(generateComment, MAX_COMMENTS);
+const commentData = getRandomObjects(generateComment, AppConfig.MAX_COMMENTS);
 const filterData = generateFilter(cardData);
 
 const userHistory = filterData[1];
