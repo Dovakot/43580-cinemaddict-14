@@ -94,20 +94,21 @@ const createCard = (cardFragment) => (card) => {
 const onFilmCardClick = (detailsComponent) => (evt) => {
   evt.preventDefault();
 
-  const target = evt.target;
-  const checkClassName = (item) => !target.classList.contains(item);
+  const checkClassName = (item) => !evt.target.classList.contains(item);
 
   if (TARGET_CLASS_LIST.every(checkClassName)) return;
 
   document.body.classList.add('hide-overflow');
   render(document.body, detailsComponent.getElement());
 
-  detailsComponent.getElement().querySelector('.film-details__close-btn')
+  detailsComponent.getElement()
     .addEventListener('click', onCloseButtonClick(detailsComponent));
 };
 
 const onCloseButtonClick = (detailsComponent) => (evt) => {
   evt.preventDefault();
+
+  if (!evt.target.classList.contains('film-details__close-btn')) return;
 
   document.body.classList.remove('hide-overflow');
   detailsComponent.getElement().remove();
