@@ -19,7 +19,7 @@ import FilmsView from 'view/films';
 import FilmsEmptyView from 'view/films-empty';
 import FilmCardView from 'view/film-card';
 import FooterStatisticsView from 'view/footer-statistics';
-import detailsComponentView from 'view/film-details';
+import DetailsComponentView from 'view/film-details';
 
 import {
   generateFilter,
@@ -84,7 +84,7 @@ const createFilmsCards = (cards) => {
 
   const createCard = (card) => {
     const cardComponent = new FilmCardView(card);
-    const detailsComponent = new detailsComponentView(card, commentData);
+    const detailsComponent = new DetailsComponentView(card, commentData);
 
     render(cardFragment, cardComponent.getElement());
 
