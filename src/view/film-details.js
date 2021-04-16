@@ -1,41 +1,35 @@
 import {
   getTimeFromMinutes,
   getFormattedDate,
-  getFormattedDateTime
+  getFormattedDateTime,
+  createElement
 } from 'utils';
 
-const getCommentsItem = ({
-  date,
-  author,
-  text,
-  emotion,
-}) => {
-  return `
-    <li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${text}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">
-            ${getFormattedDateTime(date)}
-          </span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>
-  `;
-};
+const getCommentsItem = ({date, author, text, emotion}) => (`
+  <li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${text}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">
+          ${getFormattedDateTime(date)}
+        </span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>
+`);
 
-const getComments = (commentIds, comments) => {
-  return `
-    <ul class="film-details__comments-list">
-      ${commentIds.map((id) => getCommentsItem(comments[id])).join('')}
-    </ul>
-  `;
-};
+const getComments = (commentIds, comments) => (`
+  <ul class="film-details__comments-list">
+    ${commentIds.map((id) => getCommentsItem(comments[id])).join('')}
+  </ul>
+`);
+
+const isActive = (flag) => flag ? 'checked' : '';
 
 const createFilmDetailsTemplate = (card, comments) => {
   const {
@@ -64,10 +58,8 @@ const createFilmDetailsTemplate = (card, comments) => {
   const commentIds = [...card.comments];
   const commentCount = commentIds.length;
 
-  const isActive = (flag) => flag ? 'checked' : '';
-
   return `
-    <section class="film-details" style="display: none;">
+    <section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -200,4 +192,28 @@ const createFilmDetailsTemplate = (card, comments) => {
   `;
 };
 
-export default createFilmDetailsTemplate;
+class FilmDetails {
+  constructor(card, comments) {
+    this._card = card;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._card, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default FilmDetails;

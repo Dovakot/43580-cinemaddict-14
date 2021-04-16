@@ -1,5 +1,5 @@
 import {
-  MAX_HOURS
+  DateConfig
 } from 'const';
 
 import {
@@ -7,8 +7,6 @@ import {
   getRandomInt,
   getRandomDate
 } from 'utils';
-
-const DAYS_WEEK = 7;
 
 const CommentInfo = {
   AUTHORS: [
@@ -36,8 +34,8 @@ const CommentInfo = {
 
 const generateComment = () => ({
   date: getRandomDate(
-    getRandomInt(-DAYS_WEEK, DAYS_WEEK),
-    getRandomInt(-MAX_HOURS, MAX_HOURS),
+    getRandomInt(-DateConfig.DAYS_WEEK, DateConfig.DAYS_WEEK),
+    getRandomInt(-DateConfig.MAX_HOURS, DateConfig.MAX_HOURS),
   ),
   author: getRandomArrayElement(CommentInfo.AUTHORS),
   text: getRandomArrayElement(CommentInfo.COMMENTS),

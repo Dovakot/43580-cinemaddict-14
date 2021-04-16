@@ -1,4 +1,4 @@
-const FILTERS_TITLES = [
+const FILTER_TITLES = [
   'Watchlist',
   'History',
   'Favorites',
@@ -20,24 +20,17 @@ const filterCount = {
   favorites: getFilterFavorites,
 };
 
-const generateFilters = (cards) => {
-  const filtersKeys = Object.keys(filterCount);
+const getFilteredCardCount = (cards) => (key, index) => ({
+  key,
+  count: filterCount[key](cards).length,
+  title: FILTER_TITLES[index],
+});
 
-  const getFilteredCardCount = (title, index) => {
-    const filterKey = filtersKeys[index];
-
-    return {
-      key: filterKey,
-      count: filterCount[filterKey](cards).length,
-      title,
-    };
-  };
-
-  return FILTERS_TITLES.map(getFilteredCardCount);
-};
+const generateFilter = (cards) => Object.keys(filterCount)
+  .map(getFilteredCardCount(cards));
 
 export {
-  generateFilters,
+  generateFilter,
   getFilterByRating,
   getFilterByComments
 };

@@ -1,32 +1,20 @@
 import {
-  MAX_HOURS
+  BASE_DEGREE,
+  RenderPosition,
+  DateConfig
 } from 'const';
 
-const DATE_OFFSET = 3600000;
-const MAX_MINUTES = 60;
-const BASE_DEGREE  = 10;
-
-const Position = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
-
-const getElement = (string) => {
+const createElement = (string) => {
   const range = document.createRange();
   const documentFragment = range.createContextualFragment(string);
 
   return documentFragment.firstElementChild;
 };
 
-const render = (container, element, place = Position.BEFOREEND) => {
-  if (!element) return;
+const render = (container, element, place) => {
+  const position = RenderPosition[place] || RenderPosition.BEFOREEND;
 
-  if (typeof element === 'string') {
-    container.insertAdjacentHTML(place, element);
-  } else {
-    container.insertAdjacentElement(place, element);
-  }
+  container[position](element);
 };
 
 const getRandomNumber = (min, max, maxInclusive = 0) => {
@@ -62,8 +50,8 @@ const getRandomObjects = (generator, length) => new Array(length)
   .fill()
   .map(generator);
 
-const getRandomDate = (days, hours = MAX_HOURS) => {
-  const amountDays = DATE_OFFSET * hours * days;
+const getRandomDate = (days, hours = DateConfig.MAX_HOURS) => {
+  const amountDays = DateConfig.DATE_OFFSET * hours * days;
 
   return Date.now() + amountDays;
 };
@@ -92,8 +80,8 @@ const getFormattedDateTime = (date) => {
 };
 
 const getTimeFromMinutes = (amount) => {
-  const hours = Math.trunc(amount / MAX_MINUTES);
-  const minutes = amount % MAX_MINUTES;
+  const hours = Math.trunc(amount / DateConfig.MAX_MINUTES);
+  const minutes = amount % DateConfig.MAX_MINUTES;
 
   return `${hours}h ${minutes}m`;
 };
@@ -103,8 +91,7 @@ const truncateText = (text, amount) => {
 };
 
 export {
-  Position,
-  getElement,
+  createElement,
   render,
   getRandomArrayIndex,
   getRandomArrayElement,

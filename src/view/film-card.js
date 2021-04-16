@@ -1,9 +1,14 @@
 import {
+  AppConfig
+} from 'const';
+
+import {
   truncateText,
-  getTimeFromMinutes
+  getTimeFromMinutes,
+  createElement
 } from 'utils';
 
-const MAX_NUMBER_CHAR = 140;
+const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
 const createFilmCardTemplate = (card) => {
   const {
@@ -24,8 +29,6 @@ const createFilmCardTemplate = (card) => {
 
   const commentCount = card.comments.size;
 
-  const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
-
   return `
     <article class="film-card">
       <h3 class="film-card__title">${title}</h3>
@@ -43,7 +46,7 @@ const createFilmCardTemplate = (card) => {
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">
-        ${truncateText(description.trim(), MAX_NUMBER_CHAR)}
+        ${truncateText(description.trim(), AppConfig.MAX_NUMBER_CHAR)}
       </p>
       <a class="film-card__comments">
         ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}
@@ -63,4 +66,27 @@ const createFilmCardTemplate = (card) => {
   `;
 };
 
-export default createFilmCardTemplate;
+class FilmCard {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default FilmCard;
