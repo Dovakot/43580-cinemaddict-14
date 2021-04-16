@@ -1,8 +1,8 @@
 const BASE_DEGREE = 10;
 
 const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
+  AFTERBEGIN: 'prepend',
+  BEFOREEND: 'append',
 };
 
 const DateConfig = {
