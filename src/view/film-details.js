@@ -5,38 +5,29 @@ import {
   createElement
 } from 'utils';
 
-const getCommentsItem = ({
-  date,
-  author,
-  text,
-  emotion,
-}) => {
-  return `
-    <li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${text}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">
-            ${getFormattedDateTime(date)}
-          </span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>
-  `;
-};
+const getCommentsItem = ({date, author, text, emotion}) => (`
+  <li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${text}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">
+          ${getFormattedDateTime(date)}
+        </span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>
+`);
 
-const getComments = (commentIds, comments) => {
-  return `
-    <ul class="film-details__comments-list">
-      ${commentIds.map((id) => getCommentsItem(comments[id])).join('')}
-    </ul>
-  `;
-};
+const getComments = (commentIds, comments) => (`
+  <ul class="film-details__comments-list">
+    ${commentIds.map((id) => getCommentsItem(comments[id])).join('')}
+  </ul>
+`);
 
 const createFilmDetailsTemplate = (card, comments) => {
   const {
