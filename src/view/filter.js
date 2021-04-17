@@ -2,11 +2,11 @@ import {
   createElement
 } from 'utils';
 
-const getFilterLink = ({key, title, count}) => (`
-  <a href="#${key}" class="main-navigation__item">
+const getFilterLink = ({key, title, count}) => (
+  `<a href="#${key}" class="main-navigation__item">
     ${title} <span class="main-navigation__item-count">${count}</span>
-  </a>
-`);
+  </a>`
+);
 
 const createFilterTemplate = (filters) => filters.map(getFilterLink).join('');
 

@@ -2,8 +2,8 @@ import {
   createElement
 } from 'utils';
 
-const createFilmsTemplate = () => (`
-  <section class="films">
+const createFilmsTemplate = () => (
+  `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
       <div class="films-list__container"></div>
@@ -18,8 +18,8 @@ const createFilmsTemplate = () => (`
       <h2 class="films-list__title">Most commented</h2>
       <div class="films-list__container"></div>
     </section>
-  </section>
-`);
+  </section>`
+);
 
 class Films {
   constructor() {

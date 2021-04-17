@@ -2,11 +2,11 @@ import {
   createElement
 } from 'utils';
 
-const createFooterStatisticsTemplate = (count) => (`
-  <section class="footer__statistics">
+const createFooterStatisticsTemplate = (count) => (
+  `<section class="footer__statistics">
     <p>${count} ${count === 1 ? 'movie' : 'movies'} inside</p>
-  </section>
-`);
+  </section>`
+);
 
 class FooterStatistics {
   constructor(count) {
