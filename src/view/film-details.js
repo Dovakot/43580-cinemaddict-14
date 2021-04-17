@@ -5,8 +5,15 @@ import {
   createElement
 } from 'utils';
 
-const getCommentsItem = ({date, author, text, emotion}) => (
-  `<li class="film-details__comment">
+const getComments = (comments) => (id) => {
+  const {
+    date,
+    author,
+    text,
+    emotion,
+  } = comments[id];
+
+  return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>
@@ -20,14 +27,8 @@ const getCommentsItem = ({date, author, text, emotion}) => (
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
-  </li>`
-);
-
-const getComments = (commentIds, comments) => (
-  `<ul class="film-details__comments-list">
-    ${commentIds.map((id) => getCommentsItem(comments[id])).join('')}
-  </ul>`
-);
+  </li>`;
+};
 
 const isActive = (flag) => flag ? 'checked' : '';
 
@@ -153,7 +154,9 @@ const createFilmDetailsTemplate = (card, comments) => {
             <span class="film-details__comments-count">${commentCount}</span>
           </h3>
 
-          ${commentCount > 0 ? getComments(commentIds, comments) : ''}
+          <ul class="film-details__comments-list">
+            ${commentIds.map(getComments(comments)).join('')}
+          </ul>
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label"></div>
