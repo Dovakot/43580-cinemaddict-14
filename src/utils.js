@@ -88,6 +88,8 @@ const truncateText = (text, amount) => {
   return text.length > amount ? `${text.substring(0, amount)}...` : text;
 };
 
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
 export {
   createElement,
   render,
@@ -101,5 +103,6 @@ export {
   getFormattedDateTime,
   getTimeFromMinutes,
   getRandomObjects,
-  truncateText
+  truncateText,
+  isEscEvent
 };

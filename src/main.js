@@ -7,7 +7,8 @@ import {
 
 import {
   render,
-  getRandomObjects
+  getRandomObjects,
+  isEscEvent
 } from 'utils';
 
 import UserLevelView from 'view/user-level';
@@ -42,6 +43,7 @@ const TARGET_CLASS_LIST = [
 ];
 
 let shownCardCounter = 0;
+let filmDetails = null;
 
 const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
@@ -101,19 +103,31 @@ const onFilmCardClick = (detailsComponent) => (evt) => {
   document.body.classList.add('hide-overflow');
   render(document.body, detailsComponent.getElement());
 
-  detailsComponent.getElement()
-    .addEventListener('click', onCloseButtonClick(detailsComponent));
+  filmDetails = detailsComponent;
+
+  detailsComponent.getElement().addEventListener('click', onCloseButtonClick);
+  document.addEventListener('keydown', onEscKeyDown);
 };
 
-const onCloseButtonClick = (detailsComponent) => (evt) => {
+const onCloseButtonClick = (evt) => {
   evt.preventDefault();
 
   if (!evt.target.classList.contains('film-details__close-btn')) return;
 
-  document.body.classList.remove('hide-overflow');
-  detailsComponent.getElement().remove();
-  detailsComponent.removeElement();
+  closeFilmDetails();
 };
+
+const closeFilmDetails = () => {
+  document.body.classList.remove('hide-overflow');
+  filmDetails.getElement().remove();
+  filmDetails.removeElement();
+
+  filmDetails = null;
+
+  document.removeEventListener('keydown', onEscKeyDown);
+};
+
+const onEscKeyDown = (evt) => isEscEvent(evt) ? closeFilmDetails() : false;
 
 const showCardsToContainer = () => {
   const shownCards = cardData
