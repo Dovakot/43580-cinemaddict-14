@@ -11,11 +11,9 @@ const createElement = (string) => {
   return documentFragment.firstElementChild;
 };
 
-const render = (container, element, place) => {
-  const position = RenderPosition[place] || RenderPosition.BEFOREEND;
-
-  container[position](element);
-};
+const render = (
+  container, element, place = RenderPosition.BEFOREEND,
+) => container[place](element);
 
 const getRandomNumber = (min, max, maxInclusive = 0) => {
   const diff = Math.abs(max - min);
@@ -50,8 +48,8 @@ const getRandomObjects = (generator, length) => new Array(length)
   .fill()
   .map(generator);
 
-const getRandomDate = (days, hours = DateConfig.MAX_HOURS) => {
-  const amountDays = DateConfig.DATE_OFFSET * hours * days;
+const getRandomDate = (days) => {
+  const amountDays = DateConfig.DATE_OFFSET * DateConfig.MAX_HOURS * days;
 
   return Date.now() + amountDays;
 };
@@ -90,6 +88,8 @@ const truncateText = (text, amount) => {
   return text.length > amount ? `${text.substring(0, amount)}...` : text;
 };
 
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
 export {
   createElement,
   render,
@@ -103,5 +103,6 @@ export {
   getFormattedDateTime,
   getTimeFromMinutes,
   getRandomObjects,
-  truncateText
+  truncateText,
+  isEscEvent
 };

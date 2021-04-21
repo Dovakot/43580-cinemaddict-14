@@ -361,10 +361,11 @@ button {
 
 .film-card__title {
   margin-right: 0.5em;
+  transition: opacity 0.1s ease-out;
 }
 
 .film-card__title:hover {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: pointer;
 }
 
@@ -392,13 +393,13 @@ button {
   height: 340px;
   overflow: hidden;
   position: absolute;
-  transition: bottom 0.2s ease-out;
+  transition: bottom 0.2s ease-out, opacity 0.1s ease-out;
   width: 100%;
   z-index: 1;
 }
 
 .film-card__poster:hover {
-  opacity: 0.7;
+  opacity: 0.8;
   cursor: pointer;
 }
 

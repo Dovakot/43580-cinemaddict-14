@@ -26,13 +26,12 @@ const getUserRank = (count) => {
   return `<p class="profile__rating">${userRank}</p>`;
 };
 
-const createUserLevelTemplate = ({count}) => (`
-  <section class="header__profile profile">
+const createUserLevelTemplate = ({count}) => (
+  `<section class="header__profile profile">
     ${count > 0 ? getUserRank(count) : ''}
-
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-  </section>
-`);
+  </section>`
+);
 
 class UserLevel {
   constructor(count) {
