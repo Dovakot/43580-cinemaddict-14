@@ -199,10 +199,26 @@ class FilmDetails extends AbstractView {
     super();
     this._card = card;
     this._comments = comments;
+
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._card, this._comments);
+  }
+
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+
+    if (!evt.target.classList.contains('film-details__close-btn')) return;
+
+    this._callback.closeClick();
+  }
+
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+
+    this.getElement().addEventListener('click', this._closeClickHandler);
   }
 }
 

@@ -36,12 +36,6 @@ import {
 import generateCard from 'mock/film-card';
 import generateComment from 'mock/comment';
 
-const TARGET_CLASS_LIST = [
-  'film-card__poster',
-  'film-card__title',
-  'film-card__comments',
-];
-
 let shownCardCounter = 0;
 let filmDetails = null;
 
@@ -89,32 +83,17 @@ const createCard = (cardFragment) => (card) => {
 
   render(cardFragment, cardComponent.getElement());
 
-  cardComponent.getElement()
-    .addEventListener('click', onFilmCardClick(detailsComponent));
+  cardComponent.setClickHandler(filmCardClickHandler(detailsComponent));
 };
 
-const onFilmCardClick = (detailsComponent) => (evt) => {
-  evt.preventDefault();
-
-  const checkClassName = (item) => !evt.target.classList.contains(item);
-
-  if (TARGET_CLASS_LIST.every(checkClassName)) return;
-
+const filmCardClickHandler = (detailsComponent) => () => {
   document.body.classList.add('hide-overflow');
   render(document.body, detailsComponent.getElement());
 
   filmDetails = detailsComponent;
 
-  detailsComponent.getElement().addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown', onEscKeyDown);
-};
-
-const onCloseButtonClick = (evt) => {
-  evt.preventDefault();
-
-  if (!evt.target.classList.contains('film-details__close-btn')) return;
-
-  closeFilmDetails();
+  detailsComponent.setCloseClickHandler(closeButtonClickHandler);
+  document.addEventListener('keydown', escKeyDownHandler);
 };
 
 const closeFilmDetails = () => {
@@ -124,10 +103,12 @@ const closeFilmDetails = () => {
 
   filmDetails = null;
 
-  document.removeEventListener('keydown', onEscKeyDown);
+  document.removeEventListener('keydown', escKeyDownHandler);
 };
 
-const onEscKeyDown = (evt) => isEscEvent(evt) ? closeFilmDetails() : false;
+const closeButtonClickHandler = closeFilmDetails;
+
+const escKeyDownHandler = (evt) => isEscEvent(evt) ? closeFilmDetails() : false;
 
 const showCardsToContainer = () => {
   const shownCards = cardData
@@ -138,9 +119,7 @@ const showCardsToContainer = () => {
   render(filmsCardsContainer, createFilmsCards(shownCards));
 };
 
-const onShowButtonClick = (showButtonComponent) => (evt) => {
-  evt.preventDefault();
-
+const showButtonClickHandler = (showButtonComponent) => () => {
   showCardsToContainer();
 
   if (shownCardCounter >= AppConfig.MAX_CARDS) {
@@ -179,8 +158,7 @@ const renderFilmsCards = () => {
   showCardsToContainer();
   render(baseFilmsList, showButtonComponent.getElement());
 
-  showButtonComponent.getElement()
-    .addEventListener('click', onShowButtonClick(showButtonComponent));
+  showButtonComponent.setClickHandler(showButtonClickHandler(showButtonComponent));
 
   renderTopFilmsCards();
   renderCommentedFilmsCards();

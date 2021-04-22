@@ -9,6 +9,12 @@ import {
   getTimeFromMinutes
 } from 'utils';
 
+const TARGET_CLASS_LIST = [
+  'film-card__poster',
+  'film-card__title',
+  'film-card__comments',
+];
+
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
 const createFilmCardTemplate = (card) => {
@@ -69,10 +75,28 @@ class FilmCard extends AbstractView {
   constructor(card) {
     super();
     this._card = card;
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+
+    const checkClassName = (item) => !evt.target.classList.contains(item);
+
+    if (TARGET_CLASS_LIST.every(checkClassName)) return;
+
+    this._callback.click();
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 
