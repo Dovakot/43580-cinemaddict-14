@@ -1,8 +1,9 @@
+import AbstractView from 'abstract';
+
 import {
   getTimeFromMinutes,
   getFormattedDate,
-  getFormattedDateTime,
-  createElement
+  getFormattedDateTime
 } from 'utils';
 
 const getComments = (comments) => (id) => {
@@ -193,27 +194,15 @@ const createFilmDetailsTemplate = (card, comments) => {
   </section>`;
 };
 
-class FilmDetails {
+class FilmDetails extends AbstractView {
   constructor(card, comments) {
+    super();
     this._card = card;
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._card, this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

@@ -1,11 +1,12 @@
+import AbstractView from 'abstract';
+
 import {
   AppConfig
 } from 'const';
 
 import {
   truncateText,
-  getTimeFromMinutes,
-  createElement
+  getTimeFromMinutes
 } from 'utils';
 
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
@@ -64,26 +65,14 @@ const createFilmCardTemplate = (card) => {
   </article>`;
 };
 
-class FilmCard {
+class FilmCard extends AbstractView {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

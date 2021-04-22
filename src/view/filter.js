@@ -1,6 +1,4 @@
-import {
-  createElement
-} from 'utils';
+import AbstractView from 'abstract';
 
 const getFilterLink = ({key, title, count}) => (
   `<a href="#${key}" class="main-navigation__item">
@@ -10,26 +8,14 @@ const getFilterLink = ({key, title, count}) => (
 
 const createFilterTemplate = (filters) => filters.map(getFilterLink).join('');
 
-class Filter {
+class Filter extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilterTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
