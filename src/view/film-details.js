@@ -4,7 +4,7 @@ import {
   getTimeFromMinutes,
   getFormattedDate,
   getFormattedDateTime
-} from 'utils';
+} from 'utils/card';
 
 const getComments = (comments) => (id) => {
   const {

@@ -1,6 +1,6 @@
 import {
   createElement
-} from 'utils';
+} from 'utils/render';
 
 export default class Abstract {
   constructor() {

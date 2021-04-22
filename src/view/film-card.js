@@ -7,7 +7,7 @@ import {
 import {
   truncateText,
   getTimeFromMinutes
-} from 'utils';
+} from 'utils/card';
 
 const TARGET_CLASS_LIST = [
   'film-card__poster',
