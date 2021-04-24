@@ -1,4 +1,4 @@
-import AbstractView from 'abstract';
+import AbstractView from './abstract';
 
 const getFilterLink = ({key, title, count}) => (
   `<a href="#${key}" class="main-navigation__item">

@@ -2,28 +2,57 @@ import {
   DateConfig
 } from 'const';
 
-const getFormattedDate = (date) => {
-  return new Date(date).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).split(' ').join(' ');
+const FormattedDateConfig = {
+  DATE_EN_GB: {
+    method: 'toLocaleDateString',
+    locale: 'en-GB',
+    options: {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    },
+    splitValue: ' ',
+    joinValue: ' ',
+  },
+  DATE_FR_CA: {
+    method: 'toLocaleDateString',
+    locale: 'fr-CA',
+    options: {
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric',
+    },
+    splitValue: '-',
+    joinValue: '/',
+  },
+  TIME_EN_GB: {
+    method: 'toLocaleTimeString',
+    locale: 'en-GB',
+    options: {
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+    splitValue: ' ',
+    joinValue: ':',
+  },
 };
 
-const getFormattedDateTime = (date) => {
-  const formattedDate = new Date(date).toLocaleDateString('fr-CA', {
-    year: '2-digit',
-    month: 'numeric',
-    day: 'numeric',
-  }).split('-').join('/');
+const getFormattedDate = (date, key = 'DATE_EN_GB') => {
+  const {
+    method,
+    locale,
+    options,
+    splitValue,
+    joinValue,
+  } = FormattedDateConfig[key];
 
-  const formattedTime = new Date(date).toLocaleTimeString('en-GB', {
-    hour: 'numeric',
-    minute: 'numeric',
-  }).split(' ').join(':');
-
-  return `${formattedDate} ${formattedTime}`;
+  return new Date(date)[method](locale, options).split(splitValue).join(joinValue);
 };
+
+const getFormattedDateTime = (date) => (
+  `${getFormattedDate(date, 'DATE_FR_CA')}
+   ${getFormattedDate(date, 'TIME_EN_GB')}`
+);
 
 const getTimeFromMinutes = (amount) => {
   const hours = Math.trunc(amount / DateConfig.MAX_MINUTES);
@@ -32,9 +61,8 @@ const getTimeFromMinutes = (amount) => {
   return `${hours}h ${minutes}m`;
 };
 
-const truncateText = (text, amount) => {
-  return text.length > amount ? `${text.substring(0, amount)}...` : text;
-};
+const truncateText = (text, amount) => text.length > amount
+  ? `${text.substring(0, amount)}...` : text;
 
 export {
   getFormattedDate,

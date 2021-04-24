@@ -1,4 +1,4 @@
-import AbstractView from 'abstract';
+import AbstractView from './abstract';
 
 const createFilmsEmptyTemplate = () => (
   `<section class="films">

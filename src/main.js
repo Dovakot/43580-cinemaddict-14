@@ -123,47 +123,37 @@ const showButtonClickHandler = (showButtonComponent, container) => () => {
   }
 };
 
-const renderTopFilmsCards = () => {
-  const sortedByRating = getSortByRating(getFilterByRating(cardData));
-  const filmsList = films.querySelector('.films-list--top');
+const renderExtraFilmsCards = (sortedCards, modifier) => {
+  const filmsList = films.querySelector(`.films-list--${modifier}`);
 
-  if (!sortedByRating.length) return filmsList.remove();
-
-  const container = filmsList.querySelector('.films-list__container');
-  const topFilms = sortedByRating.slice(0, AppConfig.EXTRA_CARD_COUNT);
-
-  render(container, createFilmsCards(topFilms));
-};
-
-const renderCommentedFilmsCards = () => {
-  const sortedByComments = getSortByComments(getFilterByComments(cardData));
-  const filmsList = films.querySelector('.films-list--commented');
-
-  if (!sortedByComments.length) return filmsList.remove();
+  if (!sortedCards.length) return filmsList.remove();
 
   const container = filmsList.querySelector('.films-list__container');
-  const commentedFilms = sortedByComments.slice(0, AppConfig.EXTRA_CARD_COUNT);
+  const cards = sortedCards.slice(0, AppConfig.EXTRA_CARD_COUNT);
 
-  render(container, createFilmsCards(commentedFilms));
+  render(container, createFilmsCards(cards));
 };
 
 const renderFilmsCards = () => {
   if (!cardCount) return render(containerMain, films);
 
   const showButtonComponent = new ShowButtonView();
+
+  const sortedByRating = getSortByRating(getFilterByRating(cardData));
+  const sortedByComments = getSortByComments(getFilterByComments(cardData));
+
   const filmsList = films.querySelector('.films-list');
   const container = filmsList.querySelector('.films-list__container');
 
   showCardsToContainer(container);
   render(filmsList, showButtonComponent);
+  renderExtraFilmsCards(sortedByRating, 'top');
+  renderExtraFilmsCards(sortedByComments, 'commented');
+  render(containerMain, films);
 
   showButtonComponent.setClickHandler(
     showButtonClickHandler(showButtonComponent, container),
   );
-
-  renderTopFilmsCards();
-  renderCommentedFilmsCards();
-  render(containerMain, films);
 };
 
 renderFilmsCards();

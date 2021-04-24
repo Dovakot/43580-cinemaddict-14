@@ -8,7 +8,6 @@ const Options = {
     const: path.resolve(__dirname, './src/const'),
     utils: path.resolve(__dirname, './src/utils'),
     view: path.resolve(__dirname, './src/view'),
-    abstract: path.resolve(__dirname, './src/view/abstract'),
     mock: path.resolve(__dirname, './src/mock'),
   },
 };

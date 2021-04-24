@@ -1,4 +1,4 @@
-import AbstractView from 'abstract';
+import AbstractView from './abstract';
 
 const createMenuTemplate = (filter) => (
   `<nav class="main-navigation">

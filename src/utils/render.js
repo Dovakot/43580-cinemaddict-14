@@ -1,4 +1,4 @@
-import Abstract from 'abstract';
+import Abstract from 'view/abstract';
 
 import {
   RenderPosition
