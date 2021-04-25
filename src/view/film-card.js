@@ -1,12 +1,19 @@
+import AbstractView from './abstract';
+
 import {
   AppConfig
 } from 'const';
 
 import {
   truncateText,
-  getTimeFromMinutes,
-  createElement
-} from 'utils';
+  getTimeFromMinutes
+} from 'utils/card';
+
+const TARGET_CLASS_LIST = [
+  'film-card__poster',
+  'film-card__title',
+  'film-card__comments',
+];
 
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
@@ -64,26 +71,32 @@ const createFilmCardTemplate = (card) => {
   </article>`;
 };
 
-class FilmCard {
+class FilmCard extends AbstractView {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _clickHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    const checkClassName = (item) => !evt.target.classList.contains(item);
+
+    if (TARGET_CLASS_LIST.every(checkClassName)) return;
+
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 

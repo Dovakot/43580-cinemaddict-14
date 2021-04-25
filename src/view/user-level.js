@@ -1,6 +1,4 @@
-import {
-  createElement
-} from 'utils';
+import AbstractView from './abstract';
 
 const UserRankList = {
   DEFAULT: 'movie buff',
@@ -33,26 +31,14 @@ const createUserLevelTemplate = ({count}) => (
   </section>`
 );
 
-class UserLevel {
+class UserLevel extends AbstractView {
   constructor(count) {
+    super();
     this._count = count;
-    this._element = null;
   }
 
   getTemplate() {
     return createUserLevelTemplate(this._count);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

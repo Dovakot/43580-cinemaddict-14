@@ -1,9 +1,10 @@
+import AbstractView from './abstract';
+
 import {
   getTimeFromMinutes,
   getFormattedDate,
-  getFormattedDateTime,
-  createElement
-} from 'utils';
+  getFormattedDateTime
+} from 'utils/card';
 
 const getComments = (comments) => (id) => {
   const {
@@ -193,27 +194,31 @@ const createFilmDetailsTemplate = (card, comments) => {
   </section>`;
 };
 
-class FilmDetails {
+class FilmDetails extends AbstractView {
   constructor(card, comments) {
+    super();
     this._card = card;
     this._comments = comments;
-    this._element = null;
+
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._card, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _closeClickHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    if (!evt.target.classList.contains('film-details__close-btn')) return;
+
+    this._callback.closeClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+
+    this.getElement().addEventListener('click', this._closeClickHandler);
   }
 }
 

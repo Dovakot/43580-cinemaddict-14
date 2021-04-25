@@ -6,10 +6,14 @@ import {
 } from 'const';
 
 import {
-  render,
   getRandomObjects,
   isEscEvent
-} from 'utils';
+} from 'utils/common';
+
+import {
+  render,
+  remove
+} from 'utils/render';
 
 import UserLevelView from 'view/user-level';
 import MenuView from 'view/menu';
@@ -36,12 +40,6 @@ import {
 import generateCard from 'mock/film-card';
 import generateComment from 'mock/comment';
 
-const TARGET_CLASS_LIST = [
-  'film-card__poster',
-  'film-card__title',
-  'film-card__comments',
-];
-
 let shownCardCounter = 0;
 let filmDetails = null;
 
@@ -55,25 +53,18 @@ const cardCount = cardData.length;
 const commentData = getRandomObjects(generateComment, AppConfig.MAX_COMMENTS);
 const filterData = generateFilter(cardData);
 
-const userHistory = filterData[1];
-const userLevel = cardCount ? new UserLevelView(userHistory).getElement() : '';
-render(containerHeader, userLevel);
-
 const filter = new FilterView(filterData).getTemplate();
-render(containerMain, new MenuView(filter).getElement());
+render(containerMain, new MenuView(filter));
 
-const sort = cardCount ? new SortView().getElement() : '';
-render(containerMain, sort);
-render(containerFooter, new FooterStatisticsView(cardCount).getElement());
+const films = cardCount ? new FilmsView().getElement() : new FilmsEmptyView();
 
-const films = cardCount ? new FilmsView().getElement() :
-  new FilmsEmptyView().getElement();
+if (cardCount) {
+  const userHistory = filterData[1];
 
-const baseFilmsList = films.querySelector('.films-list');
-const filmsCardsContainer = baseFilmsList.querySelector('.films-list__container');
-
-const topFilmsList = films.querySelector('.films-list--top');
-const commentedFilmsList = films.querySelector('.films-list--commented');
+  render(containerHeader, new UserLevelView(userHistory));
+  render(containerMain, new SortView());
+  render(containerFooter, new FooterStatisticsView(cardCount));
+}
 
 const createFilmsCards = (cards) => {
   const cardFragment = document.createDocumentFragment();
@@ -87,88 +78,60 @@ const createCard = (cardFragment) => (card) => {
   const cardComponent = new FilmCardView(card);
   const detailsComponent = new DetailsComponentView(card, commentData);
 
-  render(cardFragment, cardComponent.getElement());
+  render(cardFragment, cardComponent);
 
-  cardComponent.getElement()
-    .addEventListener('click', onFilmCardClick(detailsComponent));
+  cardComponent.setClickHandler(filmCardClickHandler(detailsComponent));
 };
 
-const onFilmCardClick = (detailsComponent) => (evt) => {
-  evt.preventDefault();
-
-  const checkClassName = (item) => !evt.target.classList.contains(item);
-
-  if (TARGET_CLASS_LIST.every(checkClassName)) return;
-
+const filmCardClickHandler = (detailsComponent) => () => {
   document.body.classList.add('hide-overflow');
-  render(document.body, detailsComponent.getElement());
+  render(document.body, detailsComponent);
 
   filmDetails = detailsComponent;
 
-  detailsComponent.getElement().addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown', onEscKeyDown);
-};
-
-const onCloseButtonClick = (evt) => {
-  evt.preventDefault();
-
-  if (!evt.target.classList.contains('film-details__close-btn')) return;
-
-  closeFilmDetails();
+  detailsComponent.setCloseClickHandler(closeButtonClickHandler);
+  document.addEventListener('keydown', escKeyDownHandler);
 };
 
 const closeFilmDetails = () => {
   document.body.classList.remove('hide-overflow');
-  filmDetails.getElement().remove();
-  filmDetails.removeElement();
+  remove(filmDetails);
 
   filmDetails = null;
 
-  document.removeEventListener('keydown', onEscKeyDown);
+  document.removeEventListener('keydown', escKeyDownHandler);
 };
 
-const onEscKeyDown = (evt) => isEscEvent(evt) ? closeFilmDetails() : false;
+const closeButtonClickHandler = closeFilmDetails;
 
-const showCardsToContainer = () => {
+const escKeyDownHandler = (evt) => isEscEvent(evt) ? closeFilmDetails() : false;
+
+const showCardsToContainer = (container) => {
   const shownCards = cardData
     .slice(shownCardCounter, shownCardCounter + AppConfig.MAX_CARDS_SHOW);
 
   shownCardCounter += AppConfig.MAX_CARDS_SHOW;
 
-  render(filmsCardsContainer, createFilmsCards(shownCards));
+  render(container, createFilmsCards(shownCards));
 };
 
-const onShowButtonClick = (showButtonComponent) => (evt) => {
-  evt.preventDefault();
-
-  showCardsToContainer();
+const showButtonClickHandler = (showButtonComponent, container) => () => {
+  showCardsToContainer(container);
 
   if (shownCardCounter >= AppConfig.MAX_CARDS) {
-    showButtonComponent.getElement().remove();
-    showButtonComponent.removeElement();
+    remove(showButtonComponent);
   }
 };
 
-const renderTopFilmsCards = () => {
-  const sortedByRating = getSortByRating(getFilterByRating(cardData));
+const renderExtraFilmsCards = (sortedCards, modifier) => {
+  const filmsList = films.querySelector(`.films-list--${modifier}`);
 
-  if (!sortedByRating.length) return topFilmsList.remove();
+  if (!sortedCards.length) return filmsList.remove();
 
-  const container = topFilmsList.querySelector('.films-list__container');
-  const topFilms = sortedByRating.slice(0, AppConfig.EXTRA_CARD_COUNT);
+  const container = filmsList.querySelector('.films-list__container');
+  const cards = sortedCards.slice(0, AppConfig.EXTRA_CARD_COUNT);
 
-  render(container, createFilmsCards(topFilms));
-};
-
-const renderCommentedFilmsCards = () => {
-  const sortedByComments = getSortByComments(getFilterByComments(cardData));
-
-  if (!sortedByComments.length) return commentedFilmsList.remove();
-
-  const container = commentedFilmsList.querySelector('.films-list__container');
-  const commentedFilms = sortedByComments.slice(0, AppConfig.EXTRA_CARD_COUNT);
-
-  render(container, createFilmsCards(commentedFilms));
+  render(container, createFilmsCards(cards));
 };
 
 const renderFilmsCards = () => {
@@ -176,15 +139,21 @@ const renderFilmsCards = () => {
 
   const showButtonComponent = new ShowButtonView();
 
-  showCardsToContainer();
-  render(baseFilmsList, showButtonComponent.getElement());
+  const sortedByRating = getSortByRating(getFilterByRating(cardData));
+  const sortedByComments = getSortByComments(getFilterByComments(cardData));
 
-  showButtonComponent.getElement()
-    .addEventListener('click', onShowButtonClick(showButtonComponent));
+  const filmsList = films.querySelector('.films-list');
+  const container = filmsList.querySelector('.films-list__container');
 
-  renderTopFilmsCards();
-  renderCommentedFilmsCards();
+  showCardsToContainer(container);
+  render(filmsList, showButtonComponent);
+  renderExtraFilmsCards(sortedByRating, 'top');
+  renderExtraFilmsCards(sortedByComments, 'commented');
   render(containerMain, films);
+
+  showButtonComponent.setClickHandler(
+    showButtonClickHandler(showButtonComponent, container),
+  );
 };
 
 renderFilmsCards();
