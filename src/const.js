@@ -14,7 +14,7 @@ const DateConfig = {
 };
 
 const AppConfig = {
-  MAX_CARDS_SHOW: 5,
+  MAX_CARDS_PER_STEP: 5,
   EXTRA_CARD_COUNT: 2,
   MAX_CARDS: 21,
   MAX_COMMENTS: 5,
