@@ -3,6 +3,10 @@ import {
 } from 'const';
 
 import {
+  updateItem
+} from 'utils/common';
+
+import {
   render,
   remove
 } from 'utils/render';
@@ -12,7 +16,7 @@ import ShowButtonView from 'view/show-button';
 import FilmsView from 'view/films';
 import FilmsEmptyView from 'view/films-empty';
 
-import FilmCardPresenter from 'presenter/film-card.js';
+import FilmfilmCardPresenter from 'presenter/film-card.js';
 
 import {
   getFilterByRating,
@@ -29,16 +33,19 @@ class Films {
     this._containerMain = containerMain;
     this._renderedCardCounter = AppConfig.MAX_CARDS_PER_STEP;
     this._createdCardBox = null;
+    this._filmCardPresenter = new Map();
 
     this._sortComponent = new SortView();
     this._filmsEmptyComponent = new FilmsEmptyView();
     this._showButtonComponent = new ShowButtonView();
 
     this._filmsSection = new FilmsView().getElement();
-    this._filmsListSection = this._filmsSection.querySelector('.films-list');
-    this._filmsListContainer = this._filmsListSection.querySelector('.films-list__container');
+    this._filmListSection = this._filmsSection.querySelector('.films-list');
+    this._filmListContainer = this._filmListSection.querySelector('.films-list__container');
 
     this._showButtonClickHandler = this._showButtonClickHandler.bind(this);
+    this._modeChangeHandler = this._modeChangeHandler.bind(this);
+    this._filmCardChangeHandler = this._filmCardChangeHandler.bind(this);
   }
 
   init(cards, comments) {
@@ -49,60 +56,51 @@ class Films {
     this._renderFilmsSections();
   }
 
+  _createFilmCard(card) {
+    const filmCardPresenter = new FilmfilmCardPresenter(
+      this._createdCardBox, this._modeChangeHandler, this._filmCardChangeHandler,
+    );
+    filmCardPresenter.init(card, this._comments);
+
+    this._filmCardPresenter.set(filmCardPresenter, card.filmInfo.id);
+  }
+
+  _createFilmsCards(cards) {
+    this._createdCardBox = document.createDocumentFragment();
+
+    cards.forEach((card) => this._createFilmCard(card));
+  }
+
+  _renderFilmsCards(cards, container, from, to) {
+    this._createFilmsCards(cards.slice(from, to));
+    render(container, this._createdCardBox);
+  }
+
   _renderSort() {
     render(this._containerMain, this._sortComponent);
   }
 
-  _createCard(card) {
-    const cardPresenter = new FilmCardPresenter(this._createdCardBox);
-    cardPresenter.init(card, this._comments);
-  }
-
-  _createCards(cards) {
-    this._createdCardBox = document.createDocumentFragment();
-
-    cards.forEach((card) => this._createCard(card));
-  }
-
-  _renderCards(container, from, to) {
-    this._createCards(this._cards.slice(from, to));
-    render(container, this._createdCardBox);
-
-    this._createdCardBox = null;
-  }
-
-  _showButtonClickHandler() {
-    const maxCards = this._renderedCardCounter + AppConfig.MAX_CARDS_PER_STEP;
-
-    this._renderCards(this._filmsListContainer, this._renderedCardCounter, maxCards);
-    this._renderedCardCounter = maxCards;
-
-    if (this._renderedCardCounter >= this._cardCount) {
-      remove(this._showButtonComponent);
-    }
-  }
-
   _renderShowButton() {
-    render(this._filmsListSection, this._showButtonComponent);
+    render(this._filmListSection, this._showButtonComponent);
 
     this._showButtonComponent.setClickHandler(this._showButtonClickHandler);
   }
 
-  _renderCardList() {
-    this._renderCards(this._filmsListContainer, 0, this._renderedCardCounter);
+  _renderFilmCardList() {
+    this._renderFilmsCards(this._cards, this._filmListContainer, 0, this._renderedCardCounter);
 
     if (this._cardCount > this._renderedCardCounter) {
       this._renderShowButton();
     }
   }
 
-  _renderExtraCardList(sortedCards, modifier) {
+  _renderExtraFilmCardList(sortedCards, modifier) {
     const filmsListSection = this._filmsSection.querySelector(`.films-list--${modifier}`);
 
     if (!sortedCards.length) return filmsListSection.remove();
 
     const filmsListContainer = filmsListSection.querySelector('.films-list__container');
-    this._renderCards(filmsListContainer, 0, AppConfig.EXTRA_CARD_COUNT);
+    this._renderFilmsCards(sortedCards, filmsListContainer, 0, AppConfig.EXTRA_CARD_COUNT);
   }
 
   _renderFilmsEmptySections() {
@@ -116,11 +114,39 @@ class Films {
     const sortedByComments = getSortByComments(getFilterByComments(this._cards));
 
     this._renderSort();
-    this._renderCardList();
-    this._renderExtraCardList(sortedByRating, 'top');
-    this._renderExtraCardList(sortedByComments, 'commented');
+    this._renderFilmCardList();
+    this._renderExtraFilmCardList(sortedByRating, 'top');
+    this._renderExtraFilmCardList(sortedByComments, 'commented');
 
     render(this._containerMain, this._filmsSection);
+  }
+
+  _showButtonClickHandler() {
+    const maxCards = this._renderedCardCounter + AppConfig.MAX_CARDS_PER_STEP;
+
+    this._renderFilmsCards(
+      this._cards, this._filmListContainer, this._renderedCardCounter, maxCards,
+    );
+    this._renderedCardCounter = maxCards;
+
+    if (this._renderedCardCounter >= this._cardCount) {
+      remove(this._showButtonComponent);
+    }
+  }
+
+  _filmCardChangeHandler(updatedCard) {
+    const updateFilmCard = (id, component) => {
+      if (id === updatedCard.filmInfo.id) {
+        component.init(updatedCard, this._comments);
+      }
+    };
+
+    this._cards = updateItem(this._cards, updatedCard);
+    this._filmCardPresenter.forEach(updateFilmCard);
+  }
+
+  _modeChangeHandler() {
+    this._filmCardPresenter.forEach((id, presenter) => presenter.resetView());
   }
 }
 
