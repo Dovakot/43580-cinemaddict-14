@@ -9,12 +9,6 @@ import {
   getTimeFromMinutes
 } from 'utils/card';
 
-const TARGET_CLASS_LIST = [
-  'film-card__poster',
-  'film-card__title',
-  'film-card__comments',
-];
-
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
 const createFilmCardTemplate = (card) => {
@@ -58,13 +52,13 @@ const createFilmCardTemplate = (card) => {
       ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}
     </a>
     <div class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isWatchlist)}" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isWatchlist)}" name="watchlist" type="button">
         Add to watchlist
       </button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" name="watched" type="button">
         Mark as watched
       </button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite ${isActive(isFavorite)}" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--favorite ${isActive(isFavorite)}" name="favorite" type="button">
         Mark as favorite
       </button>
     </div>
@@ -85,17 +79,11 @@ class FilmCard extends AbstractView {
 
   _clickHandler(evt) {
     evt.preventDefault();
-
-    const checkClassName = (item) => !evt.target.classList.contains(item);
-
-    if (TARGET_CLASS_LIST.every(checkClassName)) return;
-
-    this._callback.click();
+    this._callback.click(evt);
   }
 
   setClickHandler(callback) {
     this._callback.click = callback;
-
     this.getElement().addEventListener('click', this._clickHandler);
   }
 }
