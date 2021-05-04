@@ -16,7 +16,7 @@ import ShowButtonView from 'view/show-button';
 import FilmsView from 'view/films';
 import FilmsEmptyView from 'view/films-empty';
 
-import FilmfilmCardPresenter from 'presenter/film-card.js';
+import FilmfilmCardPresenter from 'presenter/film-card';
 
 import {
   getFilterByRating,
