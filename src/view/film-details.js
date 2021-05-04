@@ -201,6 +201,7 @@ class FilmDetails extends AbstractView {
     this._comments = comments;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._formChangeHandler = this._formChangeHandler.bind(this);
   }
 
   getTemplate() {
@@ -210,15 +211,27 @@ class FilmDetails extends AbstractView {
   _closeClickHandler(evt) {
     evt.preventDefault();
 
-    if (!evt.target.classList.contains('film-details__close-btn')) return;
+    this._callback.closeClick(evt);
+  }
 
-    this._callback.closeClick();
+  _formChangeHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.formChange(evt);
   }
 
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
 
-    this.getElement().addEventListener('click', this._closeClickHandler);
+    this.getElement().querySelector('.film-details__close-btn')
+      .addEventListener('click', this._closeClickHandler);
+  }
+
+  setFormChangeHandler(callback) {
+    this._callback.formChange = callback;
+
+    this.getElement().querySelector('.film-details__inner')
+      .addEventListener('change', this._formChangeHandler);
   }
 }
 

@@ -93,6 +93,8 @@ const FilmInfo = {
   MAX_DATE: 50,
 };
 
+let idCounter = 0;
+
 const getDescription = ({text, max}) => {
   const descriptionList = getRandomArray(text.split('. '), max);
   const textDescription = [...descriptionList].join('. ');
@@ -109,6 +111,7 @@ const getRating = (min, max) => {
 const generateCard = () => ({
   comments: new Set(getRandomArrayIndex(AppConfig.MAX_COMMENTS)),
   filmInfo: {
+    id: idCounter++,
     title: getRandomArrayElement(FilmInfo.TITLES),
     poster: getRandomArrayElement(FilmInfo.POSTERS),
     description: getDescription(FilmInfo.DESCRIPTION),

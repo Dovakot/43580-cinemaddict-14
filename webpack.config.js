@@ -9,6 +9,7 @@ const Options = {
     utils: path.resolve(__dirname, './src/utils'),
     view: path.resolve(__dirname, './src/view'),
     mock: path.resolve(__dirname, './src/mock'),
+    presenter: path.resolve(__dirname, './src/presenter'),
   },
 };
 
