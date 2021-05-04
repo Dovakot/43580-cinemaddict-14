@@ -41,7 +41,7 @@ render(containerMain, new MenuView(filter));
 render(containerFooter, new FooterStatisticsView(cardCount));
 
 if (cardCount) {
-  const userHistory = filterData[1];
+  const [, userHistory] = filterData;
 
   render(containerHeader, new UserLevelView(userHistory));
 }
