@@ -6,7 +6,7 @@ const CONTROL_BUTTONS = {
 
 class AbstractFilm {
   constructor() {
-    if (new.target === Abstract) {
+    if (new.target === AbstractFilm) {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
 
