@@ -4,7 +4,7 @@ const CONTROL_BUTTONS = {
   favorite: 'isFavorite',
 };
 
-class Abstract {
+class AbstractFilm {
   constructor() {
     if (new.target === Abstract) {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
@@ -15,12 +15,15 @@ class Abstract {
 
   _changeFilmStatus(button) {
     const key = CONTROL_BUTTONS[button.name];
-    const changedData = {...this._card.userDetails};
-
+    const changedData = Object.assign({}, this._card.userDetails);
     changedData[key] = !this._card.userDetails[key];
 
-    this._changeData({...this._card, userDetails: changedData});
+    this._changeData(Object.assign(
+      {},
+      this._card,
+      {userDetails: changedData},
+    ));
   }
 }
 
-export default Abstract;
+export default AbstractFilm;
