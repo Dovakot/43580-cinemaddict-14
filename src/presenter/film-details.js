@@ -8,10 +8,10 @@ import {
   replace
 } from 'utils/render';
 
-import AbstractPresenter from './abstract';
+import AbstractFilmPresenter from './abstract-film';
 import DetailsComponentView from 'view/film-details';
 
-class FilmDetails extends AbstractPresenter {
+class FilmDetails extends AbstractFilmPresenter {
   constructor(changeMode, changeData) {
     super();
     this._filmDetailsComponent = null;

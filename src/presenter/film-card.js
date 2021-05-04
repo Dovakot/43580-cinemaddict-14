@@ -4,9 +4,9 @@ import {
   replace
 } from 'utils/render';
 
-import AbstractPresenter from './abstract';
+import AbstractFilmPresenter from './abstract-film';
 import FilmCardView from 'view/film-card';
-import FilmDetailsPresenter from 'presenter/film-details.js';
+import FilmDetailsPresenter from 'presenter/film-details';
 
 const TARGET_CLASS_LIST = [
   'film-card__poster',
@@ -14,18 +14,13 @@ const TARGET_CLASS_LIST = [
   'film-card__comments',
 ];
 
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  DETAILS: 'DETAILS',
-};
-
-class FilmCard extends AbstractPresenter {
+class FilmCard extends AbstractFilmPresenter {
   constructor(cardsContainer, changeMode, changeData) {
     super();
     this._cardsContainer = cardsContainer;
     this._filmCardComponent = null;
-    this._mode = Mode.DEFAULT;
     this._filmDetailsPresenter = null;
+    this._isDefaultMode = true;
 
     this._changeMode = changeMode;
     this._changeData = changeData;
@@ -44,7 +39,7 @@ class FilmCard extends AbstractPresenter {
 
     if (!prevFilmCardComponent) return render(this._cardsContainer, this._filmCardComponent);
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._isDefaultMode) {
       replace(this._filmCardComponent, prevFilmCardComponent);
     } else {
       replace(this._filmCardComponent, prevFilmCardComponent);
@@ -55,7 +50,7 @@ class FilmCard extends AbstractPresenter {
   }
 
   resetView() {
-    if (this._mode == Mode.DETAILS) this._removeFilmDetails();
+    if (!this._isDefaultMode) this._removeFilmDetails();
   }
 
   _renderFilmDetails() {
@@ -65,11 +60,11 @@ class FilmCard extends AbstractPresenter {
     this._filmDetailsPresenter.init(this._card, this._comments);
 
     this._changeMode();
-    this._mode = Mode.DETAILS;
+    this._isDefaultMode = false;
   }
 
   _removeFilmDetails() {
-    this._mode = Mode.DEFAULT;
+    this._isDefaultMode = true;
     this._filmDetailsPresenter.destroy();
     this._filmDetailsPresenter = null;
   }
