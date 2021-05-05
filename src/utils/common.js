@@ -44,14 +44,6 @@ const getRandomDate = (days) => {
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.filmInfo.id === update.filmInfo.id);
-
-  if (index === -1) return items;
-
-  return [...items.slice(0, index), update, ...items.slice(index + 1)];
-};
-
 export {
   getRandomInt,
   getRandomFloat,
@@ -60,6 +52,5 @@ export {
   getRandomArray,
   getRandomObjects,
   getRandomDate,
-  isEscEvent,
-  updateItem
+  isEscEvent
 };
