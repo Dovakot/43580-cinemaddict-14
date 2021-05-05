@@ -13,12 +13,14 @@ import {
   render
 } from 'utils/render';
 
+import FilmsModel from 'model/films';
+
+import FilmsPresenter from 'presenter/films';
+
 import UserLevelView from 'view/user-level';
 import MenuView from 'view/menu';
 import FilterView from 'view/filter';
 import FooterStatisticsView from 'view/footer-statistics';
-
-import FilmsPresenter from 'presenter/films.js';
 
 import generateCard from 'mock/film-card';
 import generateComment from 'mock/comment';
@@ -46,6 +48,9 @@ if (cardCount) {
   render(containerHeader, new UserLevelView(userHistory));
 }
 
-const filmsPresenter = new FilmsPresenter(containerMain);
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(cardData, commentData);
 
-filmsPresenter.init(cardData, commentData);
+const filmsPresenter = new FilmsPresenter(containerMain, filmsModel);
+
+filmsPresenter.init();
