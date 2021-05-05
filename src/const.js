@@ -21,9 +21,16 @@ const AppConfig = {
   MAX_NUMBER_CHAR: 140,
 };
 
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
+
 export {
   BASE_DEGREE,
   RenderPosition,
   DateConfig,
-  AppConfig
+  AppConfig,
+  SortType
 };
