@@ -49,6 +49,10 @@ class FilmCard extends AbstractFilmPresenter {
     remove(prevFilmCardComponent);
   }
 
+  destroy() {
+    remove(this._filmCardComponent);
+  }
+
   resetView() {
     if (!this._isDefaultMode) this._removeFilmDetails();
   }
