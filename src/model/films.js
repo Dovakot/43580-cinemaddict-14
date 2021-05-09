@@ -1,64 +1,76 @@
-import {
-  SortType
-} from 'const';
+const filmsType = {
+  top: {
+    methods: ['_countFilmsFilteredByRating', 'sortByRating'],
+  },
+  commented: {
+    methods: ['_countFilmsFilteredByComments', 'sortByComments'],
+  },
+};
+
+const sortType = {
+  rating: 'sortByRating',
+  date: 'sortByDate',
+};
 
 class Films {
   constructor() {
-    this._cards = [];
-    this._comments = [];
+    this._films = [];
+    this._length = 0;
   }
 
-  setFilms(cards, comments) {
-    this._cards = cards.slice();
-    this._comments = comments;
+  set films(films) {
+    this._films = films.slice();
   }
 
-  getFilms() {
-    return this._cards;
+  get films() {
+    return this._films;
   }
 
-  getComments() {
-    return this._comments;
+  get length() {
+    return this._films.length;
+  }
+
+  getExtraFilms(type) {
+    const [countMethod, sortMethod] = filmsType[type].methods;
+    const filmsCount = this[countMethod]();
+
+    return filmsCount ? this[sortMethod]() : filmsCount;
   }
 
   updateFilm(update) {
-    const index = this._cards.findIndex((card) => card.filmInfo.id === update.filmInfo.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t update unexisting card');
-    }
-
-    this._cards = [
-      ...this._cards.slice(0, index),
-      update,
-      ...this._cards.slice(index + 1),
-    ];
+    this._films = this._films.map((film) => film.filmInfo.id === update.filmInfo.id
+      ? update : film);
   }
 
   sortBy(type) {
-    switch (type) {
-      case SortType.RATING:
-        return this.sortByRating();
-      case SortType.DATE:
-        return this.sortByDate();
-    }
+    const sortMethod = sortType[type];
+
+    return sortMethod ? this[sortMethod]() : this._films;
   }
 
   sortByRating() {
-    return this._copy().sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
+    return this._copy.sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
   }
 
   sortByComments() {
-    return this._copy().sort((a, b) => b.comments.size - a.comments.size);
+    return this._copy.sort((a, b) => b.comments.size - a.comments.size);
   }
 
   sortByDate() {
-    return this._copy().sort((a, b) => new Date(b.filmInfo.release.date)
+    return this._copy.sort((a, b) => new Date(b.filmInfo.release.date)
       - new Date(a.filmInfo.release.date));
   }
 
-  _copy() {
-    return Object.assign([], this._cards);
+  get _copy() {
+    return this._films.slice();
+  }
+
+  _countFilmsFilteredByRating() {
+    return this._films.filter((film) => film.filmInfo.rating !== 0).length;
+  }
+
+  _countFilmsFilteredByComments() {
+    return this._films.filter((film) => film.comments.size !== 0).length;
   }
 }
 
