@@ -2,7 +2,8 @@
 /*eslint-env node*/
 
 import {
-  AppConfig
+  AppConfig,
+  RenderPosition
 } from 'const';
 
 import {
@@ -14,6 +15,7 @@ import {
 } from 'utils/render';
 
 import FilmsModel from 'model/films';
+import CommentsModel from 'model/comments';
 
 import FilmsPresenter from 'presenter/films';
 
@@ -33,24 +35,24 @@ const containerMain = document.querySelector('.main');
 const containerFooter = document.querySelector('.footer');
 
 const cardData = getRandomObjects(generateCard, AppConfig.MAX_CARDS);
-const cardCount = cardData.length;
-
 const commentData = getRandomObjects(generateComment, AppConfig.MAX_COMMENTS);
 const filterData = generateFilter(cardData);
 
-const filter = new FilterView(filterData).getTemplate();
-render(containerMain, new MenuView(filter));
-render(containerFooter, new FooterStatisticsView(cardCount));
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
 
-if (cardCount) {
+const filter = new FilterView(filterData).getTemplate();
+
+const filmsPresenter = new FilmsPresenter(containerMain, filmsModel, commentsModel);
+filmsModel.films = cardData;
+commentsModel.comments = commentData;
+filmsPresenter.init();
+
+render(containerMain, new MenuView(filter), RenderPosition.AFTERBEGIN);
+render(containerFooter, new FooterStatisticsView(filmsModel.length));
+
+if (filmsModel.length) {
   const [, userHistory] = filterData;
 
   render(containerHeader, new UserLevelView(userHistory));
 }
-
-const filmsModel = new FilmsModel();
-filmsModel.setFilms(cardData, commentData);
-
-const filmsPresenter = new FilmsPresenter(containerMain, filmsModel);
-
-filmsPresenter.init();
