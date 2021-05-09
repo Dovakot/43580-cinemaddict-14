@@ -10,10 +10,6 @@ const getFilterHistory = (cards) => cards.filter((card) => card.userDetails.isWa
 
 const getFilterFavorites = (cards) => cards.filter((card) => card.userDetails.isFavorite);
 
-const getFilterByRating = (cards) => cards.filter((card) => card.filmInfo.rating !== 0);
-
-const getFilterByComments = (cards) => cards.filter((card) => card.comments.size !== 0);
-
 const filterCount = {
   watchlist: getFilterWatchlist,
   history: getFilterHistory,
@@ -30,7 +26,5 @@ const generateFilter = (cards) => Object.keys(filterCount)
   .map(getFilteredCardCount(cards));
 
 export {
-  generateFilter,
-  getFilterByRating,
-  getFilterByComments
+  generateFilter
 };
