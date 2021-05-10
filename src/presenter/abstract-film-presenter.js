@@ -4,10 +4,10 @@ const CONTROL_BUTTONS = {
   favorite: 'isFavorite',
 };
 
-class AbstractFilm {
+class AbstractFilmPresenter {
   constructor() {
-    if (new.target === AbstractFilm) {
-      throw new Error('Can\'t instantiate Abstract, only concrete one.');
+    if (new.target === AbstractFilmPresenter) {
+      throw new Error('Can\'t instantiate AbstractFilmPresenter, only concrete one.');
     }
 
     this._changeData = null;
@@ -26,4 +26,4 @@ class AbstractFilm {
   }
 }
 
-export default AbstractFilm;
+export default AbstractFilmPresenter;

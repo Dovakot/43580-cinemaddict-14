@@ -6,21 +6,21 @@ import {
 import {
   render,
   remove
-} from 'utils/render';
+} from 'utils/render-util';
 
-import SortView from 'view/sort';
-import ShowButtonView from 'view/show-button';
-import FilmsView from 'view/films';
-import FilmsEmptyView from 'view/films-empty';
+import SortView from 'view/sort-view';
+import ShowButtonView from 'view/show-button-view';
+import FilmsView from 'view/films-view';
+import FilmsEmptyView from 'view/films-empty-view';
 
-import FilmfilmCardPresenter from 'presenter/film-card';
+import FilmCardPresenter from 'presenter/film-card-presenter';
 
 const FilmsType = {
   TOP: 'top',
   COMMENTED: 'commented',
 };
 
-class Films {
+class FilmsPresenter {
   constructor(containerMain, filmsModel, commentsModel) {
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
@@ -57,7 +57,7 @@ class Films {
   }
 
   _createFilmCard(card) {
-    const filmCardPresenter = new FilmfilmCardPresenter(
+    const filmCardPresenter = new FilmCardPresenter(
       this._createdCardBox, this._modeChangeHandler, this._filmCardChangeHandler,
     );
     filmCardPresenter.init(card, this._commentsModel.comments);
@@ -166,4 +166,4 @@ class Films {
   }
 }
 
-export default Films;
+export default FilmsPresenter;

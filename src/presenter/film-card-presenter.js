@@ -2,11 +2,11 @@ import {
   render,
   remove,
   replace
-} from 'utils/render';
+} from 'utils/render-util';
 
-import AbstractFilmPresenter from './abstract-film';
-import FilmCardView from 'view/film-card';
-import FilmDetailsPresenter from 'presenter/film-details';
+import AbstractFilmPresenter from './abstract-film-presenter';
+import FilmCardView from 'view/film-card-view';
+import FilmDetailsPresenter from 'presenter/film-details-presenter';
 
 const TARGET_CLASS_LIST = [
   'film-card__poster',
@@ -14,7 +14,7 @@ const TARGET_CLASS_LIST = [
   'film-card__comments',
 ];
 
-class FilmCard extends AbstractFilmPresenter {
+class FilmCardPresenter extends AbstractFilmPresenter {
   constructor(cardsContainer, changeMode, changeData) {
     super();
     this._cardsContainer = cardsContainer;
@@ -82,4 +82,4 @@ class FilmCard extends AbstractFilmPresenter {
   }
 }
 
-export default FilmCard;
+export default FilmCardPresenter;

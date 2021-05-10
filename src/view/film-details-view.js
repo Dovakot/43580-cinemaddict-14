@@ -1,10 +1,10 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 import {
   getTimeFromMinutes,
   getFormattedDate,
   getFormattedDateTime
-} from 'utils/card';
+} from 'utils/film-card-util';
 
 const getComments = (comments) => (id) => {
   const {
@@ -194,7 +194,7 @@ const createFilmDetailsTemplate = (card, comments) => {
   </section>`;
 };
 
-class FilmDetails extends AbstractView {
+class FilmDetailsView extends AbstractView {
   constructor(card, comments) {
     super();
     this._card = card;
@@ -235,4 +235,4 @@ class FilmDetails extends AbstractView {
   }
 }
 
-export default FilmDetails;
+export default FilmDetailsView;

@@ -6,7 +6,7 @@ import {
   getRandomArrayElement,
   getRandomInt,
   getRandomDate
-} from 'utils/common';
+} from 'utils/common-util';
 
 const CommentInfo = {
   AUTHORS: [

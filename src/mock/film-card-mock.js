@@ -10,7 +10,7 @@ import {
   getRandomArrayElement,
   getRandomArray,
   getRandomDate
-} from 'utils/common';
+} from 'utils/common-util';
 
 const FilmInfo = {
   TITLES: [

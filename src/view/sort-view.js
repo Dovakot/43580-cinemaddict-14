@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 import {
   SortType
@@ -20,7 +20,7 @@ const createSortTemplate = (currentSort) => (
   </ul>`
 );
 
-class Sort extends AbstractView {
+class SortView extends AbstractView {
   constructor(currentSort) {
     super();
     this._currentSort = currentSort;
@@ -47,4 +47,4 @@ class Sort extends AbstractView {
   }
 }
 
-export default Sort;
+export default SortView;

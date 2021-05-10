@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 const createMenuTemplate = (filter) => (
   `<nav class="main-navigation">
@@ -10,7 +10,7 @@ const createMenuTemplate = (filter) => (
   </nav>`
 );
 
-class Menu extends AbstractView {
+class MenuView extends AbstractView {
   constructor(filter) {
     super();
     this._filter = filter;
@@ -21,4 +21,4 @@ class Menu extends AbstractView {
   }
 }
 
-export default Menu;
+export default MenuView;

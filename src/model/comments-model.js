@@ -1,4 +1,4 @@
-class Comments {
+class CommentsModel {
   constructor() {
     this._comments = [];
   }
@@ -12,4 +12,4 @@ class Comments {
   }
 }
 
-export default Comments;
+export default CommentsModel;

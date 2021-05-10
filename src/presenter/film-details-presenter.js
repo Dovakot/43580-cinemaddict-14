@@ -1,17 +1,17 @@
 import {
   isEscEvent
-} from 'utils/common';
+} from 'utils/common-util';
 
 import {
   render,
   remove,
   replace
-} from 'utils/render';
+} from 'utils/render-util';
 
-import AbstractFilmPresenter from './abstract-film';
-import DetailsComponentView from 'view/film-details';
+import AbstractFilmPresenter from './abstract-film-presenter';
+import DetailsComponentView from 'view/film-details-view';
 
-class FilmDetails extends AbstractFilmPresenter {
+class FilmDetailsPresenter extends AbstractFilmPresenter {
   constructor(changeMode, changeData) {
     super();
     this._filmDetailsComponent = null;
@@ -79,4 +79,4 @@ class FilmDetails extends AbstractFilmPresenter {
   }
 }
 
-export default FilmDetails;
+export default FilmDetailsPresenter;

@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 import {
   AppConfig
@@ -7,7 +7,7 @@ import {
 import {
   truncateText,
   getTimeFromMinutes
-} from 'utils/card';
+} from 'utils/film-card-util';
 
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
@@ -65,7 +65,7 @@ const createFilmCardTemplate = (card) => {
   </article>`;
 };
 
-class FilmCard extends AbstractView {
+class FilmCardView extends AbstractView {
   constructor(card) {
     super();
     this._card = card;
@@ -88,4 +88,4 @@ class FilmCard extends AbstractView {
   }
 }
 
-export default FilmCard;
+export default FilmCardView;

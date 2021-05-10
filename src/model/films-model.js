@@ -12,7 +12,7 @@ const sortType = {
   date: 'sortByDate',
 };
 
-class Films {
+class FilmsModel {
   constructor() {
     this._films = [];
     this._length = 0;
@@ -74,4 +74,4 @@ class Films {
   }
 }
 
-export default Films;
+export default FilmsModel;
