@@ -108,7 +108,7 @@ const getRating = (min, max) => {
   return randomRating > 1 ? randomRating : min;
 };
 
-const generateCard = () => ({
+const generateFilm = () => ({
   comments: new Set(getRandomArrayIndex(AppConfig.MAX_COMMENTS)),
   filmInfo: {
     id: idCounter++,
@@ -134,4 +134,4 @@ const generateCard = () => ({
   },
 });
 
-export default generateCard;
+export default generateFilm;

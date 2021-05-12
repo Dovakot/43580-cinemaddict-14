@@ -25,10 +25,10 @@ class FilmsPresenter {
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._containerMain = containerMain;
-    this._renderedCardCounter = AppConfig.MAX_CARDS_PER_STEP;
-    this._createdCardBox = null;
+    this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
+    this._createdFilmCardBox = null;
     this._filmCardPresenter = new Map();
-    this._cardCount = null;
+    this._filmCardCount = null;
     this._currentSort = SortType.DEFAULT;
 
     this._sortComponent = null;
@@ -47,33 +47,33 @@ class FilmsPresenter {
   }
 
   init() {
-    this._cardCount = this._filmsModel.length;
+    this._filmCardCount = this._filmsModel.length;
 
     this._renderFilmsSections();
   }
 
-  _getCards() {
+  _getFilms() {
     return this._filmsModel.sortBy(this._currentSort);
   }
 
-  _createFilmCard(card) {
+  _createFilmCard(film) {
     const filmCardPresenter = new FilmCardPresenter(
-      this._createdCardBox, this._modeChangeHandler, this._filmCardChangeHandler,
+      this._createdFilmCardBox, this._modeChangeHandler, this._filmCardChangeHandler,
     );
-    filmCardPresenter.init(card, this._commentsModel.comments);
+    filmCardPresenter.init(film, this._commentsModel.comments);
 
-    this._filmCardPresenter.set(filmCardPresenter, card.filmInfo.id);
+    this._filmCardPresenter.set(filmCardPresenter, film.filmInfo.id);
   }
 
-  _createFilmsCards(cards) {
-    this._createdCardBox = document.createDocumentFragment();
+  _createFilmsCards(films) {
+    this._createdFilmCardBox = document.createDocumentFragment();
 
-    cards.forEach((card) => this._createFilmCard(card));
+    films.forEach((film) => this._createFilmCard(film));
   }
 
-  _renderFilmsCards(cards, container, from, to) {
-    this._createFilmsCards(cards.slice(from, to));
-    render(container, this._createdCardBox);
+  _renderFilmsCards(films, container, from, to) {
+    this._createFilmsCards(films.slice(from, to));
+    render(container, this._createdFilmCardBox);
   }
 
   _renderSort() {
@@ -91,22 +91,22 @@ class FilmsPresenter {
 
   _renderFilmCardList() {
     this._renderFilmsCards(
-      this._getCards(), this._filmListContainer, 0, this._renderedCardCounter,
+      this._getFilms(), this._filmListContainer, 0, this._renderedFilmCardCounter,
     );
 
-    if (this._cardCount > this._renderedCardCounter) {
+    if (this._filmCardCount > this._renderedFilmCardCounter) {
       this._renderShowButton();
     }
   }
 
   _renderExtraFilmCardList(type) {
     const filmsListSection = this._filmsSection.querySelector(`.films-list--${type}`);
-    const filmsCards = this._filmsModel.getExtraFilms(type);
+    const films = this._filmsModel.getExtraFilms(type);
 
-    if (!filmsCards) return filmsListSection.remove();
+    if (!films) return filmsListSection.remove();
 
     const filmsListContainer = filmsListSection.querySelector('.films-list__container');
-    this._renderFilmsCards(filmsCards, filmsListContainer, 0, AppConfig.EXTRA_CARD_COUNT);
+    this._renderFilmsCards(films, filmsListContainer, 0, AppConfig.EXTRA_FILM_COUNT);
   }
 
   _renderFilmsEmptySections() {
@@ -114,7 +114,7 @@ class FilmsPresenter {
   }
 
   _renderFilmsSections() {
-    if (!this._cardCount) return this._renderFilmsEmptySections();
+    if (!this._filmCardCount) return this._renderFilmsEmptySections();
 
     this._renderSort();
     this._renderFilmCardList();
@@ -132,23 +132,23 @@ class FilmsPresenter {
   }
 
   _showButtonClickHandler() {
-    const maxCards = this._renderedCardCounter + AppConfig.MAX_CARDS_PER_STEP;
+    const maxFilms = this._renderedFilmCardCounter + AppConfig.MAX_FILMS_PER_STEP;
 
     this._renderFilmsCards(
-      this._getCards(), this._filmListContainer, this._renderedCardCounter, maxCards,
+      this._getFilms(), this._filmListContainer, this._renderedFilmCardCounter, maxFilms,
     );
-    this._renderedCardCounter = maxCards;
+    this._renderedFilmCardCounter = maxFilms;
 
-    if (this._renderedCardCounter >= this._cardCount) {
+    if (this._renderedFilmCardCounter >= this._filmCardCount) {
       remove(this._showButtonComponent);
     }
   }
 
-  _filmCardChangeHandler(updatedCard) {
-    const updateFilmCard = (id, component) => (id === updatedCard.filmInfo.id)
-      ? component.init(updatedCard, this._commentsModel.comments) : false;
+  _filmCardChangeHandler(updated) {
+    const updateFilmCard = (id, component) => (id === updated.filmInfo.id)
+      ? component.init(updated, this._commentsModel.comments) : false;
 
-    this._filmsModel.updateFilm(updatedCard);
+    this._filmsModel.updateFilm(updated);
     this._filmCardPresenter.forEach(updateFilmCard);
   }
 
@@ -160,6 +160,7 @@ class FilmsPresenter {
     if (this._currentSort === sortType) return;
 
     this._currentSort = sortType;
+    this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
 
     this._clearFilmsSections();
     this._renderFilmsSections();

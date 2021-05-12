@@ -4,8 +4,9 @@ import {
   replace
 } from 'utils/render-util';
 
-import AbstractFilmPresenter from './abstract-film-presenter';
 import FilmCardView from 'view/film-card-view';
+
+import AbstractFilmPresenter from './abstract-film-presenter';
 import FilmDetailsPresenter from 'presenter/film-details-presenter';
 
 const TARGET_CLASS_LIST = [
@@ -15,9 +16,9 @@ const TARGET_CLASS_LIST = [
 ];
 
 class FilmCardPresenter extends AbstractFilmPresenter {
-  constructor(cardsContainer, changeMode, changeData) {
+  constructor(filmCardBox, changeMode, changeData) {
     super();
-    this._cardsContainer = cardsContainer;
+    this._filmCardBox = filmCardBox;
     this._filmCardComponent = null;
     this._filmDetailsPresenter = null;
     this._isDefaultMode = true;
@@ -28,22 +29,22 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     this._filmCardClickHandler = this._filmCardClickHandler.bind(this);
   }
 
-  init(card, comments) {
-    this._card = card;
+  init(film, comments) {
+    this._film = film;
     this._comments = comments;
 
     const prevFilmCardComponent = this._filmCardComponent;
-    this._filmCardComponent = new FilmCardView(card);
+    this._filmCardComponent = new FilmCardView(film);
 
     this._filmCardComponent.setClickHandler(this._filmCardClickHandler);
 
-    if (!prevFilmCardComponent) return render(this._cardsContainer, this._filmCardComponent);
+    if (!prevFilmCardComponent) return render(this._filmCardBox, this._filmCardComponent);
 
     if (this._isDefaultMode) {
       replace(this._filmCardComponent, prevFilmCardComponent);
     } else {
       replace(this._filmCardComponent, prevFilmCardComponent);
-      this._filmDetailsPresenter.init(this._card, this._comments);
+      this._filmDetailsPresenter.init(this._film);
     }
 
     remove(prevFilmCardComponent);
@@ -61,7 +62,7 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     if (this._filmDetailsPresenter) return;
 
     this._filmDetailsPresenter = new FilmDetailsPresenter(this._changeMode, this._changeData);
-    this._filmDetailsPresenter.init(this._card, this._comments);
+    this._filmDetailsPresenter.init(this._film, this._comments);
 
     this._changeMode();
     this._isDefaultMode = false;

@@ -4,11 +4,11 @@ const FILTER_TITLES = [
   'Favorites',
 ];
 
-const getFilterWatchlist = (cards) => cards.filter((card) => card.userDetails.isWatchlist);
+const getFilterWatchlist = (films) => films.filter((film) => film.userDetails.isWatchlist);
 
-const getFilterHistory = (cards) => cards.filter((card) => card.userDetails.isWatched);
+const getFilterHistory = (films) => films.filter((film) => film.userDetails.isWatched);
 
-const getFilterFavorites = (cards) => cards.filter((card) => card.userDetails.isFavorite);
+const getFilterFavorites = (films) => films.filter((film) => film.userDetails.isFavorite);
 
 const filterCount = {
   watchlist: getFilterWatchlist,
@@ -16,14 +16,14 @@ const filterCount = {
   favorites: getFilterFavorites,
 };
 
-const getFilteredCardCount = (cards) => (key, index) => ({
+const getFilteredFilmCount = (films) => (key, index) => ({
   key,
-  count: filterCount[key](cards).length,
+  count: filterCount[key](films).length,
   title: FILTER_TITLES[index],
 });
 
-const generateFilter = (cards) => Object.keys(filterCount)
-  .map(getFilteredCardCount(cards));
+const generateFilter = (films) => Object.keys(filterCount)
+  .map(getFilteredFilmCount(films));
 
 export {
   generateFilter

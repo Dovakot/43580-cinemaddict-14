@@ -15,12 +15,12 @@ class AbstractFilmPresenter {
 
   _changeFilmStatus(button) {
     const key = CONTROL_BUTTONS[button.name];
-    const changedData = Object.assign({}, this._card.userDetails);
-    changedData[key] = !this._card.userDetails[key];
+    const changedData = Object.assign({}, this._film.userDetails);
+    changedData[key] = !this._film.userDetails[key];
 
     this._changeData(Object.assign(
       {},
-      this._card,
+      this._film,
       {userDetails: changedData},
     ));
   }
