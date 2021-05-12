@@ -8,50 +8,49 @@ import {
   replace
 } from 'utils/render-util';
 
+import DetailsComponentView from 'view/film-details/film-details-view';
+import FilmDetailsControlsView from 'view/film-details/film-details-controls-view';
+
 import AbstractFilmPresenter from './abstract-film-presenter';
-import DetailsComponentView from 'view/film-details-view';
+import CommentsPresenter from 'presenter/comments-presenter';
 
 class FilmDetailsPresenter extends AbstractFilmPresenter {
   constructor(changeMode, changeData) {
     super();
     this._filmDetailsComponent = null;
+    this._filmControlsComponent = null;
+    this._commentsPresenter = null;
 
     this._changeData = changeData;
     this._changeMode = changeMode;
 
     this._filmDetailsClickHandler = this._filmDetailsClickHandler.bind(this);
     this._filmDetailsChangeHandler = this._filmDetailsChangeHandler.bind(this);
+    this._filmDetailsFormSubmitHandler = this._filmDetailsFormSubmitHandler.bind(this);
+    this._commentsFieldSubmitHandler = this._commentsFieldSubmitHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(card, comments) {
-    this._card = card;
+  init(film, comments) {
+    this._film = film;
     this._comments = comments;
 
-    const prevFilmDetailsComponent = this._filmDetailsComponent;
-    this._filmDetailsComponent = new DetailsComponentView(card, comments);
-
-    if (prevFilmDetailsComponent) {
-      this._replaceFilmDetails(prevFilmDetailsComponent);
-      remove(prevFilmDetailsComponent);
+    if (this._filmDetailsComponent) {
+      this._replaceFilmControls();
     } else {
-      this._openFilmDetails();
+      this._renderFilmDetails();
     }
-
-    this._filmDetailsComponent.setCloseClickHandler(this._filmDetailsClickHandler);
-    this._filmDetailsComponent.setFormChangeHandler(this._filmDetailsChangeHandler);
-    document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   destroy() {
     remove(this._filmDetailsComponent);
   }
 
-  _replaceFilmDetails(prevComponent) {
-    const scroll = prevComponent.getElement().scrollTop;
+  _replaceFilmControls() {
+    const prevControlsComponent = this._filmControlsComponent;
 
-    replace(this._filmDetailsComponent, prevComponent);
-    this._filmDetailsComponent.getElement().scrollTop = scroll;
+    this._filmControlsComponent = new FilmDetailsControlsView(this._film.userDetails);
+    replace(this._filmControlsComponent, prevControlsComponent);
   }
 
   _closeFilmDetails() {
@@ -61,9 +60,35 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
-  _openFilmDetails() {
+  _renderFilmDetails() {
     document.body.classList.add('hide-overflow');
+
+    this._filmDetailsComponent = new DetailsComponentView(this._film.filmInfo);
+    this._renderFilmControls();
+    this._renderFilmComments();
     render(document.body, this._filmDetailsComponent);
+
+    this._filmDetailsComponent.setCloseClickHandler(this._filmDetailsClickHandler);
+    this._filmDetailsComponent.setFormChangeHandler(this._filmDetailsChangeHandler);
+    this._filmDetailsComponent.setFormSubmitHandler(this._filmDetailsFormSubmitHandler);
+    this._filmDetailsComponent.setCommentsFieldKeydownHandler(this._commentsFieldSubmitHandler);
+    document.addEventListener('keydown', this._escKeyDownHandler);
+  }
+
+  _renderFilmControls() {
+    const controlsContainer = this._filmDetailsComponent.getElement()
+      .querySelector('.film-details__top-container');
+
+    this._filmControlsComponent = new FilmDetailsControlsView(this._film.userDetails);
+    render(controlsContainer, this._filmControlsComponent);
+  }
+
+  _renderFilmComments() {
+    const commentsContainer = this._filmDetailsComponent.getElement()
+      .querySelector('.film-details__bottom-container');
+
+    this._commentsPresenter = new CommentsPresenter(commentsContainer);
+    this._commentsPresenter.init(this._film.comments, this._comments);
   }
 
   _escKeyDownHandler(evt) {
@@ -74,8 +99,20 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._closeFilmDetails();
   }
 
-  _filmDetailsChangeHandler(evt) {
-    this._changeFilmStatus(evt.target);
+  _filmDetailsChangeHandler({target}) {
+    return target.classList.contains('film-details__control-input')
+      ? this._changeFilmStatus(target) : this._commentsPresenter.changeComments(target);
+
+  }
+
+  _commentsFieldSubmitHandler() {
+    // получает данные после нажатия Ctrl/Command + Enter
+    // console.log(this._commentsPresenter.getComment())
+  }
+
+  _filmDetailsFormSubmitHandler() {
+    // отменяет отправление формы по Enter
+    // возможно понадобиться в будушем, если нет, то реализация переедет во вьюху
   }
 }
 
