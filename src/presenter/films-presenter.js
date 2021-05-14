@@ -68,11 +68,13 @@ class FilmsPresenter {
   _createFilmsCards(films) {
     this._createdFilmCardBox = document.createDocumentFragment();
 
-    films.forEach((film) => this._createFilmCard(film));
+    films.forEach(this._createFilmCard, this);
   }
 
   _renderFilmsCards(films, container, from, to) {
-    this._createFilmsCards(films.slice(from, to));
+    const newFilms = films.slice(from, to);
+
+    this._createFilmsCards(newFilms);
     render(container, this._createdFilmCardBox);
   }
 
@@ -94,9 +96,7 @@ class FilmsPresenter {
       this._getFilms(), this._filmListContainer, 0, this._renderedFilmCardCounter,
     );
 
-    if (this._filmCardCount > this._renderedFilmCardCounter) {
-      this._renderShowButton();
-    }
+    if (this._filmCardCount > this._renderedFilmCardCounter) this._renderShowButton();
   }
 
   _renderExtraFilmCardList(type) {
@@ -139,14 +139,12 @@ class FilmsPresenter {
     );
     this._renderedFilmCardCounter = maxFilms;
 
-    if (this._renderedFilmCardCounter >= this._filmCardCount) {
-      remove(this._showButtonComponent);
-    }
+    if (this._renderedFilmCardCounter >= this._filmCardCount) remove(this._showButtonComponent);
   }
 
   _filmCardChangeHandler(updated) {
-    const updateFilmCard = (id, component) => (id === updated.filmInfo.id)
-      ? component.init(updated, this._commentsModel.comments) : false;
+    const updateFilmCard = (id, component) => id === updated.filmInfo.id
+      && component.init(updated, this._commentsModel.comments);
 
     this._filmsModel.updateFilm(updated);
     this._filmCardPresenter.forEach(updateFilmCard);

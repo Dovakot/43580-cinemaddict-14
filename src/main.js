@@ -44,8 +44,8 @@ const commentsModel = new CommentsModel();
 const filterComponent = new FilterView(filters).getTemplate();
 
 const filmsPresenter = new FilmsPresenter(containerMain, filmsModel, commentsModel);
-filmsModel.films = films;
-commentsModel.comments = comments;
+filmsModel.init(films);
+commentsModel.init(comments);
 filmsPresenter.init();
 
 render(containerMain, new MenuView(filterComponent), RenderPosition.AFTERBEGIN);
