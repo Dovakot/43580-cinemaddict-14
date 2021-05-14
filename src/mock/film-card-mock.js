@@ -10,7 +10,7 @@ import {
   getRandomArrayElement,
   getRandomArray,
   getRandomDate
-} from 'utils/common';
+} from 'utils/common-util';
 
 const FilmInfo = {
   TITLES: [
@@ -108,7 +108,7 @@ const getRating = (min, max) => {
   return randomRating > 1 ? randomRating : min;
 };
 
-const generateCard = () => ({
+const generateFilm = () => ({
   comments: new Set(getRandomArrayIndex(AppConfig.MAX_COMMENTS)),
   filmInfo: {
     id: idCounter++,
@@ -134,4 +134,4 @@ const generateCard = () => ({
   },
 });
 
-export default generateCard;
+export default generateFilm;

@@ -1,9 +1,9 @@
-class Comments {
+class CommentsModel {
   constructor() {
     this._comments = [];
   }
 
-  set comments(comments) {
+  init(comments) {
     this._comments = comments;
   }
 
@@ -12,4 +12,4 @@ class Comments {
   }
 }
 
-export default Comments;
+export default CommentsModel;

@@ -1,11 +1,11 @@
 import {
   createElement
-} from 'utils/render';
+} from 'utils/render-util';
 
-export default class Abstract {
+class AbstractView {
   constructor() {
-    if (new.target === Abstract) {
-      throw new Error('Can\'t instantiate Abstract, only concrete one.');
+    if (new.target === AbstractView) {
+      throw new Error('Can\'t instantiate AbstractView, only concrete one.');
     }
 
     this._element = null;
@@ -13,7 +13,7 @@ export default class Abstract {
   }
 
   getTemplate() {
-    throw new Error('Abstract method not implemented: getTemplate');
+    throw new Error('AbstractView method not implemented: getTemplate');
   }
 
   getElement() {
@@ -28,3 +28,5 @@ export default class Abstract {
     this._element = null;
   }
 }
+
+export default AbstractView;

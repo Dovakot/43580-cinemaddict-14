@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 const createFooterStatisticsTemplate = (count) => (
   `<section class="footer__statistics">
@@ -6,7 +6,7 @@ const createFooterStatisticsTemplate = (count) => (
   </section>`
 );
 
-class FooterStatistics extends AbstractView {
+class FooterStatisticsView extends AbstractView {
   constructor(count) {
     super();
     this._count = count;
@@ -17,4 +17,4 @@ class FooterStatistics extends AbstractView {
   }
 }
 
-export default FooterStatistics;
+export default FooterStatisticsView;

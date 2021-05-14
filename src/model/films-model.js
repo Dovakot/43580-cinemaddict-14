@@ -12,14 +12,15 @@ const sortType = {
   date: 'sortByDate',
 };
 
-class Films {
+class FilmsModel {
   constructor() {
     this._films = [];
     this._length = 0;
   }
 
-  set films(films) {
+  init(films) {
     this._films = films.slice();
+    this._length = films.length;
   }
 
   get films() {
@@ -27,7 +28,7 @@ class Films {
   }
 
   get length() {
-    return this._films.length;
+    return this._length;
   }
 
   getExtraFilms(type) {
@@ -74,4 +75,4 @@ class Films {
   }
 }
 
-export default Films;
+export default FilmsModel;

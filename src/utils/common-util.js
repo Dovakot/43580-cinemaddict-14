@@ -43,6 +43,7 @@ const getRandomDate = (days) => {
 };
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+const isSubmit = (evt) => evt.key === 'Enter' && (evt.metaKey || evt.ctrlKey);
 
 export {
   getRandomInt,
@@ -52,5 +53,6 @@ export {
   getRandomArray,
   getRandomObjects,
   getRandomDate,
-  isEscEvent
+  isEscEvent,
+  isSubmit
 };

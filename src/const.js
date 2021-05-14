@@ -3,6 +3,7 @@ const BASE_DEGREE = 10;
 const RenderPosition = {
   AFTERBEGIN: 'prepend',
   BEFOREEND: 'append',
+  AFTEREND: 'after',
 };
 
 const DateConfig = {
@@ -14,9 +15,9 @@ const DateConfig = {
 };
 
 const AppConfig = {
-  MAX_CARDS_PER_STEP: 5,
-  EXTRA_CARD_COUNT: 2,
-  MAX_CARDS: 21,
+  MAX_FILMS_PER_STEP: 5,
+  EXTRA_FILM_COUNT: 2,
+  MAX_FILMS: 21,
   MAX_COMMENTS: 5,
   MAX_NUMBER_CHAR: 140,
 };

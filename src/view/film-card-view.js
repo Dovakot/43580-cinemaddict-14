@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from './abstract-view';
 
 import {
   AppConfig
@@ -7,11 +7,11 @@ import {
 import {
   truncateText,
   getTimeFromMinutes
-} from 'utils/card';
+} from 'utils/film-card-util';
 
 const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
 
-const createFilmCardTemplate = (card) => {
+const createFilmCardTemplate = (film) => {
   const {
     title,
     poster,
@@ -20,15 +20,15 @@ const createFilmCardTemplate = (card) => {
     runtime,
     genres,
     release: {date},
-  } = card.filmInfo;
+  } = film.filmInfo;
 
   const {
     isWatchlist,
     isWatched,
     isFavorite,
-  } = card.userDetails;
+  } = film.userDetails;
 
-  const commentCount = card.comments.size;
+  const commentCount = film.comments.size;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -65,16 +65,16 @@ const createFilmCardTemplate = (card) => {
   </article>`;
 };
 
-class FilmCard extends AbstractView {
-  constructor(card) {
+class FilmCardView extends AbstractView {
+  constructor(film) {
     super();
-    this._card = card;
+    this._film = film;
 
     this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._card);
+    return createFilmCardTemplate(this._film);
   }
 
   _clickHandler(evt) {
@@ -88,4 +88,4 @@ class FilmCard extends AbstractView {
   }
 }
 
-export default FilmCard;
+export default FilmCardView;

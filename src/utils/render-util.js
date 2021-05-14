@@ -1,15 +1,15 @@
-import Abstract from 'view/abstract';
+import AbstractView from 'view/abstract-view';
 
 import {
   RenderPosition
 } from 'const';
 
 const render = (container, element, place = RenderPosition.BEFOREEND) => {
-  if (container instanceof Abstract) {
+  if (container instanceof AbstractView) {
     container = container.getElement();
   }
 
-  if (element instanceof Abstract) {
+  if (element instanceof AbstractView) {
     element = element.getElement();
   }
 
@@ -24,7 +24,7 @@ const createElement = (string) => {
 };
 
 const remove = (component) => {
-  if (!(component instanceof Abstract)) {
+  if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }
 
@@ -33,11 +33,11 @@ const remove = (component) => {
 };
 
 const replace = (newChild, oldChild) => {
-  if (oldChild instanceof Abstract) {
+  if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();
   }
 
-  if (newChild instanceof Abstract) {
+  if (newChild instanceof AbstractView) {
     newChild = newChild.getElement();
   }
 
