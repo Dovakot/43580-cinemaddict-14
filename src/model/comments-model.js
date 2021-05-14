@@ -3,7 +3,7 @@ class CommentsModel {
     this._comments = [];
   }
 
-  set comments(comments) {
+  init(comments) {
     this._comments = comments;
   }
 

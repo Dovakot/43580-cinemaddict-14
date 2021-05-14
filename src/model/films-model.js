@@ -18,8 +18,9 @@ class FilmsModel {
     this._length = 0;
   }
 
-  set films(films) {
+  init(films) {
     this._films = films.slice();
+    this._length = films.length;
   }
 
   get films() {
@@ -27,7 +28,7 @@ class FilmsModel {
   }
 
   get length() {
-    return this._films.length;
+    return this._length;
   }
 
   getExtraFilms(type) {
