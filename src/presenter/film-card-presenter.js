@@ -20,34 +20,22 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     super();
     this._filmCardBox = filmCardBox;
     this._filmCardComponent = null;
+    this._prevFilmCardComponent = null;
     this._filmDetailsPresenter = null;
     this._isDefaultMode = true;
 
     this._changeMode = changeMode;
     this._changeData = changeData;
 
-    this._filmCardClickHandler = this._filmCardClickHandler.bind(this);
+    this._сlickHandler = this._сlickHandler.bind(this);
   }
 
   init(film, comments) {
     this._film = film;
     this._comments = comments;
 
-    const prevFilmCardComponent = this._filmCardComponent;
-    this._filmCardComponent = new FilmCardView(film);
-
-    this._filmCardComponent.setClickHandler(this._filmCardClickHandler);
-
-    if (!prevFilmCardComponent) return render(this._filmCardBox, this._filmCardComponent);
-
-    if (this._isDefaultMode) {
-      replace(this._filmCardComponent, prevFilmCardComponent);
-    } else {
-      replace(this._filmCardComponent, prevFilmCardComponent);
-      this._filmDetailsPresenter.init(this._film);
-    }
-
-    remove(prevFilmCardComponent);
+    this._renderFilmCard();
+    if (!this._isDefaultMode) this._filmDetailsPresenter.init(this._film);
   }
 
   destroy() {
@@ -56,6 +44,27 @@ class FilmCardPresenter extends AbstractFilmPresenter {
 
   resetView() {
     if (!this._isDefaultMode) this._removeFilmDetails();
+  }
+
+  _createFilmCard() {
+    this._prevFilmCardComponent = this._filmCardComponent;
+    this._filmCardComponent = new FilmCardView(this._film);
+
+    this._filmCardComponent.setClickHandler(this._сlickHandler);
+  }
+
+  _replaceFilmCard() {
+    replace(this._filmCardComponent, this._prevFilmCardComponent);
+
+    remove(this._prevFilmCardComponent);
+    this._prevFilmCardComponent = null;
+  }
+
+  _renderFilmCard() {
+    this._createFilmCard();
+
+    return this._prevFilmCardComponent ? this._replaceFilmCard()
+      : render(this._filmCardBox, this._filmCardComponent);
   }
 
   _renderFilmDetails() {
@@ -74,12 +83,14 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     this._filmDetailsPresenter = null;
   }
 
-  _filmCardClickHandler(evt) {
-    const target = evt.target;
-    const checkClassName = (item) => target.classList.contains(item);
+  _controlsClickHandler(target) {
+    if (target.classList.contains('film-card__controls-item')) this._changeFilmStatus(target);
+  }
 
-    if (TARGET_CLASS_LIST.some(checkClassName)) return this._renderFilmDetails();
-    if (target.classList.contains('film-card__controls-item')) return this._changeFilmStatus(target);
+  _сlickHandler({target}) {
+    return TARGET_CLASS_LIST.some((item) => target.classList.contains(item))
+      ? this._renderFilmDetails()
+      : this._controlsClickHandler(target);
   }
 }
 
