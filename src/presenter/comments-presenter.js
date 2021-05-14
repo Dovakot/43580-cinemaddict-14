@@ -1,4 +1,6 @@
-import he from 'he';
+import {
+  encode
+} from 'he';
 
 import {
   RenderPosition
@@ -6,7 +8,7 @@ import {
 
 import {
   render,
-  replace
+  remove
 } from 'utils/render-util';
 
 import CommentsView from 'view/comments/comments-view';
@@ -16,9 +18,14 @@ import CommentEmojiLabelView from 'view/comments/comment-emoji-label';
 
 class CommentsPresenter {
   constructor(commentsContainer) {
-    this._commentsContainer = commentsContainer;
     this._commentsComponent = new CommentsView();
-    this._commentEmojiLabelComponent = new CommentEmojiLabelView();
+    this._commentEmojiLabelComponent = null;
+
+    this._commentsContainer = commentsContainer;
+    this._newCommentContainer = this._commentsComponent.getElement()
+      .querySelector('.film-details__new-comment');
+    this._commentField = this._newCommentContainer
+      .querySelector('.film-details__comment-input');
 
     this._currentEmotion = null;
   }
@@ -29,39 +36,35 @@ class CommentsPresenter {
 
     this._commentsTitleComponent = new CommentsTitleView(commentsId.size);
     this._commentsListComponent = new CommentsListView(commentsId, comments);
-    this._commentEmojiLabelComponent = new CommentEmojiLabelView();
 
-    const newCommentContainer = this._commentsComponent.getElement()
-      .querySelector('.film-details__new-comment');
-
-    render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
-    render(this._commentsTitleComponent, this._commentsListComponent, RenderPosition.AFTEREND);
-    render(newCommentContainer, this._commentEmojiLabelComponent, RenderPosition.AFTERBEGIN);
-    render(this._commentsContainer, this._commentsComponent);
+    this._renderComments();
   }
 
   changeComments(target) {
     if (!target.classList.contains('film-details__emoji-item')) return;
 
     this._currentEmotion = target.value;
-    this._changeCommentEmotion(this._currentEmotion);
+    this._renderCommentEmotion(this._currentEmotion);
   }
 
   getComment() {
-    const commentInput = this._commentsComponent.getElement()
-      .querySelector('.film-details__comment-input');
-    const value = he.encode(commentInput.value.trim());
+    const comment = encode(this._commentField.value.trim());
 
-    if (!value || !this._currentEmotion) return;
-
-    return {text: value, emotion: this._currentEmotion};
+    if (comment && this._currentEmotion) return {comment, emotion: this._currentEmotion};
   }
 
-  _changeCommentEmotion(emotion) {
-    const prevcommentEmojiLabelComponent = this._commentEmojiLabelComponent;
+  _renderComments() {
+    this._renderCommentEmotion();
+    render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
+    render(this._commentsTitleComponent, this._commentsListComponent, RenderPosition.AFTEREND);
+    render(this._commentsContainer, this._commentsComponent);
+  }
+
+  _renderCommentEmotion(emotion) {
+    if (this._commentEmojiLabelComponent) remove(this._commentEmojiLabelComponent);
 
     this._commentEmojiLabelComponent = new CommentEmojiLabelView(emotion);
-    replace(this._commentEmojiLabelComponent, prevcommentEmojiLabelComponent);
+    render(this._newCommentContainer, this._commentEmojiLabelComponent, RenderPosition.AFTERBEGIN);
   }
 }
 
