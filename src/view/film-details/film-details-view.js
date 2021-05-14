@@ -108,14 +108,15 @@ const createFilmDetailsTemplate = ({
 );
 
 class FilmDetailsView extends AbstractView {
-  constructor(film) {
+  constructor(film, handlers) {
     super();
     this._film = film;
+    this._handlers = handlers;
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
-    this._formChangeHandler = this._formChangeHandler.bind(this);
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._commentsFieldKeydownHandler = this._commentsFieldKeydownHandler.bind(this);
+    this._changeHandler = this._changeHandler.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
+    this._keyHandler = this._keyHandler.bind(this);
   }
 
   getTemplate() {
@@ -128,48 +129,34 @@ class FilmDetailsView extends AbstractView {
     this._callback.closeClick(evt);
   }
 
-  _formChangeHandler(evt) {
+  _changeHandler(evt) {
     evt.preventDefault();
 
     this._callback.formChange(evt);
   }
 
-  _formSubmitHandler(evt) {
+  _submitHandler(evt) {
     evt.preventDefault();
 
     this._callback.formSubmit(evt);
   }
 
-  _commentsFieldKeydownHandler(evt) {
-    return isSubmit(evt) ? this._callback.commentsFieldKeydown(evt) : false;
+  _keyHandler(evt) {
+    return isSubmit(evt) ? this._callback.fieldKeyDown(evt) : false;
   }
 
-  setCloseClickHandler(callback) {
-    this._callback.closeClick = callback;
+  setHandlers() {
+    const form = this.getElement().querySelector('.film-details__inner');
+    const button = form.querySelector('.film-details__close-btn');
+    const field = form.querySelector('.film-details__comment-input');
 
-    this.getElement().querySelector('.film-details__close-btn')
-      .addEventListener('click', this._closeClickHandler);
-  }
+    Object.keys(this._handlers)
+      .forEach((key) => this._callback[key] = this._handlers[key]);
 
-  setFormChangeHandler(callback) {
-    this._callback.formChange = callback;
-
-    this.getElement().querySelector('.film-details__inner')
-      .addEventListener('change', this._formChangeHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-
-    this.getElement().querySelector('.film-details__inner')
-      .addEventListener('submit', this._formSubmitHandler);
-  }
-
-  setCommentsFieldKeydownHandler(callback) {
-    this._callback.commentsFieldKeydown = callback;
-
-    this.getElement().querySelector('.film-details__comment-input')
-      .addEventListener('keydown', this._commentsFieldKeydownHandler);
+    button.addEventListener('click', this._closeClickHandler);
+    form.addEventListener('change', this._changeHandler);
+    form.addEventListener('submit', this._submitHandler);
+    field.addEventListener('keydown', this._keyHandler);
   }
 }
 

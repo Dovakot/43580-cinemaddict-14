@@ -4,8 +4,7 @@ import {
 
 import {
   render,
-  remove,
-  replace
+  remove
 } from 'utils/render-util';
 
 import DetailsComponentView from 'view/film-details/film-details-view';
@@ -17,6 +16,7 @@ import CommentsPresenter from 'presenter/comments-presenter';
 class FilmDetailsPresenter extends AbstractFilmPresenter {
   constructor(changeMode, changeData) {
     super();
+    this._controlsContainer = null;
     this._filmDetailsComponent = null;
     this._filmControlsComponent = null;
     this._commentsPresenter = null;
@@ -24,10 +24,10 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._filmDetailsClickHandler = this._filmDetailsClickHandler.bind(this);
-    this._filmDetailsChangeHandler = this._filmDetailsChangeHandler.bind(this);
-    this._filmDetailsFormSubmitHandler = this._filmDetailsFormSubmitHandler.bind(this);
-    this._commentsFieldSubmitHandler = this._commentsFieldSubmitHandler.bind(this);
+    this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._changeHandler = this._changeHandler.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
+    this._keyHandler = this._keyHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
@@ -35,52 +35,37 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._film = film;
     this._comments = comments;
 
-    if (this._filmDetailsComponent) {
-      this._replaceFilmControls();
-    } else {
-      this._renderFilmDetails();
-    }
+    return this._filmDetailsComponent
+      ? this._renderFilmControls() : this._openFilmDetails();
   }
 
   destroy() {
     remove(this._filmDetailsComponent);
   }
 
-  _replaceFilmControls() {
-    const prevControlsComponent = this._filmControlsComponent;
-
-    this._filmControlsComponent = new FilmDetailsControlsView(this._film.userDetails);
-    replace(this._filmControlsComponent, prevControlsComponent);
-  }
-
-  _closeFilmDetails() {
-    document.body.classList.remove('hide-overflow');
-    this._changeMode();
-
-    document.removeEventListener('keydown', this._escKeyDownHandler);
+  _createFilmDetails() {
+    this._filmDetailsComponent = new DetailsComponentView(this._film.filmInfo, {
+      closeClick: this._closeClickHandler,
+      formChange: this._changeHandler,
+      formSubmit: this._submitHandler,
+      fieldKeyDown: this._keyHandler,
+    });
   }
 
   _renderFilmDetails() {
-    document.body.classList.add('hide-overflow');
+    this._controlsContainer = this._filmDetailsComponent.getElement()
+      .querySelector('.film-details__top-container');
 
-    this._filmDetailsComponent = new DetailsComponentView(this._film.filmInfo);
     this._renderFilmControls();
     this._renderFilmComments();
     render(document.body, this._filmDetailsComponent);
-
-    this._filmDetailsComponent.setCloseClickHandler(this._filmDetailsClickHandler);
-    this._filmDetailsComponent.setFormChangeHandler(this._filmDetailsChangeHandler);
-    this._filmDetailsComponent.setFormSubmitHandler(this._filmDetailsFormSubmitHandler);
-    this._filmDetailsComponent.setCommentsFieldKeydownHandler(this._commentsFieldSubmitHandler);
-    document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _renderFilmControls() {
-    const controlsContainer = this._filmDetailsComponent.getElement()
-      .querySelector('.film-details__top-container');
+    if (this._filmControlsComponent) remove(this._filmControlsComponent);
 
     this._filmControlsComponent = new FilmDetailsControlsView(this._film.userDetails);
-    render(controlsContainer, this._filmControlsComponent);
+    render(this._controlsContainer, this._filmControlsComponent);
   }
 
   _renderFilmComments() {
@@ -91,26 +76,43 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._commentsPresenter.init(this._film.comments, this._comments);
   }
 
+  _openFilmDetails() {
+    document.body.classList.add('hide-overflow');
+
+    this._createFilmDetails();
+    this._renderFilmDetails();
+
+    this._filmDetailsComponent.setHandlers();
+    document.addEventListener('keydown', this._escKeyDownHandler);
+  }
+
+  _closeFilmDetails() {
+    document.body.classList.remove('hide-overflow');
+    this._changeMode();
+
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+  }
+
   _escKeyDownHandler(evt) {
     return isEscEvent(evt) ? this._closeFilmDetails() : false;
   }
 
-  _filmDetailsClickHandler() {
+  _closeClickHandler() {
     this._closeFilmDetails();
   }
 
-  _filmDetailsChangeHandler({target}) {
+  _changeHandler({target}) {
     return target.classList.contains('film-details__control-input')
       ? this._changeFilmStatus(target) : this._commentsPresenter.changeComments(target);
 
   }
 
-  _commentsFieldSubmitHandler() {
+  _keyHandler() {
     // получает данные после нажатия Ctrl/Command + Enter
     // console.log(this._commentsPresenter.getComment())
   }
 
-  _filmDetailsFormSubmitHandler() {
+  _submitHandler() {
     // отменяет отправление формы по Enter
     // возможно понадобиться в будушем, если нет, то реализация переедет во вьюху
   }
