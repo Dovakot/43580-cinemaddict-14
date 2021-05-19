@@ -23,7 +23,7 @@ const getComments = (comments) => (id) => {
         <span class="film-details__comment-day">
           ${getFormattedDateTime(date)}
         </span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
       </p>
     </div>
   </li>`;
@@ -40,10 +40,26 @@ class CommentsListView extends AbstractView {
     super();
     this._ids = ids;
     this._comments = comments;
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createCommentsListTemplate(this._ids, this._comments);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    const target = evt.target;
+
+    if (!target.classList.contains('film-details__comment-delete')) return;
+
+    this._callback.click(target.dataset.commentId);
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 
