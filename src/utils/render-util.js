@@ -24,6 +24,8 @@ const createElement = (string) => {
 };
 
 const remove = (component) => {
+  if (!component) return;
+
   if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }
