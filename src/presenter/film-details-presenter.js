@@ -1,4 +1,8 @@
 import {
+  UpdateType
+} from 'const';
+
+import {
   isEscEvent
 } from 'utils/common-util';
 
@@ -14,26 +18,29 @@ import AbstractFilmPresenter from './abstract-film-presenter';
 import CommentsPresenter from 'presenter/comments-presenter';
 
 class FilmDetailsPresenter extends AbstractFilmPresenter {
-  constructor(changeMode, changeData) {
+  constructor(changeMode, changeData, commentsModel) {
     super();
     this._controlsContainer = null;
     this._filmDetailsComponent = null;
     this._filmControlsComponent = null;
     this._commentsPresenter = null;
+    this._commentsModel = commentsModel;
 
     this._changeData = changeData;
     this._changeMode = changeMode;
 
+    this._modelEventHandler = this._modelEventHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._changeHandler = this._changeHandler.bind(this);
     this._submitHandler = this._submitHandler.bind(this);
     this._keyHandler = this._keyHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+
+    this._commentsModel.addObserver(this._modelEventHandler);
   }
 
-  init(film, comments) {
+  init(film) {
     this._film = film;
-    this._comments = comments;
 
     return this._filmDetailsComponent
       ? this._renderFilmControls() : this._openFilmDetails();
@@ -41,6 +48,8 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
 
   destroy() {
     remove(this._filmDetailsComponent);
+
+    this._commentsModel.removeObserver(this._modelEventHandler);
   }
 
   _createFilmDetails() {
@@ -72,8 +81,10 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     const commentsContainer = this._filmDetailsComponent.getElement()
       .querySelector('.film-details__bottom-container');
 
-    this._commentsPresenter = new CommentsPresenter(commentsContainer);
-    this._commentsPresenter.init(this._film.comments, this._comments);
+    this._commentsPresenter = new CommentsPresenter(
+      commentsContainer, this._commentsModel, this._film.comments,
+    );
+    this._commentsPresenter.init();
   }
 
   _openFilmDetails() {
@@ -89,6 +100,7 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
   _closeFilmDetails() {
     document.body.classList.remove('hide-overflow');
     this._changeMode();
+    this.destroy();
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
@@ -103,13 +115,21 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
 
   _changeHandler({target}) {
     return target.classList.contains('film-details__control-input')
-      ? this._changeFilmStatus(target) : this._commentsPresenter.changeComments(target);
+      ? this.changeFilmStatus(target) : this._commentsPresenter.changeComments(target);
 
   }
 
   _keyHandler() {
-    // получает данные после нажатия Ctrl/Command + Enter
-    // console.log(this._commentsPresenter.getComment())
+    const comment = this._commentsPresenter.getComment();
+
+    if (comment) {
+      this._commentsModel.createComment(UpdateType.MINOR, comment);
+    }
+  }
+
+  _modelEventHandler(updateType, data, isDeleted) {
+    this.changeFilmComment(updateType, data, isDeleted);
+    this._commentsPresenter.rerenderComments(this._film.comments, isDeleted);
   }
 
   _submitHandler() {
