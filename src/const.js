@@ -28,10 +28,25 @@ const SortType = {
   RATING: 'rating',
 };
 
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITES: 'favorites',
+};
+
+const UpdateType = {
+  PATCH: 'patch',
+  MINOR: 'minor',
+  MAJOR: 'major',
+};
+
 export {
   BASE_DEGREE,
   RenderPosition,
   DateConfig,
   AppConfig,
-  SortType
+  SortType,
+  FilterType,
+  UpdateType
 };
