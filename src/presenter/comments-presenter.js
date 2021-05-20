@@ -3,6 +3,7 @@ import {
 } from 'he';
 
 import {
+  UpdateType,
   RenderPosition
 } from 'const';
 
@@ -14,12 +15,19 @@ import {
 import CommentsView from 'view/comments/comments-view';
 import CommentsTitleView from 'view/comments/comments-title-view';
 import CommentsListView from 'view/comments/comments-list-view';
-import CommentEmojiLabelView from 'view/comments/comment-emoji-label';
+import CommentEmojiLabelView from 'view/comments/comment-emoji-label-view';
+import CommentEmojiListView from 'view/comments/comment-emoji-list-view';
 
 class CommentsPresenter {
-  constructor(commentsContainer) {
+  constructor(commentsContainer, commentsModel, commentsId) {
+    this._commentsModel = commentsModel;
     this._commentsComponent = new CommentsView();
     this._commentEmojiLabelComponent = null;
+    this._commentEmojiListComponent = null;
+    this._commentsTitleComponent = null;
+    this._commentsListComponent = null;
+    this._currentEmotion = null;
+    this._commentsId = commentsId;
 
     this._commentsContainer = commentsContainer;
     this._newCommentContainer = this._commentsComponent.getElement()
@@ -27,17 +35,12 @@ class CommentsPresenter {
     this._commentField = this._newCommentContainer
       .querySelector('.film-details__comment-input');
 
-    this._currentEmotion = null;
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
   }
 
-  init(commentsId, comments) {
-    this._commentsId = commentsId;
-    this._comments = comments;
-
-    this._commentsTitleComponent = new CommentsTitleView(commentsId.size);
-    this._commentsListComponent = new CommentsListView(commentsId, comments);
-
+  init() {
     this._renderComments();
+    render(this._commentsContainer, this._commentsComponent);
   }
 
   changeComments(target) {
@@ -53,18 +56,49 @@ class CommentsPresenter {
     if (comment && this._currentEmotion) return {comment, emotion: this._currentEmotion};
   }
 
-  _renderComments() {
-    this._renderCommentEmotion();
+  rerenderComments(commentsId, isDeleted) {
+    this._commentsId = commentsId;
+
+    return isDeleted ? this._renderCommentList() : this._renderComments();
+  }
+
+  _renderCommentList() {
+    remove(this._commentsTitleComponent);
+    remove(this._commentsListComponent);
+
+    this._commentsTitleComponent = new CommentsTitleView(this._commentsId.size);
+    this._commentsListComponent = new CommentsListView(this._commentsId, this._commentsModel.comments);
+
     render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
     render(this._commentsTitleComponent, this._commentsListComponent, RenderPosition.AFTEREND);
-    render(this._commentsContainer, this._commentsComponent);
+
+    this._commentsListComponent.setClickHandler(this._deleteClickHandler);
   }
 
   _renderCommentEmotion(emotion) {
-    if (this._commentEmojiLabelComponent) remove(this._commentEmojiLabelComponent);
+    remove(this._commentEmojiLabelComponent);
 
     this._commentEmojiLabelComponent = new CommentEmojiLabelView(emotion);
     render(this._newCommentContainer, this._commentEmojiLabelComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderCommentEmotionList() {
+    remove(this._commentEmojiListComponent);
+
+    this._commentEmojiListComponent = new CommentEmojiListView();
+    render(this._newCommentContainer, this._commentEmojiListComponent);
+  }
+
+  _renderComments() {
+    this._commentField.value = '';
+
+    this._renderCommentList();
+    this._renderCommentEmotion();
+    this._renderCommentEmotionList();
+  }
+
+  _deleteClickHandler(id) {
+    this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
   }
 }
 

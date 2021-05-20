@@ -1,3 +1,7 @@
+import {
+  UpdateType
+} from 'const';
+
 const CONTROL_BUTTONS = {
   watchlist: 'isWatchlist',
   watched: 'isWatched',
@@ -13,16 +17,24 @@ class AbstractFilmPresenter {
     this._changeData = null;
   }
 
-  _changeFilmStatus(button) {
+  changeFilmStatus(button) {
     const key = CONTROL_BUTTONS[button.name];
     const changedData = Object.assign({}, this._film.userDetails);
     changedData[key] = !this._film.userDetails[key];
 
-    this._changeData(Object.assign(
-      {},
-      this._film,
-      {userDetails: changedData},
-    ));
+    this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
+  }
+
+  changeFilmComment(updateType, id, isDeleted) {
+    const actionType = isDeleted ? 'delete' : 'add';
+    const changedData = new Set(this._film.comments);
+    changedData[actionType](id);
+
+    this._changeFilmData(updateType, {comments: changedData});
+  }
+
+  _changeFilmData(updateType, updatedData) {
+    this._changeData(updateType, Object.assign({}, this._film, updatedData));
   }
 }
 

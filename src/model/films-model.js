@@ -1,3 +1,5 @@
+import AbstractModel from './abstract-model';
+
 const filmsType = {
   top: {
     methods: ['_countFilmsFilteredByRating', 'sortByRating'],
@@ -12,8 +14,15 @@ const sortType = {
   date: 'sortByDate',
 };
 
-class FilmsModel {
+const filterType = {
+  watchlist: 'filterByWatchlist',
+  watched: 'filterByWatched',
+  favorites: 'filterByFavorites',
+};
+
+class FilmsModel extends AbstractModel {
   constructor() {
+    super();
     this._films = [];
     this._length = 0;
   }
@@ -38,28 +47,47 @@ class FilmsModel {
     return filmsCount ? this[sortMethod]() : filmsCount;
   }
 
-  updateFilm(update) {
+  updateFilm(updateType, update) {
     this._films = this._films.map((film) => film.filmInfo.id === update.filmInfo.id
       ? update : film);
+    this._notify(updateType, update);
   }
 
-  sortBy(type) {
+  sortBy(films, type) {
     const sortMethod = sortType[type];
 
-    return sortMethod ? this[sortMethod]() : this._films;
+    return sortMethod ? this[sortMethod](films) : films;
   }
 
-  sortByRating() {
-    return this._copy.sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
+  sortByRating(films = this._copy) {
+    return films.sort((a, b) => b.filmInfo.rating - a.filmInfo.rating);
   }
 
-  sortByComments() {
-    return this._copy.sort((a, b) => b.comments.size - a.comments.size);
+  sortByComments(films = this._copy) {
+    return films.sort((a, b) => b.comments.size - a.comments.size);
   }
 
-  sortByDate() {
-    return this._copy.sort((a, b) => new Date(b.filmInfo.release.date)
+  sortByDate(films = this._copy) {
+    return films.sort((a, b) => new Date(b.filmInfo.release.date)
       - new Date(a.filmInfo.release.date));
+  }
+
+  filterBy(type) {
+    const filterMethod = filterType[type];
+
+    return filterMethod ? this[filterMethod]() : this._copy;
+  }
+
+  filterByWatchlist(films = this._films) {
+    return films.filter((film) => film.userDetails.isWatchlist);
+  }
+
+  filterByWatched(films = this._films) {
+    return films.filter((film) => film.userDetails.isWatched);
+  }
+
+  filterByFavorites(films = this._films) {
+    return films.filter((film) => film.userDetails.isFavorite);
   }
 
   get _copy() {

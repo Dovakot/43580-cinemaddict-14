@@ -16,13 +16,14 @@ const TARGET_CLASS_LIST = [
 ];
 
 class FilmCardPresenter extends AbstractFilmPresenter {
-  constructor(filmCardBox, changeMode, changeData) {
+  constructor(filmCardBox, changeMode, changeData, commentsModel) {
     super();
     this._filmCardBox = filmCardBox;
     this._filmCardComponent = null;
     this._prevFilmCardComponent = null;
     this._filmDetailsPresenter = null;
     this._isDefaultMode = true;
+    this._commentsModel = commentsModel;
 
     this._changeMode = changeMode;
     this._changeData = changeData;
@@ -30,12 +31,11 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     this._сlickHandler = this._сlickHandler.bind(this);
   }
 
-  init(film, comments) {
+  init(film) {
     this._film = film;
-    this._comments = comments;
 
+    if (!this._isDefaultMode) this._filmDetailsPresenter.init(film);
     this._renderFilmCard();
-    if (!this._isDefaultMode) this._filmDetailsPresenter.init(this._film);
   }
 
   destroy() {
@@ -44,6 +44,20 @@ class FilmCardPresenter extends AbstractFilmPresenter {
 
   resetView() {
     if (!this._isDefaultMode) this._removeFilmDetails();
+  }
+
+  rerender(filmCardBox, film) {
+    this._filmCardComponent = null;
+    this._filmCardBox = filmCardBox;
+    this.init(film);
+  }
+
+  updateFilmDetailsPresenter(film) {
+    this._filmDetailsPresenter.init(film);
+  }
+
+  get defaultMode() {
+    return this._isDefaultMode;
   }
 
   _createFilmCard() {
@@ -70,8 +84,10 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   _renderFilmDetails() {
     if (this._filmDetailsPresenter) return;
 
-    this._filmDetailsPresenter = new FilmDetailsPresenter(this._changeMode, this._changeData);
-    this._filmDetailsPresenter.init(this._film, this._comments);
+    this._filmDetailsPresenter = new FilmDetailsPresenter(
+      this._changeMode, this._changeData, this._commentsModel,
+    );
+    this._filmDetailsPresenter.init(this._film);
 
     this._changeMode();
     this._isDefaultMode = false;
@@ -84,7 +100,7 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   }
 
   _controlsClickHandler(target) {
-    if (target.classList.contains('film-card__controls-item')) this._changeFilmStatus(target);
+    if (target.classList.contains('film-card__controls-item')) this.changeFilmStatus(target);
   }
 
   _сlickHandler({target}) {
