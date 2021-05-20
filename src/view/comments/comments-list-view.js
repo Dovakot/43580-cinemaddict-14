@@ -4,15 +4,8 @@ import {
   getFormattedDateTime
 } from 'utils/film-card-util';
 
-const getComments = (comments) => (id) => {
-  const {
-    date,
-    author,
-    text,
-    emotion,
-  } = comments[id];
-
-  return `<li class="film-details__comment">
+const createComment = ({id, date, author, text, emotion}) => (
+  `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>
@@ -26,12 +19,18 @@ const getComments = (comments) => (id) => {
         <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
       </p>
     </div>
-  </li>`;
+  </li>`
+);
+
+const getComment = (comments) => (id) => {
+  const comment = comments.filter((comment) => comment.id === id);
+
+  return createComment(...comment);
 };
 
 const createCommentsListTemplate = (ids, comments) => (
   `<ul class="film-details__comments-list">
-    ${[...ids].map(getComments(comments)).join('')}
+    ${ids.map(getComment(comments)).join('')}
   </ul>`
 );
 

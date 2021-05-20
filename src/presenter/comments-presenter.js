@@ -66,7 +66,7 @@ class CommentsPresenter {
     remove(this._commentsTitleComponent);
     remove(this._commentsListComponent);
 
-    this._commentsTitleComponent = new CommentsTitleView(this._commentsId.size);
+    this._commentsTitleComponent = new CommentsTitleView(this._commentsId.length);
     this._commentsListComponent = new CommentsListView(this._commentsId, this._commentsModel.comments);
 
     render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
@@ -98,7 +98,7 @@ class CommentsPresenter {
   }
 
   _deleteClickHandler(id) {
-    this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
+    this._commentsModel.deleteComment(UpdateType.MINOR, +id, true);
   }
 }
 

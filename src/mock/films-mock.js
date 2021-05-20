@@ -6,7 +6,7 @@ import {
 import {
   getRandomInt,
   getRandomFloat,
-  getRandomArrayIndex,
+  getRandomObjects,
   getRandomArrayElement,
   getRandomArray,
   getRandomDate
@@ -94,6 +94,14 @@ const FilmInfo = {
 };
 
 let idCounter = 0;
+let comments = [];
+
+const generateCommentIds = () => {
+  const maxComments = getRandomInt(0, AppConfig.MAX_FILM_COMMENT);
+  const commentIds = comments.splice(0, maxComments).map((comment) => comment.id);
+
+  return commentIds;
+};
 
 const getDescription = ({text, max}) => {
   const descriptionList = getRandomArray(text.split('. '), max);
@@ -108,8 +116,8 @@ const getRating = (min, max) => {
   return randomRating > 1 ? randomRating : min;
 };
 
-const generateFilm = () => ({
-  comments: new Set(getRandomArrayIndex(AppConfig.MAX_COMMENTS)),
+const generateFilms = () => ({
+  comments: generateCommentIds(),
   filmInfo: {
     id: idCounter++,
     title: getRandomArrayElement(FilmInfo.TITLES),
@@ -134,4 +142,10 @@ const generateFilm = () => ({
   },
 });
 
-export default generateFilm;
+const getFilms = (commentsMock) => {
+  comments = commentsMock.slice();
+
+  return getRandomObjects(generateFilms, AppConfig.MAX_FILMS);
+};
+
+export default getFilms;

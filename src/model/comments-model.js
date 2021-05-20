@@ -12,22 +12,17 @@ class CommentsModel extends AbstractModel {
   }
 
   createComment(updateType, {comment, emotion}, isDeleted) {
-    const newComment = generateComment(comment, emotion);
+    const id = this._comments[this._comments.length - 1].id + 1;
+    const newComment = generateComment(id, comment, emotion);
     this._comments = this._comments.concat(newComment);
 
-    this._notify(updateType, this._comments.length - 1, isDeleted);
+    this._notify(updateType, id, isDeleted);
   }
 
-  deleteComment(updateType, deletedId, isDeleted) {
-    // массив не изменяется пока не подъедут реальные данные, иначе съедут индексы
+  deleteComment(updateType, id, isDeleted) {
+    this._comments = this._comments.filter((comment) => comment.id !== id);
 
-    // const newComments = [];
-    // this._comments.forEach((comment, id) => id !== +deletedId ? newComments.push(comment) : false);
-    //
-    // this._comments = newComments;
-    // console.log(this._comments);
-
-    this._notify(updateType, deletedId, isDeleted);
+    this._notify(updateType, id, isDeleted);
   }
 
   get comments() {

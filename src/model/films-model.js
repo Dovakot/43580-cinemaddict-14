@@ -64,7 +64,7 @@ class FilmsModel extends AbstractModel {
   }
 
   sortByComments(films = this._copy) {
-    return films.sort((a, b) => b.comments.size - a.comments.size);
+    return films.sort((a, b) => b.comments.length - a.comments.length);
   }
 
   sortByDate(films = this._copy) {
@@ -99,7 +99,7 @@ class FilmsModel extends AbstractModel {
   }
 
   _countFilmsFilteredByComments() {
-    return this._films.filter((film) => film.comments.size !== 0).length;
+    return this._films.filter((film) => film.comments.length !== 0).length;
   }
 }
 

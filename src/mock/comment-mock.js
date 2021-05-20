@@ -32,14 +32,17 @@ const CommentInfo = {
   ],
 };
 
-const generateComment = (text, emotion) => ({
+let idCounter = 0;
+
+const generateComment = (id, text, emotion) => ({
+  id: id || idCounter++,
   date: getRandomDate(
     getRandomInt(-DateConfig.DAYS_WEEK, DateConfig.DAYS_WEEK),
     getRandomInt(-DateConfig.MAX_HOURS, DateConfig.MAX_HOURS),
   ),
   author: getRandomArrayElement(CommentInfo.AUTHORS),
-  text: text ? text : getRandomArrayElement(CommentInfo.COMMENTS),
-  emotion: emotion ? emotion : getRandomArrayElement(CommentInfo.EMOTIONS),
+  text: text || getRandomArrayElement(CommentInfo.COMMENTS),
+  emotion: emotion || getRandomArrayElement(CommentInfo.EMOTIONS),
 });
 
 export default generateComment;

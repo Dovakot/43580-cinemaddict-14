@@ -25,10 +25,10 @@ class AbstractFilmPresenter {
     this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
   }
 
-  changeFilmComment(updateType, id, isDeleted) {
-    const actionType = isDeleted ? 'delete' : 'add';
-    const changedData = new Set(this._film.comments);
-    changedData[actionType](id);
+  changeFilmComment(updateType, commentId, isDeleted) {
+    const changedData = isDeleted
+      ? this._film.comments.filter((id) => id !== commentId)
+      : this._film.comments.concat(commentId);
 
     this._changeFilmData(updateType, {comments: changedData});
   }
