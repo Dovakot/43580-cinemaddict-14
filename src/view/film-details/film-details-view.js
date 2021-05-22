@@ -57,18 +57,18 @@ const createFilmDetailsTemplate = ({
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${writers.size === 1 ? 'Writer' : 'Writers'}
+                  ${writers.length === 1 ? 'Writer' : 'Writers'}
                 </td>
                 <td class="film-details__cell">
-                  ${[...writers].join(', ')}
+                  ${writers.join(', ')}
                 </td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${actors.size === 1 ? 'Actor' : 'Actors'}
+                  ${actors.length === 1 ? 'Actor' : 'Actors'}
                 </td>
                 <td class="film-details__cell">
-                  ${[...actors].join(', ')}
+                  ${actors.join(', ')}
                 </td>
               </tr>
               <tr class="film-details__row">
@@ -89,10 +89,10 @@ const createFilmDetailsTemplate = ({
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${genres.size === 1 ? 'Genre' : 'Genres'}
+                  ${genres.length === 1 ? 'Genre' : 'Genres'}
                 </td>
                 <td class="film-details__cell">
-                  ${[...genres].map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ')}
+                  ${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ')}
                 </td>
               </tr>
             </table>

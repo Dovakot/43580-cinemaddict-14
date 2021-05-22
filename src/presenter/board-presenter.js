@@ -10,6 +10,7 @@ import FooterStatisticsView from 'view/footer-statistics-view';
 
 import FilmsPresenter from 'presenter/films-presenter';
 import MenuPresenter from 'presenter/menu-presenter';
+import StatsPresenter from 'presenter/stats-presenter';
 
 class BoardPresenter {
   constructor(containerHeader, containerMain, containerFooter, filmsModel, commentsModel) {
@@ -23,6 +24,7 @@ class BoardPresenter {
     this._userLevelComponent = null;
     this._menuPresenter = null;
     this._filmsPresenter = null;
+    this._statsPresenter = new StatsPresenter(containerMain);
 
     this._updateUserLevel = this._updateUserLevel.bind(this);
   }
@@ -37,8 +39,12 @@ class BoardPresenter {
   }
 
   _initPresenters() {
-    this._filmsPresenter = new FilmsPresenter(this._containerMain, this._filmsModel, this._commentsModel, this._menuModel);
-    this._menuPresenter = new MenuPresenter(this._containerMain, this._filmsModel, this._menuModel, this._updateUserLevel);
+    this._filmsPresenter = new FilmsPresenter(
+      this._containerMain, this._filmsModel, this._commentsModel, this._menuModel, this._statsPresenter,
+    );
+    this._menuPresenter = new MenuPresenter(
+      this._containerMain, this._filmsModel, this._menuModel, this._updateUserLevel,
+    );
 
     this._filmsPresenter.init();
     this._menuPresenter.init();

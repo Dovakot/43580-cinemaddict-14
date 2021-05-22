@@ -21,6 +21,7 @@ const AppConfig = {
   MAX_COMMENTS: 40,
   MAX_FILM_COMMENT: 5,
   MAX_NUMBER_CHAR: 140,
+  BAR_HEIGHT: 50,
 };
 
 const SortType = {
@@ -42,6 +43,13 @@ const UpdateType = {
   MAJOR: 'major',
 };
 
+const DatePeriod = {
+  TODAY: 'TODAY',
+  WEEK: 'WEEK',
+  MONTH: 'MONTH',
+  YEAR: 'YEAR',
+};
+
 export {
   BASE_DEGREE,
   RenderPosition,
@@ -49,5 +57,6 @@ export {
   AppConfig,
   SortType,
   FilterType,
-  UpdateType
+  UpdateType,
+  DatePeriod
 };

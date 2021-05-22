@@ -42,6 +42,10 @@ const getRandomDate = (days) => {
   return Date.now() + amountDays;
 };
 
+const sortObject = (object) => Object.keys(object)
+  .sort((a, b) => object[b] - object[a])
+  .reduce((stack, value) => (stack[value] = object[value], stack), {});
+
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const isSubmit = (evt) => evt.key === 'Enter' && (evt.metaKey || evt.ctrlKey);
 
@@ -53,6 +57,7 @@ export {
   getRandomArray,
   getRandomObjects,
   getRandomDate,
+  sortObject,
   isEscEvent,
   isSubmit
 };

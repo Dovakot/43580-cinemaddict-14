@@ -29,11 +29,11 @@ const updateMethod = {
 };
 
 class FilmsPresenter {
-  constructor(containerMain, filmsModel, commentsModel, menuModel) {
+  constructor(containerMain, filmsModel, commentsModel, menuModel, statsPresenter) {
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._menuModel = menuModel;
-    this._containerMain = containerMain;
+
     this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
     this._createdFilmCardBox = null;
     this._filmCardPresenter = new Map();
@@ -45,9 +45,13 @@ class FilmsPresenter {
     this._sortComponent = null;
     this._filmsEmptyComponent = new FilmsEmptyView();
     this._showButtonComponent = new ShowButtonView();
-    this._filmsSection = new FilmsView().getElement();
-    this._filmListSection = this._filmsSection.querySelector('.films-list');
-    this._filmListContainer = this._filmListSection.querySelector('.films-list__container');
+    this._filmsSectionComponent = null;
+    this._statsPresenter = statsPresenter;
+
+    this._containerMain = containerMain;
+    this._filmsSection = null;
+    this._filmListSection = null;
+    this._filmListContainer = null;
 
     this._viewActionHandler = this._viewActionHandler.bind(this);
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
@@ -61,7 +65,15 @@ class FilmsPresenter {
 
   init() {
     this._filmCardCount = this._filmsModel.length;
+    this._createFilmSection();
     this._renderFilmsSections();
+  }
+
+  _createFilmSection() {
+    this._filmsSectionComponent = new FilmsView();
+    this._filmsSection = this._filmsSectionComponent.getElement();
+    this._filmListSection = this._filmsSection.querySelector('.films-list');
+    this._filmListContainer = this._filmListSection.querySelector('.films-list__container');
   }
 
   _getFilms() {
@@ -159,6 +171,16 @@ class FilmsPresenter {
     render(this._containerMain, this._filmsSection);
   }
 
+  _renderStats() {
+    remove(this._filmsSectionComponent);
+    remove(this._sortComponent);
+
+    this._filmsSectionComponent = null;
+    this._sortComponent = null;
+
+    this._statsPresenter.init(this._filmsModel.filterByWatched());
+  }
+
   _clearFilmsSections(data) {
     const deleteCardFilm = ({id, type}, presenter) => {
       if (!presenter.defaultMode) {
@@ -206,6 +228,12 @@ class FilmsPresenter {
   }
 
   _updateMajor() {
+    if (this._menuModel.isStatsActive) return this._renderStats();
+    if (!this._filmsSectionComponent) {
+      this._createFilmSection();
+      this._statsPresenter.destroy();
+    }
+
     this._currentSort = SortType.DEFAULT;
     this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
     this._filmCardCount = this._filmsModel.length;

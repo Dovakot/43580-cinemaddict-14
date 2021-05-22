@@ -91,6 +91,7 @@ const FilmInfo = {
   },
   MAX_RATING: 10,
   MAX_DATE: 50,
+  MAX_WATCHED_DATE: 2,
 };
 
 let idCounter = 0;
@@ -116,31 +117,36 @@ const getRating = (min, max) => {
   return randomRating > 1 ? randomRating : min;
 };
 
-const generateFilms = () => ({
-  comments: generateCommentIds(),
-  filmInfo: {
-    id: idCounter++,
-    title: getRandomArrayElement(FilmInfo.TITLES),
-    poster: getRandomArrayElement(FilmInfo.POSTERS),
-    description: getDescription(FilmInfo.DESCRIPTION),
-    rating: getRating(0, FilmInfo.MAX_RATING),
-    ageRating: getRandomArrayElement(FilmInfo.AGE_RATINGS),
-    runtime: getRandomInt(FilmInfo.RUNTIME.min, FilmInfo.RUNTIME.max),
-    director: getRandomArrayElement(FilmInfo.DIRECTORS),
-    writers: new Set(getRandomArray(FilmInfo.WRITERS, FilmInfo.WRITERS.length)),
-    actors: new Set(getRandomArray(FilmInfo.ACTORS, FilmInfo.ACTORS.length)),
-    genres: new Set(getRandomArray(FilmInfo.GENRES, FilmInfo.GENRES.length)),
-    release: {
-      date: getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(1, FilmInfo.MAX_DATE)),
-      country: getRandomArrayElement(FilmInfo.COUNTRIES),
+const generateFilms = () => {
+  const isWatched = Boolean(getRandomInt(0, 1));
+
+  return {
+    comments: generateCommentIds(),
+    filmInfo: {
+      id: idCounter++,
+      title: getRandomArrayElement(FilmInfo.TITLES),
+      poster: getRandomArrayElement(FilmInfo.POSTERS),
+      description: getDescription(FilmInfo.DESCRIPTION),
+      rating: getRating(0, FilmInfo.MAX_RATING),
+      ageRating: getRandomArrayElement(FilmInfo.AGE_RATINGS),
+      runtime: getRandomInt(FilmInfo.RUNTIME.min, FilmInfo.RUNTIME.max),
+      director: getRandomArrayElement(FilmInfo.DIRECTORS),
+      writers: [...new Set(getRandomArray(FilmInfo.WRITERS, FilmInfo.WRITERS.length))],
+      actors: [...new Set(getRandomArray(FilmInfo.ACTORS, FilmInfo.ACTORS.length))],
+      genres: [...new Set(getRandomArray(FilmInfo.GENRES, FilmInfo.GENRES.length))],
+      release: {
+        date: getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(1, FilmInfo.MAX_DATE)),
+        country: getRandomArrayElement(FilmInfo.COUNTRIES),
+      },
     },
-  },
-  userDetails: {
-    isWatchlist: Boolean(getRandomInt(0, 1)),
-    isWatched: Boolean(getRandomInt(0, 1)),
-    isFavorite: Boolean(getRandomInt(0, 1)),
-  },
-});
+    userDetails: {
+      date: getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(0, FilmInfo.MAX_WATCHED_DATE)),
+      isWatchlist: Boolean(getRandomInt(0, 1)),
+      isFavorite: Boolean(getRandomInt(0, 1)),
+      isWatched,
+    },
+  };
+};
 
 const getFilms = (commentsMock) => {
   comments = commentsMock.slice();

@@ -41,7 +41,7 @@ const createFilmCardTemplate = (film) => {
         ${getTimeFromMinutes(runtime)}
       </span>
       <span class="film-card__genre">
-        ${genres.values().next().value}
+        ${genres[0]}
       </span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
