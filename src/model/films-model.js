@@ -2,10 +2,10 @@ import AbstractModel from './abstract-model';
 
 const filmsType = {
   top: {
-    methods: ['_countFilmsFilteredByRating', 'sortByRating'],
+    methods: ['_filterByRating', 'sortByRating'],
   },
   commented: {
-    methods: ['_countFilmsFilteredByComments', 'sortByComments'],
+    methods: ['_filterByComments', 'sortByComments'],
   },
 };
 
@@ -42,9 +42,10 @@ class FilmsModel extends AbstractModel {
 
   getExtraFilms(type) {
     const [countMethod, sortMethod] = filmsType[type].methods;
-    const filmsCount = this[countMethod]();
+    const films = this[countMethod]();
+    const filmsCount = films.length;
 
-    return filmsCount ? this[sortMethod]() : filmsCount;
+    return filmsCount ? this[sortMethod](films) : filmsCount;
   }
 
   updateFilm(updateType, update) {
@@ -64,7 +65,7 @@ class FilmsModel extends AbstractModel {
   }
 
   sortByComments(films = this._copy) {
-    return films.sort((a, b) => b.comments.size - a.comments.size);
+    return films.sort((a, b) => b.comments.length - a.comments.length);
   }
 
   sortByDate(films = this._copy) {
@@ -94,12 +95,12 @@ class FilmsModel extends AbstractModel {
     return this._films.slice();
   }
 
-  _countFilmsFilteredByRating() {
-    return this._films.filter((film) => film.filmInfo.rating !== 0).length;
+  _filterByRating() {
+    return this._films.filter((film) => film.filmInfo.rating !== 0);
   }
 
-  _countFilmsFilteredByComments() {
-    return this._films.filter((film) => film.comments.size !== 0).length;
+  _filterByComments() {
+    return this._films.filter((film) => film.comments.length !== 0);
   }
 }
 

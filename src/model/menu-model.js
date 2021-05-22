@@ -29,6 +29,10 @@ class MenuModel extends AbstractModel {
     return this._menu;
   }
 
+  get isStatsActive() {
+    return this._menu.isStatsActive;
+  }
+
   get filter() {
     return this._menu.currentFilter;
   }

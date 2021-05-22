@@ -9,7 +9,7 @@ import {
   getTimeFromMinutes
 } from 'utils/film-card-util';
 
-const isActive = (flag) => flag ? 'film-card__controls-item--active' : '';
+const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
 
 const createFilmCardTemplate = (film) => {
   const {
@@ -28,7 +28,7 @@ const createFilmCardTemplate = (film) => {
     isFavorite,
   } = film.userDetails;
 
-  const commentCount = film.comments.size;
+  const commentCount = film.comments.length;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -41,7 +41,7 @@ const createFilmCardTemplate = (film) => {
         ${getTimeFromMinutes(runtime)}
       </span>
       <span class="film-card__genre">
-        ${genres.values().next().value}
+        ${genres[0]}
       </span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
@@ -52,13 +52,13 @@ const createFilmCardTemplate = (film) => {
       ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}
     </a>
     <div class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isWatchlist)}" name="watchlist" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${setClass(isWatchlist)}" name="watchlist" type="button">
         Add to watchlist
       </button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" name="watched" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${setClass(isWatched)}" name="watched" type="button">
         Mark as watched
       </button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite ${isActive(isFavorite)}" name="favorite" type="button">
+      <button class="film-card__controls-item button film-card__controls-item--favorite ${setClass(isFavorite)}" name="favorite" type="button">
         Mark as favorite
       </button>
     </div>

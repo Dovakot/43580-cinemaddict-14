@@ -12,7 +12,7 @@ import {
 import FilmsModel from 'model/films-model';
 import CommentsModel from 'model/comments-model';
 
-import generateFilm from 'mock/film-card-mock';
+import getFilms from 'mock/films-mock';
 import generateComment from 'mock/comment-mock';
 
 import BoardPresenter from 'presenter/board-presenter';
@@ -21,8 +21,8 @@ const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
 const containerFooter = document.querySelector('.footer');
 
-const films = getRandomObjects(generateFilm, AppConfig.MAX_FILMS);
 const comments = getRandomObjects(() => generateComment(), AppConfig.MAX_COMMENTS);
+const films = getFilms(comments);
 
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
