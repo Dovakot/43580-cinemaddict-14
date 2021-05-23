@@ -22,10 +22,10 @@ import StatsTextListView from 'view/stats/stats-text-list-view';
 import StatsFormView from 'view/stats/stats-form-view';
 
 const DaysCount = {
-  TODAY: 0,
-  WEEK: 7,
-  MONTH: 1,
-  YEAR: 1,
+  day: 0,
+  week: 7,
+  month: 1,
+  year: 1,
 };
 
 class StatsPresenter {
@@ -37,7 +37,6 @@ class StatsPresenter {
     this._containerStats = null;
     this._statisticCtx = null;
 
-    this._currentPeriod = null,
     this._totalWatched = 0;
     this._totalDuration = 0;
     this._topGenre = 0;
@@ -48,6 +47,7 @@ class StatsPresenter {
   init(films) {
     this._films = films;
     this._filmsCount = films.length;
+    this._currentPeriod = DatePeriod.ALL
 
     this._renderStatsSection();
     this._renderStatsForm();
@@ -58,25 +58,23 @@ class StatsPresenter {
     remove(this._statsComponent);
   }
 
-  _isDateInRange(currentDate, dateFrom) {
+  _isDateInRange(currentDate, dateFrom, period) {
     dayjs.extend(isSameOrBefore);
 
-    return dayjs(dateFrom).isSameOrBefore(currentDate);
+    return dayjs(dateFrom).isSameOrBefore(currentDate, period);
   }
 
   _getDateFrom(count, name) {
-    return count ? dayjs().subtract(count, name).toDate() : dayjs().toDate();
+    return dayjs().subtract(count, name).toDate();
   }
 
   _getFilmsForPeriod() {
-    const currentPeriod = DatePeriod[this._currentPeriod];
-
-    if (!currentPeriod) return this._films;
+    if (this._currentPeriod === DatePeriod.ALL) return this._films;
 
     const filmsForPeriod = [];
-    const dateFrom = this._getDateFrom(DaysCount[currentPeriod], currentPeriod.toLowerCase());
+    const dateFrom = this._getDateFrom(DaysCount[this._currentPeriod], this._currentPeriod);
 
-    this._films.forEach((film) => this._isDateInRange(film.userDetails.date, dateFrom)
+    this._films.forEach((film) => this._isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod)
       && filmsForPeriod.push(film));
 
     return filmsForPeriod;
@@ -132,8 +130,6 @@ class StatsPresenter {
   }
 
   _renderStatsChart() {
-    if (!this._filmsCount) return;
-
     const filmsForPeriod = this._getFilmsForPeriod();
     const sortedGenres = this._getSortedGenres(filmsForPeriod);
     const genres = Object.keys(sortedGenres);
@@ -152,7 +148,7 @@ class StatsPresenter {
   }
 
   _changeHandler(period) {
-    this._currentPeriod = DatePeriod[period];
+    this._currentPeriod = period;
 
     this._renderStats();
   }

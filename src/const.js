@@ -44,10 +44,11 @@ const UpdateType = {
 };
 
 const DatePeriod = {
-  TODAY: 'TODAY',
-  WEEK: 'WEEK',
-  MONTH: 'MONTH',
-  YEAR: 'YEAR',
+  ALL: 'all',
+  DAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
 export {

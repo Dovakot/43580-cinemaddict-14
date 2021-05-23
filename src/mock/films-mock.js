@@ -140,7 +140,9 @@ const generateFilms = () => {
       },
     },
     userDetails: {
-      date: getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(0, FilmInfo.MAX_WATCHED_DATE)),
+      date: isWatched
+        ? getRandomDate(-DateConfig.DAYS_YEARS * getRandomInt(0, FilmInfo.MAX_WATCHED_DATE))
+        : null,
       isWatchlist: Boolean(getRandomInt(0, 1)),
       isFavorite: Boolean(getRandomInt(0, 1)),
       isWatched,

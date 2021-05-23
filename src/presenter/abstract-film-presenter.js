@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 import {
   UpdateType
 } from 'const';
@@ -21,6 +23,10 @@ class AbstractFilmPresenter {
     const key = CONTROL_BUTTONS[button.name];
     const changedData = Object.assign({}, this._film.userDetails);
     changedData[key] = !this._film.userDetails[key];
+
+    if (key === CONTROL_BUTTONS.watched) {
+      changedData.date = changedData.date ? null : dayjs().toISOString();
+    }
 
     this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
   }
