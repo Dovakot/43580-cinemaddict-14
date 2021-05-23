@@ -21,7 +21,7 @@ import StatsView from 'view/stats/stats-view';
 import StatsTextListView from 'view/stats/stats-text-list-view';
 import StatsFormView from 'view/stats/stats-form-view';
 
-const DaysCount = {
+const daysCount = {
   day: 0,
   week: 7,
   month: 1,
@@ -40,6 +40,7 @@ class StatsPresenter {
     this._totalWatched = 0;
     this._totalDuration = 0;
     this._topGenre = 0;
+    this._chart = null;
 
     this._changeHandler = this._changeHandler.bind(this);
   }
@@ -47,7 +48,7 @@ class StatsPresenter {
   init(films) {
     this._films = films;
     this._filmsCount = films.length;
-    this._currentPeriod = DatePeriod.ALL
+    this._currentPeriod = DatePeriod.ALL;
 
     this._renderStatsSection();
     this._renderStatsForm();
@@ -56,6 +57,11 @@ class StatsPresenter {
 
   destroy() {
     remove(this._statsComponent);
+  }
+
+  _destroyChart() {
+    this._chart.destroy();
+    this._chart = null;
   }
 
   _isDateInRange(currentDate, dateFrom, period) {
@@ -71,26 +77,16 @@ class StatsPresenter {
   _getFilmsForPeriod() {
     if (this._currentPeriod === DatePeriod.ALL) return this._films;
 
-    const filmsForPeriod = [];
-    const dateFrom = this._getDateFrom(DaysCount[this._currentPeriod], this._currentPeriod);
+    const dateFrom = this._getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
 
-    this._films.forEach((film) => this._isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod)
-      && filmsForPeriod.push(film));
-
-    return filmsForPeriod;
+    return this._films.filter((film) => this._isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod));
   }
 
   _getGenres(films) {
-    const genres = [];
     this._totalDuration = 0;
 
-    films.forEach(({filmInfo}) => {
-      this._totalDuration += filmInfo.runtime;
-      genres.push(...filmInfo.genres);
-    });
-
-    return genres
-      .reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
+    return films.map(({filmInfo}) => (this._totalDuration += filmInfo.runtime, filmInfo.genres))
+      .flat().reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
   }
 
   _getSortedGenres(films) {
@@ -130,6 +126,8 @@ class StatsPresenter {
   }
 
   _renderStatsChart() {
+    if (this._chart) this._destroyChart();
+
     const filmsForPeriod = this._getFilmsForPeriod();
     const sortedGenres = this._getSortedGenres(filmsForPeriod);
     const genres = Object.keys(sortedGenres);
@@ -139,7 +137,8 @@ class StatsPresenter {
     this._totalWatched = filmsForPeriod.length;
     this._statisticCtx.height = AppConfig.BAR_HEIGHT * genres.length;
 
-    getStatsChart(this._statisticCtx, genres, genresCount);
+    this._chart = this._totalWatched
+      ? getStatsChart(this._statisticCtx, genres, genresCount) : null;
   }
 
   _renderStats() {

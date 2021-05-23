@@ -1,6 +1,8 @@
-import getUserRank from 'utils/user-level-util';
+import getUserRankValue from 'utils/user-level-util';
 
 import AbstractView from './abstract-view';
+
+const getUserRank = (count) => `<p class="profile__rating">${getUserRankValue(count).toLowerCase()}</p>`;
 
 const createUserLevelTemplate = (count) => (
   `<section class="header__profile profile">

@@ -11,26 +11,12 @@ import {
 
 const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
 
-const createFilmCardTemplate = (film) => {
-  const {
-    title,
-    poster,
-    description,
-    rating,
-    runtime,
-    genres,
-    release: {date},
-  } = film.filmInfo;
-
-  const {
-    isWatchlist,
-    isWatched,
-    isFavorite,
-  } = film.userDetails;
-
-  const commentCount = film.comments.length;
-
-  return `<article class="film-card">
+const createFilmCardTemplate = (
+  {title, poster, description, rating, runtime, genres, release: {date}},
+  {isWatchlist, isWatched, isFavorite},
+  commentCount,
+) => (
+  `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
@@ -49,7 +35,7 @@ const createFilmCardTemplate = (film) => {
       ${truncateText(description.trim(), AppConfig.MAX_NUMBER_CHAR)}
     </p>
     <a class="film-card__comments">
-      ${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}
+      ${commentCount} comment${commentCount === 1 ? '' : 's'}
     </a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${setClass(isWatchlist)}" name="watchlist" type="button">
@@ -62,19 +48,20 @@ const createFilmCardTemplate = (film) => {
         Mark as favorite
       </button>
     </div>
-  </article>`;
-};
+  </article>`
+);
 
 class FilmCardView extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+    this._commentCount = film.comments.length;
 
     this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._film);
+    return createFilmCardTemplate(this._film.filmInfo, this._film.userDetails, this._commentCount);
   }
 
   _clickHandler(evt) {

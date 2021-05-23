@@ -9,21 +9,11 @@ import {
   getFormattedDate
 } from 'utils/film-card-util';
 
+const getGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
+
 const createFilmDetailsTemplate = ({
-  title,
-  poster,
-  description,
-  rating,
-  ageRating,
-  runtime,
-  director,
-  writers,
-  actors,
-  genres,
-  release: {
-    date,
-    country,
-  },
+  title, poster, description, rating, ageRating, runtime, director, writers, actors, genres,
+  release: {date, country},
 }) => (
   `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -57,7 +47,7 @@ const createFilmDetailsTemplate = ({
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${writers.length === 1 ? 'Writer' : 'Writers'}
+                  Writer${writers.length === 1 ? '' : 's'}
                 </td>
                 <td class="film-details__cell">
                   ${writers.join(', ')}
@@ -65,7 +55,7 @@ const createFilmDetailsTemplate = ({
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${actors.length === 1 ? 'Actor' : 'Actors'}
+                  Actor${actors.length === 1 ? '' : 's'}
                 </td>
                 <td class="film-details__cell">
                   ${actors.join(', ')}
@@ -89,10 +79,10 @@ const createFilmDetailsTemplate = ({
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">
-                  ${genres.length === 1 ? 'Genre' : 'Genres'}
+                  Genre${genres.length === 1 ? '' : 's'}
                 </td>
                 <td class="film-details__cell">
-                  ${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ')}
+                  ${genres.map(getGenre).join(' ')}
                 </td>
               </tr>
             </table>

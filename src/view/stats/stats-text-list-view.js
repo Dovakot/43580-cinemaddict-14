@@ -13,9 +13,9 @@ const createStatsTextListTemplate = (totalWatched, totalDuration, topGenre) => (
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
       <p class="statistic__item-text">
-        ${totalWatched || 0}
+        ${totalWatched}
         <span class="statistic__item-description">
-          ${totalWatched === 1 ? 'movie' : 'movies'}
+          movie${totalWatched === 1 ? '' : 's'}
         </span>
       </p>
     </li>

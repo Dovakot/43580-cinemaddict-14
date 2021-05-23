@@ -2,7 +2,7 @@ import AbstractView from '../abstract-view';
 
 const createCommentsTitleTemplate = (commentCount) => (
   `<h3 class="film-details__comments-title">
-    ${commentCount === 1 ? 'Comment' : 'Comments'}
+    Comment${commentCount === 1 ? '' : 's'}
     <span class="film-details__comments-count">${commentCount}</span>
   </h3>`
 );
