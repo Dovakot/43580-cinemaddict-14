@@ -1,42 +1,53 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+const ChartConfig = {
+  TYPE: 'horizontalBar',
+  START: 'start',
+  BG_COLOR: '#ffe800',
+  COLOR: '#ffffff',
+  FONT_SIZE: 20,
+  OFFSET: 40,
+  BAR_THICKNESS: 24,
+  TICKS_PADDING: 100,
+};
+
 const getStatsChart = (statisticCtx, genres, genresCount) => new Chart(statisticCtx, {
   plugins: [ChartDataLabels],
-  type: 'horizontalBar',
+  type: ChartConfig.TYPE,
   data: {
     labels: genres,
     datasets: [{
       data: genresCount,
-      backgroundColor: '#ffe800',
-      hoverBackgroundColor: '#ffe800',
-      anchor: 'start',
+      backgroundColor: ChartConfig.BG_COLOR,
+      hoverBackgroundColor: ChartConfig.BG_COLOR,
+      anchor: ChartConfig.START,
     }],
   },
   options: {
     plugins: {
       datalabels: {
         font: {
-          size: 20,
+          size: ChartConfig.FONT_SIZE,
         },
-        color: '#ffffff',
-        anchor: 'start',
-        align: 'start',
-        offset: 40,
+        color: ChartConfig.COLOR,
+        anchor: ChartConfig.START,
+        align: ChartConfig.START,
+        offset: ChartConfig.OFFSET,
       },
     },
     scales: {
       yAxes: [{
         ticks: {
-          fontColor: '#ffffff',
-          padding: 100,
-          fontSize: 20,
+          fontColor: ChartConfig.COLOR,
+          padding: ChartConfig.TICKS_PADDING,
+          fontSize: ChartConfig.FONT_SIZE,
         },
         gridLines: {
           display: false,
           drawBorder: false,
         },
-        barThickness: 24,
+        barThickness: ChartConfig.BAR_THICKNESS,
       }],
       xAxes: [{
         ticks: {
