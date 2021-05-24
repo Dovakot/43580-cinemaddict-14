@@ -19,9 +19,10 @@ import CommentEmojiLabelView from 'view/comments/comment-emoji-label-view';
 import CommentEmojiListView from 'view/comments/comment-emoji-list-view';
 
 class CommentsPresenter {
-  constructor(commentsContainer, commentsModel, commentsId) {
+  constructor(isLoading, commentsContainer, commentsModel, commentsId) {
+    this._isLoading = isLoading;
     this._commentsModel = commentsModel;
-    this._commentsComponent = new CommentsView();
+    this._commentsComponent = new CommentsView(isLoading);
     this._commentEmojiLabelComponent = null;
     this._commentEmojiListComponent = null;
     this._commentsTitleComponent = null;
@@ -41,6 +42,10 @@ class CommentsPresenter {
   init() {
     this._renderComments();
     render(this._commentsContainer, this._commentsComponent);
+  }
+
+  destroy() {
+    remove(this._commentsComponent);
   }
 
   changeComments(target) {
@@ -67,7 +72,10 @@ class CommentsPresenter {
     remove(this._commentsListComponent);
 
     this._commentsTitleComponent = new CommentsTitleView(this._commentsId.length);
-    this._commentsListComponent = new CommentsListView(this._commentsId, this._commentsModel.comments);
+
+    this._commentsListComponent = new CommentsListView(
+      this._isLoading, this._commentsId, this._commentsModel.comments,
+    );
 
     render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
     render(this._commentsTitleComponent, this._commentsListComponent, RenderPosition.AFTEREND);
@@ -85,7 +93,7 @@ class CommentsPresenter {
   _renderCommentEmotionList() {
     remove(this._commentEmojiListComponent);
 
-    this._commentEmojiListComponent = new CommentEmojiListView();
+    this._commentEmojiListComponent = new CommentEmojiListView(this._isLoading);
     render(this._newCommentContainer, this._commentEmojiListComponent);
   }
 
@@ -98,7 +106,7 @@ class CommentsPresenter {
   }
 
   _deleteClickHandler(id) {
-    this._commentsModel.deleteComment(UpdateType.MINOR, +id, true);
+    this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
   }
 }
 

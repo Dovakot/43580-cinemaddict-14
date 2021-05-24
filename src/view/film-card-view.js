@@ -30,7 +30,7 @@ const createFilmCardTemplate = (
         ${genres[0]}
       </span>
     </p>
-    <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+    <img src="./${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">
       ${truncateText(description.trim(), AppConfig.MAX_NUMBER_CHAR)}
     </p>

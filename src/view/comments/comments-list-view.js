@@ -4,6 +4,14 @@ import {
   getFormattedDateTime
 } from 'utils/film-card-util';
 
+const getLoading = () => (
+  '<p class="film-details__text">Loading...</p>'
+);
+
+const getError = () => (
+  '<p class="film-details__text film-details__text--error">Loading Error</p>'
+);
+
 const createComment = ({id, date, author, text, emotion}) => (
   `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
@@ -22,21 +30,28 @@ const createComment = ({id, date, author, text, emotion}) => (
   </li>`
 );
 
+const createComments = (ids, comments) => (
+  `<ul class="film-details__comments-list">
+    ${ids.map(getComment(comments)).join('')}
+  </ul>`
+);
+
 const getComment = (comments) => (id) => {
   const comment = comments.filter((comment) => comment.id === id);
 
   return createComment(...comment);
 };
 
-const createCommentsListTemplate = (ids, comments) => (
-  `<ul class="film-details__comments-list">
-    ${ids.map(getComment(comments)).join('')}
-  </ul>`
-);
+const createCommentsListTemplate = (isLoading, ids, comments) => {
+  if (isLoading) return getLoading();
+
+  return ids.length === comments.length ? createComments(ids, comments) : getError();
+};
 
 class CommentsListView extends AbstractView {
-  constructor(ids, comments) {
+  constructor(isLoading, ids, comments) {
     super();
+    this._isLoading = isLoading;
     this._ids = ids;
     this._comments = comments;
 
@@ -44,7 +59,7 @@ class CommentsListView extends AbstractView {
   }
 
   getTemplate() {
-    return createCommentsListTemplate(this._ids, this._comments);
+    return createCommentsListTemplate(this._isLoading, this._ids, this._comments);
   }
 
   _clickHandler(evt) {

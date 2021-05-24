@@ -29,9 +29,8 @@ const updateMethod = {
 };
 
 class FilmsPresenter {
-  constructor(containerMain, filmsModel, commentsModel, menuModel, statsPresenter) {
+  constructor(containerMain, filmsModel, menuModel, statsPresenter) {
     this._filmsModel = filmsModel;
-    this._commentsModel = commentsModel;
     this._menuModel = menuModel;
 
     this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
@@ -88,9 +87,8 @@ class FilmsPresenter {
     const oldFilmCardPresenter = this._deletedFilmCardPresenter[this._filmType]
       && this._deletedFilmCardPresenter.id === id ? this._deletedFilmCardPresenter.presenter : null;
 
-    const filmCardPresenter = oldFilmCardPresenter || new FilmCardPresenter(
-      this._createdFilmCardBox, this._modeChangeHandler, this._viewActionHandler, this._commentsModel,
-    );
+    const filmCardPresenter = oldFilmCardPresenter
+      || new FilmCardPresenter(this._createdFilmCardBox, this._modeChangeHandler, this._viewActionHandler);
 
     if (oldFilmCardPresenter) {
       oldFilmCardPresenter.rerender(this._createdFilmCardBox, film);
@@ -173,6 +171,7 @@ class FilmsPresenter {
 
   _renderStats() {
     remove(this._filmsSectionComponent);
+    remove(this._filmsEmptyComponent);
     remove(this._sortComponent);
 
     this._filmsSectionComponent = null;

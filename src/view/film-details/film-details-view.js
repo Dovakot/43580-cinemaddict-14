@@ -12,8 +12,8 @@ import {
 const getGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
 const createFilmDetailsTemplate = ({
-  title, poster, description, rating, ageRating, runtime, director, writers, actors, genres,
-  release: {date, country},
+  title, alternativeTitle, poster, description, rating, ageRating, runtime, director,
+  writers, actors, genres, release: {date, country},
 }) => (
   `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -23,7 +23,7 @@ const createFilmDetailsTemplate = ({
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="./${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
@@ -32,7 +32,7 @@ const createFilmDetailsTemplate = ({
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">${title}</p>
+                <p class="film-details__title-original">${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
@@ -138,7 +138,6 @@ class FilmDetailsView extends AbstractView {
   setHandlers() {
     const form = this.getElement().querySelector('.film-details__inner');
     const button = form.querySelector('.film-details__close-btn');
-    const field = form.querySelector('.film-details__comment-input');
 
     Object.keys(this._handlers)
       .forEach((key) => this._callback[key] = this._handlers[key]);
@@ -146,7 +145,13 @@ class FilmDetailsView extends AbstractView {
     button.addEventListener('click', this._closeClickHandler);
     form.addEventListener('change', this._changeHandler);
     form.addEventListener('submit', this._submitHandler);
-    field.addEventListener('keydown', this._keyHandler);
+  }
+
+  setKeyHandler(callback) {
+    this._callback.fieldKeyDown = callback;
+
+    this.getElement().querySelector('.film-details__comment-input')
+      .addEventListener('keydown', this._keyHandler);
   }
 }
 
