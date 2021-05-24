@@ -102,6 +102,66 @@ class FilmsModel extends AbstractModel {
   _filterByComments() {
     return this._films.filter((film) => film.comments.length !== 0);
   }
+
+  static adaptToClient(film) {
+    return {
+      comments: film.comments,
+      filmInfo: {
+        id: film.id,
+        title: film.film_info.title,
+        alternativeTitle: film.film_info.alternative_title,
+        poster: film.film_info.poster,
+        description: film.film_info.description,
+        rating: film.film_info.total_rating,
+        ageRating: film.film_info.age_rating,
+        runtime: film.film_info.runtime,
+        director: film.film_info.director,
+        writers: film.film_info.writers,
+        actors: film.film_info.actors,
+        genres: film.film_info.genre,
+        release: {
+          date: new Date(film.film_info.release.date),
+          country: film.film_info.release.release_country,
+        },
+      },
+      userDetails: {
+        date: new Date(film.user_details.watching_date),
+        isWatchlist: film.user_details.watchlist,
+        isFavorite: film.user_details.favorite,
+        isWatched: film.user_details.already_watched,
+      },
+    };
+  }
+
+  static adaptToServer({filmInfo, userDetails, comments}) {
+    return {
+      'id': filmInfo.id,
+      'comments': comments,
+      'film_info': {
+        'title': filmInfo.title,
+        'alternative_title': filmInfo.alternativeTitle,
+        'poster': filmInfo.poster,
+        'description': filmInfo.description,
+        'total_rating': filmInfo.rating,
+        'age_rating': filmInfo.ageRating,
+        'runtime': filmInfo.duration,
+        'director': filmInfo.director,
+        'writers': filmInfo.writers,
+        'actors': filmInfo.actors,
+        'genre': filmInfo.genres,
+        'release': {
+          'date': filmInfo.release.date.toISOString(),
+          'release_country': filmInfo.release.country,
+        },
+      },
+      'user_details': {
+        'watching_date': userDetails.date.toISOString(),
+        'watchlist': userDetails.isWatchlisted,
+        'favorite': userDetails.isFavorite,
+        'already_watched': userDetails.isWatched,
+      },
+    };
+  }
 }
 
 export default FilmsModel;

@@ -1,5 +1,4 @@
 import AbstractModel from './abstract-model';
-import generateComment from 'mock/comment-mock';
 
 class CommentsModel extends AbstractModel {
   constructor() {
@@ -8,12 +7,12 @@ class CommentsModel extends AbstractModel {
   }
 
   init(comments) {
-    this._comments = comments;
+    this._comments = comments.slice();
   }
 
-  createComment(updateType, {comment, emotion}, isDeleted) {
+  addComment(updateType, {comment, emotion}, isDeleted) {
     const id = this._comments[this._comments.length - 1].id + 1;
-    const newComment = generateComment(id, comment, emotion);
+    const newComment = this._createComment(id, comment, emotion);
     this._comments = this._comments.concat(newComment);
 
     this._notify(updateType, id, isDeleted);
@@ -25,8 +24,20 @@ class CommentsModel extends AbstractModel {
     this._notify(updateType, id, isDeleted);
   }
 
+  _createComment(id, text, emotion) {
+    return {id, date: Date.now(), author: 'Dovahkiin', text, emotion};
+  }
+
   get comments() {
     return this._comments;
+  }
+
+  static adaptToClient({id, date, author, emotion, comment}) {
+    return {id, date: new Date(date), author, emotion, text: comment};
+  }
+
+  static adaptToServer({id, date, author, emotion, text}) {
+    return {id, date: date.toISOString(), author, emotion, comment: text};
   }
 }
 
