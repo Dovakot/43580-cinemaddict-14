@@ -15,6 +15,8 @@ const DateConfig = {
 };
 
 const AppConfig = {
+  AUTHORIZATION: 'Basic Wdib32uK0Tj26ba',
+  END_POINT: 'https://14.ecmascript.pages.academy/cinemaddict',
   MAX_FILMS_PER_STEP: 5,
   EXTRA_FILM_COUNT: 2,
   MAX_FILMS: 21,
