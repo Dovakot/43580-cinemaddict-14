@@ -40,7 +40,7 @@ class Api {
 
   updateFilm(film) {
     return this._load({
-      url: `${ApiConfig.URLS.films}/${film.id}`,
+      url: `${ApiConfig.URLS.films}/${film.filmInfo.id}`,
       method: Method.PUT,
       body: JSON.stringify(FilmsModel.adaptToServer(film)),
       headers: new Headers(ApiConfig.HEADERS),

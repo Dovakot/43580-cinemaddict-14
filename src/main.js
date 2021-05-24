@@ -14,14 +14,14 @@ const containerHeader = document.querySelector('.header');
 const containerMain = document.querySelector('.main');
 const containerFooter = document.querySelector('.footer');
 
-const filmsModel = new FilmsModel();
-const boardPresenter = new BoardPresenter(containerHeader, containerMain, containerFooter, filmsModel);
-boardPresenter.init();
-
 const api = new Api(AppConfig.END_POINT, AppConfig.AUTHORIZATION);
 const updateBoard = (films) => {
   filmsModel.init(Array.isArray(films) ? films : []);
   boardPresenter.update();
 };
+
+const filmsModel = new FilmsModel();
+const boardPresenter = new BoardPresenter(containerHeader, containerMain, containerFooter, filmsModel, api);
+boardPresenter.init();
 
 api.getFilms().then(updateBoard).catch(updateBoard);

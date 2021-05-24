@@ -104,6 +104,8 @@ class FilmsModel extends AbstractModel {
   }
 
   static adaptToClient(film) {
+    const watchingDate = film.user_details.watching_date;
+
     return {
       comments: film.comments,
       filmInfo: {
@@ -125,7 +127,7 @@ class FilmsModel extends AbstractModel {
         },
       },
       userDetails: {
-        date: new Date(film.user_details.watching_date),
+        date: watchingDate ? new Date(watchingDate) : watchingDate,
         isWatchlist: film.user_details.watchlist,
         isFavorite: film.user_details.favorite,
         isWatched: film.user_details.already_watched,
@@ -136,30 +138,30 @@ class FilmsModel extends AbstractModel {
   static adaptToServer({filmInfo, userDetails, comments}) {
     return {
       'id': filmInfo.id,
-      'comments': comments,
       'film_info': {
         'title': filmInfo.title,
         'alternative_title': filmInfo.alternativeTitle,
-        'poster': filmInfo.poster,
-        'description': filmInfo.description,
         'total_rating': filmInfo.rating,
+        'poster': filmInfo.poster,
         'age_rating': filmInfo.ageRating,
-        'runtime': filmInfo.duration,
         'director': filmInfo.director,
         'writers': filmInfo.writers,
         'actors': filmInfo.actors,
-        'genre': filmInfo.genres,
         'release': {
           'date': filmInfo.release.date.toISOString(),
           'release_country': filmInfo.release.country,
         },
+        'runtime': filmInfo.runtime,
+        'genre': filmInfo.genres,
+        'description': filmInfo.description,
       },
       'user_details': {
-        'watching_date': userDetails.date.toISOString(),
-        'watchlist': userDetails.isWatchlisted,
-        'favorite': userDetails.isFavorite,
+        'watchlist': userDetails.isWatchlist,
         'already_watched': userDetails.isWatched,
+        'watching_date': userDetails.date,
+        'favorite': userDetails.isFavorite,
       },
+      'comments': comments,
     };
   }
 }

@@ -14,7 +14,7 @@ import MenuPresenter from 'presenter/menu-presenter';
 import StatsPresenter from 'presenter/stats-presenter';
 
 class BoardPresenter {
-  constructor(containerHeader, containerMain, containerFooter, filmsModel) {
+  constructor(containerHeader, containerMain, containerFooter, filmsModel, api) {
     this._containerHeader = containerHeader;
     this._containerMain = containerMain;
     this._containerFooter = containerFooter;
@@ -27,6 +27,7 @@ class BoardPresenter {
     this._menuPresenter = null;
     this._filmsPresenter = null;
     this._statsPresenter = new StatsPresenter(containerMain);
+    this._api = api;
 
     this._updateUserLevel = this._updateUserLevel.bind(this);
   }
@@ -65,7 +66,7 @@ class BoardPresenter {
 
   _renderFilms() {
     this._filmsPresenter = new FilmsPresenter(
-      this._containerMain, this._filmsModel, this._menuModel, this._statsPresenter,
+      this._containerMain, this._filmsModel, this._menuModel, this._statsPresenter, this._api,
     );
 
     this._filmsPresenter.init();

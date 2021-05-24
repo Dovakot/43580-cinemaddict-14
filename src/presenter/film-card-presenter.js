@@ -16,13 +16,14 @@ const TARGET_CLASS_LIST = [
 ];
 
 class FilmCardPresenter extends AbstractFilmPresenter {
-  constructor(filmCardBox, changeMode, changeData) {
+  constructor(filmCardBox, changeMode, changeData, api) {
     super();
     this._filmCardBox = filmCardBox;
     this._filmCardComponent = null;
     this._prevFilmCardComponent = null;
     this._filmDetailsPresenter = null;
     this._isDefaultMode = true;
+    this._api = api;
 
     this._changeMode = changeMode;
     this._changeData = changeData;
@@ -83,7 +84,7 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   _renderFilmDetails() {
     if (this._filmDetailsPresenter) return;
 
-    this._filmDetailsPresenter = new FilmDetailsPresenter(this._changeMode, this._changeData);
+    this._filmDetailsPresenter = new FilmDetailsPresenter(this._changeMode, this._changeData, this._api);
     this._filmDetailsPresenter.init(this._film);
 
     this._changeMode();

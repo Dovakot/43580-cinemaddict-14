@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 import {
   UpdateType
 } from 'const';
@@ -25,8 +23,11 @@ class AbstractFilmPresenter {
     changedData[key] = !this._film.userDetails[key];
 
     if (key === CONTROL_BUTTONS.watched) {
-      changedData.date = changedData.date ? null : dayjs().toISOString();
+      changedData.date = changedData.date ? null : new Date().toISOString();
     }
+
+    button.checked = !button.checked;
+    button.disabled = true;
 
     this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
   }

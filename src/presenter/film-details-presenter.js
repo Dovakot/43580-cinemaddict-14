@@ -1,5 +1,4 @@
 import {
-  AppConfig,
   UpdateType
 } from 'const';
 
@@ -12,8 +11,6 @@ import {
   remove
 } from 'utils/render-util';
 
-import Api from 'api/api';
-
 import CommentsModel from 'model/comments-model';
 
 import DetailsComponentView from 'view/film-details/film-details-view';
@@ -23,13 +20,14 @@ import AbstractFilmPresenter from './abstract-film-presenter';
 import CommentsPresenter from 'presenter/comments-presenter';
 
 class FilmDetailsPresenter extends AbstractFilmPresenter {
-  constructor(changeMode, changeData) {
+  constructor(changeMode, changeData, api) {
     super();
     this._controlsContainer = null;
     this._commentsContainer = null;
     this._filmDetailsComponent = null;
     this._filmControlsComponent = null;
     this._commentsPresenter = null;
+    this._api = api;
     this._commentsModel = new CommentsModel();
 
     this._changeData = changeData;
@@ -78,8 +76,7 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._renderFilmComments(true);
     render(document.body, this._filmDetailsComponent);
 
-    const api = new Api(AppConfig.END_POINT, AppConfig.AUTHORIZATION);
-    api.getComments(this._film.filmInfo.id)
+    this._api.getComments(this._film.filmInfo.id)
       .then(this._updateComments)
       .catch(this._updateComments);
   }
