@@ -5,10 +5,10 @@ const Options = {
   PATH_PROJECT: path.resolve(__dirname, 'public'),
   OUTPUT_FILE: 'bundle.js',
   ALIAS: {
+    api: path.resolve(__dirname, './src/api'),
     const: path.resolve(__dirname, './src/const'),
     utils: path.resolve(__dirname, './src/utils'),
     view: path.resolve(__dirname, './src/view'),
-    mock: path.resolve(__dirname, './src/mock'),
     model: path.resolve(__dirname, './src/model'),
     presenter: path.resolve(__dirname, './src/presenter'),
   },

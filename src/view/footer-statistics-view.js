@@ -2,7 +2,7 @@ import AbstractView from './abstract-view';
 
 const createFooterStatisticsTemplate = (count) => (
   `<section class="footer__statistics">
-    <p>${count} ${count === 1 ? 'movie' : 'movies'} inside</p>
+    <p>${count} movie${count === 1 ? '' : 's'} inside</p>
   </section>`
 );
 

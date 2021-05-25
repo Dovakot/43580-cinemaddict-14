@@ -1,6 +1,7 @@
 import {
   AppConfig,
   SortType,
+  FilterType,
   UpdateType
 } from 'const';
 
@@ -29,11 +30,10 @@ const updateMethod = {
 };
 
 class FilmsPresenter {
-  constructor(containerMain, filmsModel, commentsModel, menuModel, statsPresenter) {
+  constructor(containerMain, filmsModel, menuModel, statsPresenter, api) {
     this._filmsModel = filmsModel;
-    this._commentsModel = commentsModel;
     this._menuModel = menuModel;
-
+    this._api = api;
     this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
     this._createdFilmCardBox = null;
     this._filmCardPresenter = new Map();
@@ -89,7 +89,7 @@ class FilmsPresenter {
       && this._deletedFilmCardPresenter.id === id ? this._deletedFilmCardPresenter.presenter : null;
 
     const filmCardPresenter = oldFilmCardPresenter || new FilmCardPresenter(
-      this._createdFilmCardBox, this._modeChangeHandler, this._viewActionHandler, this._commentsModel,
+      this._createdFilmCardBox, this._modeChangeHandler, this._viewActionHandler, this._api,
     );
 
     if (oldFilmCardPresenter) {
@@ -173,6 +173,7 @@ class FilmsPresenter {
 
   _renderStats() {
     remove(this._filmsSectionComponent);
+    remove(this._filmsEmptyComponent);
     remove(this._sortComponent);
 
     this._filmsSectionComponent = null;
@@ -261,11 +262,13 @@ class FilmsPresenter {
   }
 
   _viewActionHandler(updateType, update) {
-    if (this._menuModel.filter !== 'all') {
+    if (this._menuModel.filter !== FilterType.ALL) {
       updateType = UpdateType.MINOR;
     }
 
-    this._filmsModel.updateFilm(updateType, update);
+    this._api.updateFilm(update).then((response) => {
+      this._filmsModel.updateFilm(updateType, response);
+    });
   }
 
   _modelEventHandler(updateType, data) {

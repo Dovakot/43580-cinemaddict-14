@@ -102,6 +102,68 @@ class FilmsModel extends AbstractModel {
   _filterByComments() {
     return this._films.filter((film) => film.comments.length !== 0);
   }
+
+  static adaptToClient(film) {
+    const watchingDate = film.user_details.watching_date;
+
+    return {
+      comments: film.comments,
+      filmInfo: {
+        id: film.id,
+        title: film.film_info.title,
+        alternativeTitle: film.film_info.alternative_title,
+        poster: film.film_info.poster,
+        description: film.film_info.description,
+        rating: film.film_info.total_rating,
+        ageRating: film.film_info.age_rating,
+        runtime: film.film_info.runtime,
+        director: film.film_info.director,
+        writers: film.film_info.writers,
+        actors: film.film_info.actors,
+        genres: film.film_info.genre,
+        release: {
+          date: new Date(film.film_info.release.date),
+          country: film.film_info.release.release_country,
+        },
+      },
+      userDetails: {
+        date: watchingDate ? new Date(watchingDate) : watchingDate,
+        isWatchlist: film.user_details.watchlist,
+        isFavorite: film.user_details.favorite,
+        isWatched: film.user_details.already_watched,
+      },
+    };
+  }
+
+  static adaptToServer({filmInfo, userDetails, comments}) {
+    return {
+      'id': filmInfo.id,
+      'film_info': {
+        'title': filmInfo.title,
+        'alternative_title': filmInfo.alternativeTitle,
+        'total_rating': filmInfo.rating,
+        'poster': filmInfo.poster,
+        'age_rating': filmInfo.ageRating,
+        'director': filmInfo.director,
+        'writers': filmInfo.writers,
+        'actors': filmInfo.actors,
+        'release': {
+          'date': filmInfo.release.date.toISOString(),
+          'release_country': filmInfo.release.country,
+        },
+        'runtime': filmInfo.runtime,
+        'genre': filmInfo.genres,
+        'description': filmInfo.description,
+      },
+      'user_details': {
+        'watchlist': userDetails.isWatchlist,
+        'already_watched': userDetails.isWatched,
+        'watching_date': userDetails.date,
+        'favorite': userDetails.isFavorite,
+      },
+      'comments': comments,
+    };
+  }
 }
 
 export default FilmsModel;

@@ -11,6 +11,8 @@ import {
   remove
 } from 'utils/render-util';
 
+import CommentsModel from 'model/comments-model';
+
 import DetailsComponentView from 'view/film-details/film-details-view';
 import FilmDetailsControlsView from 'view/film-details/film-details-controls-view';
 
@@ -18,13 +20,15 @@ import AbstractFilmPresenter from './abstract-film-presenter';
 import CommentsPresenter from 'presenter/comments-presenter';
 
 class FilmDetailsPresenter extends AbstractFilmPresenter {
-  constructor(changeMode, changeData, commentsModel) {
+  constructor(changeMode, changeData, api) {
     super();
     this._controlsContainer = null;
+    this._commentsContainer = null;
     this._filmDetailsComponent = null;
     this._filmControlsComponent = null;
     this._commentsPresenter = null;
-    this._commentsModel = commentsModel;
+    this._api = api;
+    this._commentsModel = new CommentsModel();
 
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -35,6 +39,7 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._submitHandler = this._submitHandler.bind(this);
     this._keyHandler = this._keyHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._updateComments = this._updateComments.bind(this);
 
     this._commentsModel.addObserver(this._modelEventHandler);
   }
@@ -57,8 +62,10 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
       closeClick: this._closeClickHandler,
       formChange: this._changeHandler,
       formSubmit: this._submitHandler,
-      fieldKeyDown: this._keyHandler,
     });
+
+    this._commentsContainer = this._filmDetailsComponent.getElement()
+      .querySelector('.film-details__bottom-container');
   }
 
   _renderFilmDetails() {
@@ -66,25 +73,36 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
       .querySelector('.film-details__top-container');
 
     this._renderFilmControls();
-    this._renderFilmComments();
+    this._renderFilmComments(true);
     render(document.body, this._filmDetailsComponent);
+
+    this._api.getComments(this._film.filmInfo.id)
+      .then(this._updateComments)
+      .catch(this._updateComments);
   }
 
   _renderFilmControls() {
-    if (this._filmControlsComponent) remove(this._filmControlsComponent);
+    remove(this._filmControlsComponent);
 
     this._filmControlsComponent = new FilmDetailsControlsView(this._film.userDetails);
     render(this._controlsContainer, this._filmControlsComponent);
   }
 
-  _renderFilmComments() {
-    const commentsContainer = this._filmDetailsComponent.getElement()
-      .querySelector('.film-details__bottom-container');
-
+  _renderFilmComments(isLoading) {
     this._commentsPresenter = new CommentsPresenter(
-      commentsContainer, this._commentsModel, this._film.comments,
+      isLoading, this._commentsContainer, this._commentsModel, this._film.comments,
     );
     this._commentsPresenter.init();
+  }
+
+  _updateComments(comments) {
+    const isArray = Array.isArray(comments);
+
+    this._commentsModel.init(isArray ? comments : []);
+    this._commentsPresenter.destroy();
+    this._renderFilmComments();
+
+    if (isArray) this._filmDetailsComponent.setKeyHandler(this._keyHandler);
   }
 
   _openFilmDetails() {
@@ -123,7 +141,7 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     const comment = this._commentsPresenter.getComment();
 
     if (comment) {
-      this._commentsModel.createComment(UpdateType.MINOR, comment);
+      this._commentsModel.addComment(UpdateType.MINOR, comment);
     }
   }
 

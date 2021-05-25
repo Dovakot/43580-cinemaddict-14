@@ -10,7 +10,7 @@ const UserRankList = {
   },
 };
 
-const getUserRank = (count, isStatsActive) => {
+const getUserRankValue = (count) => {
   let userRank = UserRankList.DEFAULT;
 
   if (count <= UserRankList.NOVICE.count) {
@@ -19,8 +19,7 @@ const getUserRank = (count, isStatsActive) => {
     userRank = UserRankList.FAN.name;
   }
 
-  return isStatsActive ? `<span class="statistic__rank-label">${userRank}</span>`
-    : `<p class="profile__rating">${userRank.toLowerCase()}</p>`;
+  return userRank;
 };
 
-export default getUserRank;
+export default getUserRankValue;

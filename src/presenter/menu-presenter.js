@@ -26,13 +26,15 @@ class MenuPresenter {
     this._filmsModel.addObserver(this._modelEventHandler);
   }
 
-  init() {
-    if (this._menuComponent) remove(this._menuComponent);
+  init(isLoading) {
+    remove(this._menuComponent);
 
     this._menuComponent = new MenuView(this._getFiltersCount(), this._menuModel.menu);
     render(this._container, this._menuComponent, RenderPosition.AFTERBEGIN);
 
-    this._menuComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+    if (!isLoading) {
+      this._menuComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+    }
   }
 
   _getFiltersCount() {
@@ -53,7 +55,7 @@ class MenuPresenter {
   _filterTypeChangeHandler(filterType) {
     if (this._menuModel.filter === filterType) return;
 
-    this._menuModel.setMenu(UpdateType.MAJOR, filterType, 'default');
+    this._menuModel.setMenu(UpdateType.MAJOR, filterType);
   }
 
   _modelEventHandler() {

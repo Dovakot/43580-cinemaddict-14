@@ -22,6 +22,13 @@ class AbstractFilmPresenter {
     const changedData = Object.assign({}, this._film.userDetails);
     changedData[key] = !this._film.userDetails[key];
 
+    if (key === CONTROL_BUTTONS.watched) {
+      changedData.date = changedData.date ? null : new Date().toISOString();
+    }
+
+    button.checked = !button.checked;
+    button.disabled = true;
+
     this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
   }
 
