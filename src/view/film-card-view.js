@@ -1,12 +1,17 @@
 import AbstractView from './abstract-view';
 
 import {
-  AppConfig
+  AppConfig,
+  DateConfig
 } from 'const';
 
 import {
-  truncateText,
-  getTimeFromMinutes
+  getYear,
+  getTime
+} from 'utils/date-util';
+
+import {
+  truncateText
 } from 'utils/film-card-util';
 
 const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
@@ -21,10 +26,10 @@ const createFilmCardTemplate = (
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">
-        ${new Date(date).getFullYear()}
+        ${getYear(date)}
       </span>
       <span class="film-card__duration">
-        ${getTimeFromMinutes(runtime)}
+        ${getTime(runtime, DateConfig.FORMAT.time)}
       </span>
       <span class="film-card__genre">
         ${genres[0]}

@@ -1,9 +1,13 @@
 import AbstractView from '../abstract-view';
 
 import {
-  getTimeFromMinutes,
-  getFormattedDate
-} from 'utils/film-card-util';
+  DateConfig
+} from 'const';
+
+import {
+  getFormattedDate,
+  getTime
+} from 'utils/date-util';
 
 const getGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
@@ -60,13 +64,13 @@ const createFilmDetailsTemplate = ({
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
                 <td class="film-details__cell">
-                  ${getFormattedDate(date)}
+                  ${getFormattedDate(date, DateConfig.FORMAT.date)}
                 </td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
                 <td class="film-details__cell">
-                  ${getTimeFromMinutes(runtime)}
+                  ${getTime(runtime, DateConfig.FORMAT.time)}
                 </td>
               </tr>
               <tr class="film-details__row">

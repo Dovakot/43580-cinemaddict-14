@@ -12,6 +12,10 @@ const DateConfig = {
   DAYS_WEEK: 7,
   DAYS_YEARS: 365,
   DATE_OFFSET: 3600000,
+  FORMAT: {
+    date: 'DD MMMM YYYY',
+    time: 'H[h] mm[m]',
+  },
 };
 
 const AppConfig = {

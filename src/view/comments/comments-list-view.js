@@ -1,8 +1,8 @@
 import AbstractView from '../abstract-view';
 
 import {
-  getFormattedDateTime
-} from 'utils/film-card-util';
+  getRelativeTime
+} from 'utils/date-util';
 
 const getLoading = () => (
   '<p class="film-details__text">Loading...</p>'
@@ -27,7 +27,7 @@ const createComment = ({id, date, author, text, emotion}) => (
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">
-          ${getFormattedDateTime(date)}
+          ${getRelativeTime(date)}
         </span>
         <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
       </p>

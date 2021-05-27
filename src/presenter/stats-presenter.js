@@ -1,10 +1,12 @@
-import dayjs from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-
 import {
   AppConfig,
   DatePeriod
 } from 'const';
+
+import {
+  isDateInRange,
+  getDateFrom
+} from 'utils/date-util';
 
 import {
   sortObject
@@ -64,22 +66,12 @@ class StatsPresenter {
     this._chart = null;
   }
 
-  _isDateInRange(currentDate, dateFrom, period) {
-    dayjs.extend(isSameOrBefore);
-
-    return dayjs(dateFrom).isSameOrBefore(currentDate, period);
-  }
-
-  _getDateFrom(count, name) {
-    return dayjs().subtract(count, name).toDate();
-  }
-
   _getFilmsForPeriod() {
     if (this._currentPeriod === DatePeriod.ALL) return this._films;
 
-    const dateFrom = this._getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
+    const dateFrom = getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
 
-    return this._films.filter((film) => this._isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod));
+    return this._films.filter((film) => isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod));
   }
 
   _getGenres(films) {
