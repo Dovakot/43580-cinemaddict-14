@@ -62,7 +62,7 @@ const getTimeFromMinutes = (amount) => {
 };
 
 const truncateText = (text, amount) => text.length > amount
-  ? `${text.substring(0, amount)}...` : text;
+  ? `${text.substring(0, amount - 1)}...` : text;
 
 export {
   getFormattedDate,

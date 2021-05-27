@@ -34,7 +34,10 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   init(film) {
     this._film = film;
 
-    if (!this._isDefaultMode) this._filmDetailsPresenter.init(film);
+    if (!this._isDefaultMode) {
+      this._filmDetailsPresenter.init(film);
+    }
+
     this._renderFilmCard();
   }
 
@@ -43,7 +46,9 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   }
 
   resetView() {
-    if (!this._isDefaultMode) this._removeFilmDetails();
+    if (!this._isDefaultMode) {
+      this._removeFilmDetails();
+    }
   }
 
   rerender(filmCardBox, film) {
@@ -82,7 +87,9 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   }
 
   _renderFilmDetails() {
-    if (this._filmDetailsPresenter) return;
+    if (this._filmDetailsPresenter) {
+      return;
+    }
 
     this._filmDetailsPresenter = new FilmDetailsPresenter(this._changeMode, this._changeData, this._api);
     this._filmDetailsPresenter.init(this._film);
@@ -98,7 +105,9 @@ class FilmCardPresenter extends AbstractFilmPresenter {
   }
 
   _controlsClickHandler(target) {
-    if (target.classList.contains('film-card__controls-item')) this.changeFilmStatus(target);
+    if (target.classList.contains('film-card__controls-item')) {
+      this.changeFilmStatus(target);
+    }
   }
 
   _сlickHandler({target}) {

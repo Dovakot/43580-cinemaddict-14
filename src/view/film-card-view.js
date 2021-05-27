@@ -12,7 +12,7 @@ import {
 
 import {
   truncateText
-} from 'utils/film-card-util';
+} from 'utils/common-util';
 
 const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
 

@@ -40,7 +40,9 @@ class StatsFormView extends AbstractView {
     evt.preventDefault();
     const target = evt.target;
 
-    if (!target.classList.contains('statistic__filters-input')) return;
+    if (!target.classList.contains('statistic__filters-input')) {
+      return;
+    }
 
     this._callback.formChange(target.value);
   }

@@ -92,7 +92,9 @@ class BoardPresenter {
   }
 
   _updateUserLevel(oldCount, newCount) {
-    if (oldCount !== newCount) this._renderUserLevel(newCount);
+    if (oldCount !== newCount) {
+      this._renderUserLevel(newCount);
+    }
   }
 }
 

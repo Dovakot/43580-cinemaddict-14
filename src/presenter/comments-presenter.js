@@ -48,7 +48,9 @@ class CommentsPresenter {
   }
 
   changeComments(target) {
-    if (!target.classList.contains('film-details__emoji-item')) return;
+    if (!target.classList.contains('film-details__emoji-item')) {
+      return;
+    }
 
     this._currentEmotion = target.value;
     this._renderCommentEmotion(this._currentEmotion);
@@ -102,7 +104,9 @@ class CommentsPresenter {
     this._renderCommentEmotion();
     this._renderCommentEmotionList();
 
-    if (this._eventType) this.disableForm(true);
+    if (this._eventType) {
+      this.disableForm(true);
+    }
   }
 
   _disableButton(button, flag = false) {
@@ -113,7 +117,9 @@ class CommentsPresenter {
   _keyHandler({target}) {
     const comment = encode(target.value.trim());
 
-    if (!comment || !this._currentEmotion) return;
+    if (!comment || !this._currentEmotion) {
+      return;
+    }
 
     this.disableForm(true);
 

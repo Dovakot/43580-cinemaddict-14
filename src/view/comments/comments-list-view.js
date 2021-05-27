@@ -69,7 +69,9 @@ class CommentsListView extends AbstractView {
     evt.preventDefault();
     const target = evt.target;
 
-    if (!target.classList.contains('film-details__comment-delete')) return;
+    if (!target.classList.contains('film-details__comment-delete')) {
+      return;
+    }
 
     this._callback.click(target, target.dataset.commentId);
   }

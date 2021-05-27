@@ -35,7 +35,9 @@ class SortView extends AbstractView {
   _sortTypeChangeHandler(evt) {
     const target = evt.target;
 
-    if (!target.classList.contains('sort__button')) return;
+    if (!target.classList.contains('sort__button')) {
+      return;
+    }
     evt.preventDefault();
 
     this._callback.sortTypeChange(target.dataset.sortType);

@@ -46,7 +46,9 @@ class MenuView extends AbstractView {
     evt.preventDefault();
     const target = evt.target.closest('a');
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     this._callback.filterTypeChange(target.dataset.type);
   }

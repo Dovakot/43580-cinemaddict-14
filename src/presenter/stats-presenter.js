@@ -67,7 +67,9 @@ class StatsPresenter {
   }
 
   _getFilmsForPeriod() {
-    if (this._currentPeriod === DatePeriod.ALL) return this._films;
+    if (this._currentPeriod === DatePeriod.ALL) {
+      return this._films;
+    }
 
     const dateFrom = getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
 
@@ -98,7 +100,9 @@ class StatsPresenter {
   }
 
   _renderStatsForm() {
-    if (!this._filmsCount) return;
+    if (!this._filmsCount) {
+      return;
+    }
 
     remove(this._statsFormComponent);
 
@@ -118,7 +122,9 @@ class StatsPresenter {
   }
 
   _renderStatsChart() {
-    if (this._chart) this._destroyChart();
+    if (this._chart) {
+      this._destroyChart();
+    }
 
     const filmsForPeriod = this._getFilmsForPeriod();
     const sortedGenres = this._getSortedGenres(filmsForPeriod);

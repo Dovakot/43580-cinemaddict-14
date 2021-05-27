@@ -53,7 +53,9 @@ class MenuPresenter {
   }
 
   _filterTypeChangeHandler(filterType) {
-    if (this._menuModel.filter === filterType) return;
+    if (this._menuModel.filter === filterType) {
+      return;
+    }
 
     this._menuModel.setMenu(UpdateType.MAJOR, filterType);
   }
