@@ -79,8 +79,12 @@ class StatsPresenter {
   _getGenres(films) {
     this._totalDuration = 0;
 
-    return films.map(({filmInfo}) => (this._totalDuration += filmInfo.runtime, filmInfo.genres))
-      .flat().reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
+    return films.map(({filmInfo}) => {
+      this._totalDuration += filmInfo.runtime;
+      return filmInfo.genres;
+    })
+    .flat()
+    .reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
   }
 
   _getSortedGenres(films) {
