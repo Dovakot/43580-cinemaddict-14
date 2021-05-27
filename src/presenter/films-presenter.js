@@ -214,6 +214,17 @@ class FilmsPresenter {
       && presenter.init(updated));
   }
 
+  _updateFilmStatus(updateType, update, button) {
+    this._api.updateFilm(update)
+      .then((response) => this._filmsModel.updateFilm(updateType, response))
+      .catch(() => {
+        const controlLabel = button.nextElementSibling;
+
+        this._filmsSectionComponent.shake(controlLabel.tagName === 'LABEL' ? controlLabel : button);
+        button.disabled = false;
+      });
+  }
+
   _updateFilmSection() {
     this._clearFilmsSections();
     this._renderFilmsSections();
@@ -261,14 +272,13 @@ class FilmsPresenter {
     this._renderFilmsSections();
   }
 
-  _viewActionHandler(updateType, update) {
+  _viewActionHandler(updateType, update, payload) {
     if (this._menuModel.filter !== FilterType.ALL) {
       updateType = UpdateType.MINOR;
     }
 
-    this._api.updateFilm(update).then((response) => {
-      this._filmsModel.updateFilm(updateType, response);
-    });
+    return payload && payload.isApi ? this._updateFilmStatus(updateType, update, payload.button)
+      : this._filmsModel.updateFilm(updateType, update);
   }
 
   _modelEventHandler(updateType, data) {

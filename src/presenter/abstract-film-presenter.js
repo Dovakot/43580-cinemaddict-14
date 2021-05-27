@@ -2,7 +2,7 @@ import {
   UpdateType
 } from 'const';
 
-const CONTROL_BUTTONS = {
+const filmStatus = {
   watchlist: 'isWatchlist',
   watched: 'isWatched',
   favorite: 'isFavorite',
@@ -18,30 +18,33 @@ class AbstractFilmPresenter {
   }
 
   changeFilmStatus(button) {
-    const key = CONTROL_BUTTONS[button.name];
+    const key = filmStatus[button.name];
     const changedData = Object.assign({}, this._film.userDetails);
     changedData[key] = !this._film.userDetails[key];
 
-    if (key === CONTROL_BUTTONS.watched) {
+    if (key === filmStatus.watched) {
       changedData.date = changedData.date ? null : new Date().toISOString();
     }
 
     button.checked = !button.checked;
     button.disabled = true;
 
-    this._changeFilmData(UpdateType.PATCH, {userDetails: changedData});
+    this._changeFilmData(UpdateType.PATCH, {userDetails: changedData}, {isApi: true, button});
   }
 
-  changeFilmComment(updateType, commentId, isDeleted) {
-    const changedData = isDeleted
-      ? this._film.comments.filter((id) => id !== commentId)
-      : this._film.comments.concat(commentId);
-
-    this._changeFilmData(updateType, {comments: changedData});
+  changeFilmComment(updateType, data, isDeleted) {
+    return isDeleted ? this._deleteFilmComment(updateType, data)
+      : this._changeData(updateType, data);
   }
 
-  _changeFilmData(updateType, updatedData) {
-    this._changeData(updateType, Object.assign({}, this._film, updatedData));
+  _deleteFilmComment(updateType, commentId) {
+    const comments = this._film.comments.filter((id) => id !== commentId);
+
+    this._changeFilmData(updateType, {comments});
+  }
+
+  _changeFilmData(updateType, updatedData, payload) {
+    this._changeData(updateType, Object.assign({}, this._film, updatedData), payload);
   }
 }
 

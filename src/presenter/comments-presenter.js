@@ -17,25 +17,24 @@ import CommentsTitleView from 'view/comments/comments-title-view';
 import CommentsListView from 'view/comments/comments-list-view';
 import CommentEmojiLabelView from 'view/comments/comment-emoji-label-view';
 import CommentEmojiListView from 'view/comments/comment-emoji-list-view';
+import CommentFormView from 'view/comments/comment-form-view';
 
 class CommentsPresenter {
-  constructor(isLoading, commentsContainer, commentsModel, commentsId) {
-    this._isLoading = isLoading;
+  constructor(eventType, commentsContainer, commentsModel, film, api) {
+    this._commentsContainer = commentsContainer;
+    this._eventType = eventType;
     this._commentsModel = commentsModel;
-    this._commentsComponent = new CommentsView(isLoading);
+    this._commentsComponent = new CommentsView();
+    this._commentFormComponent = null;
     this._commentEmojiLabelComponent = null;
     this._commentEmojiListComponent = null;
     this._commentsTitleComponent = null;
     this._commentsListComponent = null;
     this._currentEmotion = null;
-    this._commentsId = commentsId;
+    this._film = film;
+    this._api = api;
 
-    this._commentsContainer = commentsContainer;
-    this._newCommentContainer = this._commentsComponent.getElement()
-      .querySelector('.film-details__new-comment');
-    this._commentField = this._newCommentContainer
-      .querySelector('.film-details__comment-input');
-
+    this._keyHandler = this._keyHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
   }
 
@@ -55,26 +54,17 @@ class CommentsPresenter {
     this._renderCommentEmotion(this._currentEmotion);
   }
 
-  getComment() {
-    const comment = encode(this._commentField.value.trim());
-
-    if (comment && this._currentEmotion) return {comment, emotion: this._currentEmotion};
-  }
-
-  rerenderComments(commentsId, isDeleted) {
-    this._commentsId = commentsId;
-
-    return isDeleted ? this._renderCommentList() : this._renderComments();
+  disableForm(flag = false) {
+    this._commentFormComponent.getElement().disabled = flag;
   }
 
   _renderCommentList() {
     remove(this._commentsTitleComponent);
     remove(this._commentsListComponent);
 
-    this._commentsTitleComponent = new CommentsTitleView(this._commentsId.length);
-
+    this._commentsTitleComponent = new CommentsTitleView(this._film.comments.length);
     this._commentsListComponent = new CommentsListView(
-      this._isLoading, this._commentsId, this._commentsModel.comments,
+      this._eventType, this._film.comments, this._commentsModel.comments,
     );
 
     render(this._commentsComponent, this._commentsTitleComponent, RenderPosition.AFTERBEGIN);
@@ -87,26 +77,66 @@ class CommentsPresenter {
     remove(this._commentEmojiLabelComponent);
 
     this._commentEmojiLabelComponent = new CommentEmojiLabelView(emotion);
-    render(this._newCommentContainer, this._commentEmojiLabelComponent, RenderPosition.AFTERBEGIN);
+    render(this._commentFormComponent, this._commentEmojiLabelComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderCommentEmotionList() {
     remove(this._commentEmojiListComponent);
 
-    this._commentEmojiListComponent = new CommentEmojiListView(this._isLoading);
-    render(this._newCommentContainer, this._commentEmojiListComponent);
+    this._commentEmojiListComponent = new CommentEmojiListView();
+    render(this._commentFormComponent, this._commentEmojiListComponent);
+  }
+
+  _renderCommentForm() {
+    remove(this._commentFormComponent);
+
+    this._commentFormComponent = new CommentFormView();
+    render(this._commentsComponent, this._commentFormComponent);
+
+    this._commentFormComponent.setKeyHandler(this._keyHandler);
   }
 
   _renderComments() {
-    this._commentField.value = '';
-
+    this._renderCommentForm();
     this._renderCommentList();
     this._renderCommentEmotion();
     this._renderCommentEmotionList();
+
+    if (this._eventType) this.disableForm(true);
   }
 
-  _deleteClickHandler(id) {
-    this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
+  _disableButton(button, flag = false) {
+    button.textContent = flag ? 'Deleting...' : 'Delete';
+    button.disabled = flag;
+  }
+
+  _keyHandler({target}) {
+    const comment = encode(target.value.trim());
+
+    if (!comment || !this._currentEmotion) return;
+
+    this.disableForm(true);
+
+    this._api.addComment({comment, emotion: this._currentEmotion, movie: this._film.filmInfo.id})
+      .then((response) => this._commentsModel.addComment(UpdateType.MINOR, response))
+      .catch(() => {
+        this.disableForm();
+        this._commentFormComponent.shake();
+      });
+  }
+
+  _deleteClickHandler(button, id) {
+    this._disableButton(button, true);
+
+    this._api.deleteComment(id)
+      .then(() => {
+        this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
+        this._disableButton(button);
+      })
+      .catch(() => {
+        this._disableButton(button);
+        this._commentsListComponent.shake(button.closest('li'));
+      });
   }
 }
 
