@@ -1,7 +1,7 @@
 import AbstractView from '../abstract-view';
 
 import {
-  DateConfig
+  DateFormat
 } from 'const';
 
 import {
@@ -64,13 +64,13 @@ const createFilmDetailsTemplate = ({
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
                 <td class="film-details__cell">
-                  ${getFormattedDate(date, DateConfig.FORMAT.date)}
+                  ${getFormattedDate(date, DateFormat.DATE)}
                 </td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
                 <td class="film-details__cell">
-                  ${getTime(runtime, DateConfig.FORMAT.time)}
+                  ${getTime(runtime, DateFormat.TIME)}
                 </td>
               </tr>
               <tr class="film-details__row">

@@ -1,6 +1,3 @@
-/*eslint no-undef: "error"*/
-/*eslint-env node*/
-
 import {
   AppConfig
 } from 'const';

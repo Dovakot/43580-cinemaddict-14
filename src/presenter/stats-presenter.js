@@ -83,8 +83,8 @@ class StatsPresenter {
       this._totalDuration += filmInfo.runtime;
       return filmInfo.genres;
     })
-    .flat()
-    .reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
+      .flat()
+      .reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
   }
 
   _getSortedGenres(films) {

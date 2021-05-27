@@ -2,7 +2,7 @@ import AbstractView from './abstract-view';
 
 import {
   AppConfig,
-  DateConfig
+  DateFormat
 } from 'const';
 
 import {
@@ -29,7 +29,7 @@ const createFilmCardTemplate = (
         ${getYear(date)}
       </span>
       <span class="film-card__duration">
-        ${getTime(runtime, DateConfig.FORMAT.time)}
+        ${getTime(runtime, DateFormat.TIME)}
       </span>
       <span class="film-card__genre">
         ${genres[0]}
