@@ -27,17 +27,21 @@ class FilmsModel extends AbstractModel {
     this._length = 0;
   }
 
-  init(films) {
-    this._films = films.slice();
-    this._length = films.length;
-  }
-
   get films() {
     return this._films;
   }
 
   get length() {
     return this._length;
+  }
+
+  get _copy() {
+    return this._films.slice();
+  }
+
+  init(films) {
+    this._films = films.slice();
+    this._length = films.length;
   }
 
   getExtraFilms(type) {
@@ -69,8 +73,7 @@ class FilmsModel extends AbstractModel {
   }
 
   sortByDate(films = this._copy) {
-    return films.sort((a, b) => new Date(b.filmInfo.release.date)
-      - new Date(a.filmInfo.release.date));
+    return films.sort((a, b) => b.filmInfo.release.date - a.filmInfo.release.date);
   }
 
   filterBy(type) {
@@ -89,10 +92,6 @@ class FilmsModel extends AbstractModel {
 
   filterByFavorites(films = this._films) {
     return films.filter((film) => film.userDetails.isFavorite);
-  }
-
-  get _copy() {
-    return this._films.slice();
   }
 
   _filterByRating() {

@@ -10,6 +10,8 @@ import {
 
 import MenuView from 'view/menu-view';
 
+const FILTERS = ['filterByWatchlist', 'filterByWatched', 'filterByFavorites'];
+
 class MenuPresenter {
   constructor(container, filmsModel, menuModel, updateUserLevel) {
     this._container = container;
@@ -38,10 +40,9 @@ class MenuPresenter {
   }
 
   _getFiltersCount() {
-    const filters = ['filterByWatchlist', 'filterByWatched', 'filterByFavorites'];
     const filtersCount = this._menuModel.getFilteredFilmCount(
       this._filmsModel.films,
-      filters.map((filter) => this._filmsModel[filter]),
+      FILTERS.map((filter) => this._filmsModel[filter]),
     );
 
     const oldFilmsWatchedCount = this._filmsWatchedCount;

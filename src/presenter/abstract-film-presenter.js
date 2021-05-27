@@ -18,6 +18,7 @@ class AbstractFilmPresenter {
   }
 
   changeFilmStatus(button) {
+    const component = this._filmCardComponent || this._filmControlsComponent;
     const key = filmStatus[button.name];
     const changedData = Object.assign({}, this._film.userDetails);
     changedData[key] = !this._film.userDetails[key];
@@ -26,10 +27,11 @@ class AbstractFilmPresenter {
       changedData.date = changedData.date ? null : new Date().toISOString();
     }
 
-    button.checked = !button.checked;
-    button.disabled = true;
-
-    this._changeFilmData(UpdateType.PATCH, {userDetails: changedData}, {isApi: true, button});
+    this._changeFilmData(
+      UpdateType.PATCH,
+      {userDetails: changedData},
+      {isApi: true, name: button.name, component},
+    );
   }
 
   changeFilmComment(updateType, data, isDeleted) {

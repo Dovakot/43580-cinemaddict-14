@@ -56,10 +56,6 @@ class CommentsPresenter {
     this._renderCommentEmotion(this._currentEmotion);
   }
 
-  disableForm(flag = false) {
-    this._commentFormComponent.getElement().disabled = flag;
-  }
-
   _renderCommentList() {
     remove(this._commentsTitleComponent);
     remove(this._commentsListComponent);
@@ -105,13 +101,8 @@ class CommentsPresenter {
     this._renderCommentEmotionList();
 
     if (this._eventType) {
-      this.disableForm(true);
+      this._commentFormComponent.disableForm();
     }
-  }
-
-  _disableButton(button, flag = false) {
-    button.textContent = flag ? 'Deleting...' : 'Delete';
-    button.disabled = flag;
   }
 
   _keyHandler({target}) {
@@ -121,28 +112,17 @@ class CommentsPresenter {
       return;
     }
 
-    this.disableForm(true);
+    this._commentFormComponent.disableForm();
 
     this._api.addComment({comment, emotion: this._currentEmotion, movie: this._film.filmInfo.id})
       .then((response) => this._commentsModel.addComment(UpdateType.MINOR, response))
-      .catch(() => {
-        this.disableForm();
-        this._commentFormComponent.shake();
-      });
+      .catch(() => this._commentFormComponent.shake());
   }
 
-  _deleteClickHandler(button, id) {
-    this._disableButton(button, true);
-
+  _deleteClickHandler(id) {
     this._api.deleteComment(id)
-      .then(() => {
-        this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
-        this._disableButton(button);
-      })
-      .catch(() => {
-        this._disableButton(button);
-        this._commentsListComponent.shake(button.closest('li'));
-      });
+      .then(() => this._commentsModel.deleteComment(UpdateType.MINOR, id, true))
+      .catch(() => this._commentsListComponent.shake(id));
   }
 }
 

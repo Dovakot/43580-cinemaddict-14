@@ -1,3 +1,7 @@
+import {
+  reportError
+} from 'utils/common-util';
+
 import AbstractView from '../abstract-view';
 
 const changeStatus = (flag) => flag ? 'checked' : '';
@@ -23,6 +27,14 @@ class FilmDetailsControlsView extends AbstractView {
 
   getTemplate() {
     return createFilmDetailsControlsTemplate(this._userDetails);
+  }
+
+  shake(name) {
+    const controlLabel = this.getElement().querySelector(`.film-details__control-label--${name}`);
+    const controlButton = this.getElement().querySelector(`#${name}`);
+
+    controlButton.disabled = false;
+    reportError(controlLabel);
   }
 }
 

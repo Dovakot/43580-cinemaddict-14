@@ -1,5 +1,6 @@
 import {
-  isSubmit
+  isSubmit,
+  reportError
 } from 'utils/common-util';
 
 import AbstractView from '../abstract-view';
@@ -20,6 +21,17 @@ class CommentFormView extends AbstractView {
 
   getTemplate() {
     return createCommentFormTemplate();
+  }
+
+  disableForm() {
+    this.getElement().disabled = true;
+  }
+
+  shake() {
+    const form = this.getElement();
+
+    form.disabled = false;
+    reportError(form);
   }
 
   setKeyHandler(callback) {

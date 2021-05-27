@@ -1,8 +1,17 @@
+import {
+  reportError
+} from 'utils/common-util';
+
 import AbstractView from '../abstract-view';
 
 import {
   getRelativeTime
 } from 'utils/date-util';
+
+const ButtonText = {
+  DELETING: 'Deleting...',
+  DELETE: 'Delete',
+};
 
 const getLoading = () => (
   '<p class="film-details__text">Loading...</p>'
@@ -65,6 +74,21 @@ class CommentsListView extends AbstractView {
     return createCommentsListTemplate(this._eventType, this._ids, this._comments);
   }
 
+  shake(id) {
+    const deleteButton = this.getElement().querySelector(`[data-comment-id="${id}"]`);
+    const container = deleteButton.closest('li');
+
+    deleteButton.disabled = false;
+    deleteButton.textContent = ButtonText.DELETE;
+    reportError(container);
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+
+    this.getElement().addEventListener('click', this._clickHandler);
+  }
+
   _clickHandler(evt) {
     evt.preventDefault();
     const target = evt.target;
@@ -73,12 +97,10 @@ class CommentsListView extends AbstractView {
       return;
     }
 
-    this._callback.click(target, target.dataset.commentId);
-  }
+    target.disabled = true;
+    target.textContent = ButtonText.DELETING;
 
-  setClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().addEventListener('click', this._clickHandler);
+    this._callback.click(target.dataset.commentId);
   }
 }
 

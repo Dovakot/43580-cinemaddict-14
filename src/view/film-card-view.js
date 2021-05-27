@@ -11,10 +11,13 @@ import {
 } from 'utils/date-util';
 
 import {
-  truncateText
+  truncateText,
+  reportError
 } from 'utils/common-util';
 
-const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
+const CONTROL_BUTTON = 'film-card__controls-item';
+
+const setClass = (flag) => flag ? `${CONTROL_BUTTON}--active` : '';
 
 const createFilmCardTemplate = (
   {title, poster, description, rating, runtime, genres, release: {date}},
@@ -69,14 +72,28 @@ class FilmCardView extends AbstractView {
     return createFilmCardTemplate(this._film.filmInfo, this._film.userDetails, this._commentCount);
   }
 
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click(evt);
-  }
-
   setClickHandler(callback) {
     this._callback.click = callback;
+
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  shake(value) {
+    const controlButton = this.getElement().querySelector(`[name="${value}"]`);
+
+    controlButton.disabled = false;
+    reportError(controlButton);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    const target = evt.target;
+
+    if (target.classList.contains(CONTROL_BUTTON)) {
+      target.disabled = true;
+    }
+
+    this._callback.click(evt);
   }
 }
 

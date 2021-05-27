@@ -6,6 +6,10 @@ class CommentsModel extends AbstractModel {
     this._comments = [];
   }
 
+  get comments() {
+    return this._comments;
+  }
+
   init(comments) {
     this._comments = comments.slice();
   }
@@ -20,10 +24,6 @@ class CommentsModel extends AbstractModel {
     this._comments = this._comments.filter((comment) => comment.id !== id);
 
     this._notify(updateType, id, isDeleted);
-  }
-
-  get comments() {
-    return this._comments;
   }
 
   static adaptToClient({id, date, author, emotion, comment}) {

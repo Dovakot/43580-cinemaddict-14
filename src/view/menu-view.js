@@ -42,6 +42,12 @@ class MenuView extends AbstractView {
     return createMenuTemplate(this._filters, this._menu);
   }
 
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+  }
+
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
     const target = evt.target.closest('a');
@@ -51,11 +57,6 @@ class MenuView extends AbstractView {
     }
 
     this._callback.filterTypeChange(target.dataset.type);
-  }
-
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
   }
 }
 

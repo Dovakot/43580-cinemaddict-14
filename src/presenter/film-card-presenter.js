@@ -31,6 +31,10 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     this._сlickHandler = this._сlickHandler.bind(this);
   }
 
+  get defaultMode() {
+    return this._isDefaultMode;
+  }
+
   init(film) {
     this._film = film;
 
@@ -59,10 +63,6 @@ class FilmCardPresenter extends AbstractFilmPresenter {
 
   updateFilmDetailsPresenter(film) {
     this._filmDetailsPresenter.init(film);
-  }
-
-  get defaultMode() {
-    return this._isDefaultMode;
   }
 
   _createFilmCard() {

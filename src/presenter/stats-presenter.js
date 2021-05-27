@@ -9,10 +9,6 @@ import {
 } from 'utils/date-util';
 
 import {
-  sortObject
-} from 'utils/common-util';
-
-import {
   render,
   remove
 } from 'utils/render-util';
@@ -90,7 +86,9 @@ class StatsPresenter {
   _getSortedGenres(films) {
     const genres = this._getGenres(films);
 
-    return sortObject(genres);
+    return Object.fromEntries(
+      Object.entries(genres).sort((a, b) => b[1] - a[1]),
+    );
   }
 
   _renderStatsSection() {

@@ -32,20 +32,21 @@ class SortView extends AbstractView {
     return createSortTemplate(this._currentSort);
   }
 
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+
+    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+  }
+
   _sortTypeChangeHandler(evt) {
+    evt.preventDefault();
     const target = evt.target;
 
     if (!target.classList.contains('sort__button')) {
       return;
     }
-    evt.preventDefault();
 
     this._callback.sortTypeChange(target.dataset.sortType);
-  }
-
-  setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 }
 

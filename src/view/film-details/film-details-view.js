@@ -112,22 +112,6 @@ class FilmDetailsView extends AbstractView {
     return createFilmDetailsTemplate(this._film);
   }
 
-  _closeClickHandler(evt) {
-    evt.preventDefault();
-
-    this._callback.closeClick(evt);
-  }
-
-  _changeHandler(evt) {
-    evt.preventDefault();
-
-    this._callback.formChange(evt);
-  }
-
-  _submitHandler(evt) {
-    this._callback.formSubmit(evt);
-  }
-
   setHandlers() {
     const form = this.getElement().querySelector('.film-details__inner');
     const button = form.querySelector('.film-details__close-btn');
@@ -138,6 +122,28 @@ class FilmDetailsView extends AbstractView {
     button.addEventListener('click', this._closeClickHandler);
     form.addEventListener('change', this._changeHandler);
     form.addEventListener('submit', this._submitHandler);
+  }
+
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.closeClick(evt);
+  }
+
+  _changeHandler(evt) {
+    evt.preventDefault();
+    const target = evt.target;
+
+    if (target.classList.contains('film-details__control-input')) {
+      target.disabled = true;
+      target.checked = !target.checked;
+    }
+
+    this._callback.formChange(evt);
+  }
+
+  _submitHandler(evt) {
+    this._callback.formSubmit(evt);
   }
 }
 

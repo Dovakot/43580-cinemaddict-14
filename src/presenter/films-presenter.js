@@ -222,15 +222,10 @@ class FilmsPresenter {
       && presenter.init(updated));
   }
 
-  _updateFilmStatus(updateType, update, button) {
+  _updateFilmStatus(updateType, update, {component, name}) {
     this._api.updateFilm(update)
       .then((response) => this._filmsModel.updateFilm(updateType, response))
-      .catch(() => {
-        const controlLabel = button.nextElementSibling;
-
-        this._filmsSectionComponent.shake(controlLabel.tagName === 'LABEL' ? controlLabel : button);
-        button.disabled = false;
-      });
+      .catch(() => component.shake(name));
   }
 
   _updateFilmSection() {
@@ -290,7 +285,7 @@ class FilmsPresenter {
       updateType = UpdateType.MINOR;
     }
 
-    return payload && payload.isApi ? this._updateFilmStatus(updateType, update, payload.button)
+    return payload && payload.isApi ? this._updateFilmStatus(updateType, update, payload)
       : this._filmsModel.updateFilm(updateType, update);
   }
 
