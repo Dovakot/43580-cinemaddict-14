@@ -1,8 +1,4 @@
 import {
-  UpdateType
-} from 'const';
-
-import {
   isEscEvent
 } from 'utils/common-util';
 
@@ -18,6 +14,11 @@ import FilmDetailsControlsView from 'view/film-details/film-details-controls-vie
 
 import AbstractFilmPresenter from './abstract-film-presenter';
 import CommentsPresenter from 'presenter/comments-presenter';
+
+const EventType  = {
+  LOADING: 'loading',
+  ERROR: 'error',
+};
 
 class FilmDetailsPresenter extends AbstractFilmPresenter {
   constructor(changeMode, changeData, api) {
@@ -37,7 +38,6 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._changeHandler = this._changeHandler.bind(this);
     this._submitHandler = this._submitHandler.bind(this);
-    this._keyHandler = this._keyHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._updateComments = this._updateComments.bind(this);
 
@@ -53,7 +53,6 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
 
   destroy() {
     remove(this._filmDetailsComponent);
-
     this._commentsModel.removeObserver(this._modelEventHandler);
   }
 
@@ -73,8 +72,8 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
       .querySelector('.film-details__top-container');
 
     this._renderFilmControls();
-    this._renderFilmComments(true);
     render(document.body, this._filmDetailsComponent);
+    this._renderFilmComments(EventType.LOADING);
 
     this._api.getComments(this._film.filmInfo.id)
       .then(this._updateComments)
@@ -88,21 +87,19 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     render(this._controlsContainer, this._filmControlsComponent);
   }
 
-  _renderFilmComments(isLoading) {
+  _renderFilmComments(eventType) {
     this._commentsPresenter = new CommentsPresenter(
-      isLoading, this._commentsContainer, this._commentsModel, this._film.comments,
+      eventType, this._commentsContainer, this._commentsModel, this._film, this._api,
     );
     this._commentsPresenter.init();
   }
 
   _updateComments(comments) {
     const isArray = Array.isArray(comments);
-
     this._commentsModel.init(isArray ? comments : []);
     this._commentsPresenter.destroy();
-    this._renderFilmComments();
 
-    if (isArray) this._filmDetailsComponent.setKeyHandler(this._keyHandler);
+    this._renderFilmComments(!isArray && EventType.ERROR);
   }
 
   _openFilmDetails() {
@@ -137,22 +134,14 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
 
   }
 
-  _keyHandler() {
-    const comment = this._commentsPresenter.getComment();
-
-    if (comment) {
-      this._commentsModel.addComment(UpdateType.MINOR, comment);
-    }
-  }
-
   _modelEventHandler(updateType, data, isDeleted) {
     this.changeFilmComment(updateType, data, isDeleted);
-    this._commentsPresenter.rerenderComments(this._film.comments, isDeleted);
+    this._commentsPresenter.destroy();
+    this._renderFilmComments();
   }
 
-  _submitHandler() {
-    // отменяет отправление формы по Enter
-    // возможно понадобиться в будушем, если нет, то реализация переедет во вьюху
+  _submitHandler(evt) {
+    evt.preventDefault();
   }
 }
 

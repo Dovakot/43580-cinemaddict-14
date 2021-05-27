@@ -1,10 +1,6 @@
 import AbstractView from '../abstract-view';
 
 import {
-  isSubmit
-} from 'utils/common-util';
-
-import {
   getTimeFromMinutes,
   getFormattedDate
 } from 'utils/film-card-util';
@@ -106,7 +102,6 @@ class FilmDetailsView extends AbstractView {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._changeHandler = this._changeHandler.bind(this);
     this._submitHandler = this._submitHandler.bind(this);
-    this._keyHandler = this._keyHandler.bind(this);
   }
 
   getTemplate() {
@@ -126,13 +121,7 @@ class FilmDetailsView extends AbstractView {
   }
 
   _submitHandler(evt) {
-    evt.preventDefault();
-
     this._callback.formSubmit(evt);
-  }
-
-  _keyHandler(evt) {
-    return isSubmit(evt) ? this._callback.fieldKeyDown(evt) : false;
   }
 
   setHandlers() {
@@ -145,13 +134,6 @@ class FilmDetailsView extends AbstractView {
     button.addEventListener('click', this._closeClickHandler);
     form.addEventListener('change', this._changeHandler);
     form.addEventListener('submit', this._submitHandler);
-  }
-
-  setKeyHandler(callback) {
-    this._callback.fieldKeyDown = callback;
-
-    this.getElement().querySelector('.film-details__comment-input')
-      .addEventListener('keydown', this._keyHandler);
   }
 }
 

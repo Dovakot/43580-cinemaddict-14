@@ -12,6 +12,11 @@ const getError = () => (
   '<p class="film-details__text film-details__text--error">Loading Error</p>'
 );
 
+const eventType = {
+  loading: getLoading,
+  error: getError,
+};
+
 const createComment = ({id, date, author, text, emotion}) => (
   `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
@@ -42,16 +47,14 @@ const getComment = (comments) => (id) => {
   return createComment(...comment);
 };
 
-const createCommentsListTemplate = (isLoading, ids, comments) => {
-  if (isLoading) return getLoading();
-
-  return ids.length === comments.length ? createComments(ids, comments) : getError();
+const createCommentsListTemplate = (type, ids, comments) => {
+  return eventType[type] ? eventType[type]() : createComments(ids, comments);
 };
 
 class CommentsListView extends AbstractView {
-  constructor(isLoading, ids, comments) {
+  constructor(eventType, ids, comments) {
     super();
-    this._isLoading = isLoading;
+    this._eventType = eventType;
     this._ids = ids;
     this._comments = comments;
 
@@ -59,7 +62,7 @@ class CommentsListView extends AbstractView {
   }
 
   getTemplate() {
-    return createCommentsListTemplate(this._isLoading, this._ids, this._comments);
+    return createCommentsListTemplate(this._eventType, this._ids, this._comments);
   }
 
   _clickHandler(evt) {
@@ -68,7 +71,7 @@ class CommentsListView extends AbstractView {
 
     if (!target.classList.contains('film-details__comment-delete')) return;
 
-    this._callback.click(target.dataset.commentId);
+    this._callback.click(target, target.dataset.commentId);
   }
 
   setClickHandler(callback) {
