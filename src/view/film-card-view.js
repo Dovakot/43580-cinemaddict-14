@@ -1,15 +1,23 @@
 import AbstractView from './abstract-view';
 
 import {
-  AppConfig
+  AppConfig,
+  DateFormat
 } from 'const';
 
 import {
-  truncateText,
-  getTimeFromMinutes
-} from 'utils/film-card-util';
+  getYear,
+  getTime
+} from 'utils/date-util';
 
-const setClass = (flag) => flag ? 'film-card__controls-item--active' : '';
+import {
+  truncateText,
+  reportError
+} from 'utils/common-util';
+
+const CONTROL_BUTTON = 'film-card__controls-item';
+
+const setClass = (flag) => flag ? `${CONTROL_BUTTON}--active` : '';
 
 const createFilmCardTemplate = (
   {title, poster, description, rating, runtime, genres, release: {date}},
@@ -21,10 +29,10 @@ const createFilmCardTemplate = (
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">
-        ${new Date(date).getFullYear()}
+        ${getYear(date)}
       </span>
       <span class="film-card__duration">
-        ${getTimeFromMinutes(runtime)}
+        ${getTime(runtime, DateFormat.TIME)}
       </span>
       <span class="film-card__genre">
         ${genres[0]}
@@ -64,14 +72,28 @@ class FilmCardView extends AbstractView {
     return createFilmCardTemplate(this._film.filmInfo, this._film.userDetails, this._commentCount);
   }
 
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click(evt);
-  }
-
   setClickHandler(callback) {
     this._callback.click = callback;
+
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  shake(value) {
+    const controlButton = this.getElement().querySelector(`[name="${value}"]`);
+
+    controlButton.disabled = false;
+    reportError(controlButton);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    const target = evt.target;
+
+    if (target.classList.contains(CONTROL_BUTTON)) {
+      target.disabled = true;
+    }
+
+    this._callback.click(evt);
   }
 }
 

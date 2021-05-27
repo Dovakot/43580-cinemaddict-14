@@ -13,18 +13,6 @@ class MenuModel extends AbstractModel {
     };
   }
 
-  setMenu(updateType, currentType) {
-    this._menu.currentFilter = currentType;
-
-    if (FilterType[currentType.toUpperCase()]) {
-      this._menu.isStatsActive = false;
-    } else {
-      this._menu.isStatsActive = true;
-    }
-
-    this._notify(updateType, this._menu, this._menu.isStatsActive);
-  }
-
   get menu() {
     return this._menu;
   }
@@ -35,6 +23,18 @@ class MenuModel extends AbstractModel {
 
   get filter() {
     return this._menu.currentFilter;
+  }
+
+  setMenu(updateType, currentType) {
+    this._menu.currentFilter = currentType;
+
+    if (FilterType[currentType.toUpperCase()]) {
+      this._menu.isStatsActive = false;
+    } else {
+      this._menu.isStatsActive = true;
+    }
+
+    this._notify(updateType, this._menu, this._menu.isStatsActive);
   }
 
   getFilteredFilmCount(films, filters) {

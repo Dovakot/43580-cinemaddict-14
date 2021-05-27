@@ -28,7 +28,6 @@ const createStatsFormTemplate = () => (
 class StatsFormView extends AbstractView {
   constructor() {
     super();
-
     this._changeHandler = this._changeHandler.bind(this);
   }
 
@@ -36,18 +35,21 @@ class StatsFormView extends AbstractView {
     return createStatsFormTemplate();
   }
 
+  setChangeHandler(callback) {
+    this._callback.formChange = callback;
+
+    this.getElement().addEventListener('change', this._changeHandler);
+  }
+
   _changeHandler(evt) {
     evt.preventDefault();
     const target = evt.target;
 
-    if (!target.classList.contains('statistic__filters-input')) return;
+    if (!target.classList.contains('statistic__filters-input')) {
+      return;
+    }
 
     this._callback.formChange(target.value);
-  }
-
-  setChangeHandler(callback) {
-    this._callback.formChange = callback;
-    this.getElement().addEventListener('change', this._changeHandler);
   }
 }
 

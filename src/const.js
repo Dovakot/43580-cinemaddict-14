@@ -1,17 +1,12 @@
-const BASE_DEGREE = 10;
-
 const RenderPosition = {
   AFTERBEGIN: 'prepend',
   BEFOREEND: 'append',
   AFTEREND: 'after',
 };
 
-const DateConfig = {
-  MAX_HOURS: 24,
-  MAX_MINUTES: 60,
-  DAYS_WEEK: 7,
-  DAYS_YEARS: 365,
-  DATE_OFFSET: 3600000,
+const DateFormat = {
+  DATE: 'DD MMMM YYYY',
+  TIME: 'H[h] mm[m]',
 };
 
 const AppConfig = {
@@ -19,9 +14,6 @@ const AppConfig = {
   END_POINT: 'https://14.ecmascript.pages.academy/cinemaddict',
   MAX_FILMS_PER_STEP: 5,
   EXTRA_FILM_COUNT: 2,
-  MAX_FILMS: 21,
-  MAX_COMMENTS: 40,
-  MAX_FILM_COMMENT: 5,
   MAX_NUMBER_CHAR: 140,
   BAR_HEIGHT: 50,
 };
@@ -54,9 +46,8 @@ const DatePeriod = {
 };
 
 export {
-  BASE_DEGREE,
   RenderPosition,
-  DateConfig,
+  DateFormat,
   AppConfig,
   SortType,
   FilterType,

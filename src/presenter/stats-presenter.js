@@ -1,14 +1,12 @@
-import dayjs from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-
 import {
   AppConfig,
   DatePeriod
 } from 'const';
 
 import {
-  sortObject
-} from 'utils/common-util';
+  isDateInRange,
+  getDateFrom
+} from 'utils/date-util';
 
 import {
   render,
@@ -64,35 +62,33 @@ class StatsPresenter {
     this._chart = null;
   }
 
-  _isDateInRange(currentDate, dateFrom, period) {
-    dayjs.extend(isSameOrBefore);
-
-    return dayjs(dateFrom).isSameOrBefore(currentDate, period);
-  }
-
-  _getDateFrom(count, name) {
-    return dayjs().subtract(count, name).toDate();
-  }
-
   _getFilmsForPeriod() {
-    if (this._currentPeriod === DatePeriod.ALL) return this._films;
+    if (this._currentPeriod === DatePeriod.ALL) {
+      return this._films;
+    }
 
-    const dateFrom = this._getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
+    const dateFrom = getDateFrom(daysCount[this._currentPeriod], this._currentPeriod);
 
-    return this._films.filter((film) => this._isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod));
+    return this._films.filter((film) => isDateInRange(film.userDetails.date, dateFrom, this._currentPeriod));
   }
 
   _getGenres(films) {
     this._totalDuration = 0;
 
-    return films.map(({filmInfo}) => (this._totalDuration += filmInfo.runtime, filmInfo.genres))
-      .flat().reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
+    return films.map(({filmInfo}) => {
+      this._totalDuration += filmInfo.runtime;
+      return filmInfo.genres;
+    })
+      .flat()
+      .reduce((stack, genre) => (stack[genre] ? stack[genre]++ : stack[genre] = 1, stack), {});
   }
 
   _getSortedGenres(films) {
     const genres = this._getGenres(films);
 
-    return sortObject(genres);
+    return Object.fromEntries(
+      Object.entries(genres).sort((a, b) => b[1] - a[1]),
+    );
   }
 
   _renderStatsSection() {
@@ -106,7 +102,9 @@ class StatsPresenter {
   }
 
   _renderStatsForm() {
-    if (!this._filmsCount) return;
+    if (!this._filmsCount) {
+      return;
+    }
 
     remove(this._statsFormComponent);
 
@@ -126,7 +124,9 @@ class StatsPresenter {
   }
 
   _renderStatsChart() {
-    if (this._chart) this._destroyChart();
+    if (this._chart) {
+      this._destroyChart();
+    }
 
     const filmsForPeriod = this._getFilmsForPeriod();
     const sortedGenres = this._getSortedGenres(filmsForPeriod);

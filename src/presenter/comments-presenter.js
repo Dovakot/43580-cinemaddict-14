@@ -48,14 +48,12 @@ class CommentsPresenter {
   }
 
   changeComments(target) {
-    if (!target.classList.contains('film-details__emoji-item')) return;
+    if (!target.classList.contains('film-details__emoji-item')) {
+      return;
+    }
 
     this._currentEmotion = target.value;
     this._renderCommentEmotion(this._currentEmotion);
-  }
-
-  disableForm(flag = false) {
-    this._commentFormComponent.getElement().disabled = flag;
   }
 
   _renderCommentList() {
@@ -102,41 +100,29 @@ class CommentsPresenter {
     this._renderCommentEmotion();
     this._renderCommentEmotionList();
 
-    if (this._eventType) this.disableForm(true);
-  }
-
-  _disableButton(button, flag = false) {
-    button.textContent = flag ? 'Deleting...' : 'Delete';
-    button.disabled = flag;
+    if (this._eventType) {
+      this._commentFormComponent.disableForm();
+    }
   }
 
   _keyHandler({target}) {
     const comment = encode(target.value.trim());
 
-    if (!comment || !this._currentEmotion) return;
+    if (!comment || !this._currentEmotion) {
+      return;
+    }
 
-    this.disableForm(true);
+    this._commentFormComponent.disableForm();
 
     this._api.addComment({comment, emotion: this._currentEmotion, movie: this._film.filmInfo.id})
       .then((response) => this._commentsModel.addComment(UpdateType.MINOR, response))
-      .catch(() => {
-        this.disableForm();
-        this._commentFormComponent.shake();
-      });
+      .catch(() => this._commentFormComponent.shake());
   }
 
-  _deleteClickHandler(button, id) {
-    this._disableButton(button, true);
-
+  _deleteClickHandler(id) {
     this._api.deleteComment(id)
-      .then(() => {
-        this._commentsModel.deleteComment(UpdateType.MINOR, id, true);
-        this._disableButton(button);
-      })
-      .catch(() => {
-        this._disableButton(button);
-        this._commentsListComponent.shake(button.closest('li'));
-      });
+      .then(() => this._commentsModel.deleteComment(UpdateType.MINOR, id, true))
+      .catch(() => this._commentsListComponent.shake(id));
   }
 }
 

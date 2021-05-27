@@ -137,14 +137,18 @@ class FilmsPresenter {
       this._getFilms(), this._filmListContainer, 0, this._renderedFilmCardCounter,
     );
 
-    if (this._filmCardCount > this._renderedFilmCardCounter) this._renderShowButton();
+    if (this._filmCardCount > this._renderedFilmCardCounter) {
+      this._renderShowButton();
+    }
   }
 
   _renderExtraFilmCardList(type) {
     const filmsListSection = this._filmsSection.querySelector(`.films-list--${type}`);
     const films = this._filmsModel.getExtraFilms(type);
 
-    if (!films) return filmsListSection.remove();
+    if (!films) {
+      return filmsListSection.remove();
+    }
 
     const filmsListContainer = filmsListSection.querySelector('.films-list__container');
     this._filmType = type;
@@ -163,7 +167,9 @@ class FilmsPresenter {
   }
 
   _renderFilmsSections() {
-    if (!this._filmCardCount) return this._renderFilmsEmptySections();
+    if (!this._filmCardCount) {
+      return this._renderFilmsEmptySections();
+    }
 
     this._renderSort();
     this._renderAllFilmsLists();
@@ -206,7 +212,9 @@ class FilmsPresenter {
     );
     this._renderedFilmCardCounter = maxFilms;
 
-    if (this._renderedFilmCardCounter >= this._filmCardCount) remove(this._showButtonComponent);
+    if (this._renderedFilmCardCounter >= this._filmCardCount) {
+      remove(this._showButtonComponent);
+    }
   }
 
   _updateFilmCardPresenter(updated) {
@@ -214,15 +222,10 @@ class FilmsPresenter {
       && presenter.init(updated));
   }
 
-  _updateFilmStatus(updateType, update, button) {
+  _updateFilmStatus(updateType, update, {component, name}) {
     this._api.updateFilm(update)
       .then((response) => this._filmsModel.updateFilm(updateType, response))
-      .catch(() => {
-        const controlLabel = button.nextElementSibling;
-
-        this._filmsSectionComponent.shake(controlLabel.tagName === 'LABEL' ? controlLabel : button);
-        button.disabled = false;
-      });
+      .catch(() => component.shake(name));
   }
 
   _updateFilmSection() {
@@ -240,7 +243,10 @@ class FilmsPresenter {
   }
 
   _updateMajor() {
-    if (this._menuModel.isStatsActive) return this._renderStats();
+    if (this._menuModel.isStatsActive) {
+      return this._renderStats();
+    }
+
     if (!this._filmsSectionComponent) {
       this._createFilmSection();
       this._statsPresenter.destroy();
@@ -263,7 +269,9 @@ class FilmsPresenter {
   }
 
   _sortTypeChangeHandler(sortType) {
-    if (this._currentSort === sortType) return;
+    if (this._currentSort === sortType) {
+      return;
+    }
 
     this._currentSort = sortType;
     this._renderedFilmCardCounter = AppConfig.MAX_FILMS_PER_STEP;
@@ -277,7 +285,7 @@ class FilmsPresenter {
       updateType = UpdateType.MINOR;
     }
 
-    return payload && payload.isApi ? this._updateFilmStatus(updateType, update, payload.button)
+    return payload && payload.isApi ? this._updateFilmStatus(updateType, update, payload)
       : this._filmsModel.updateFilm(updateType, update);
   }
 

@@ -1,8 +1,17 @@
+import {
+  reportError
+} from 'utils/common-util';
+
 import AbstractView from '../abstract-view';
 
 import {
-  getFormattedDateTime
-} from 'utils/film-card-util';
+  getRelativeTime
+} from 'utils/date-util';
+
+const ButtonText = {
+  DELETING: 'Deleting...',
+  DELETE: 'Delete',
+};
 
 const getLoading = () => (
   '<p class="film-details__text">Loading...</p>'
@@ -27,7 +36,7 @@ const createComment = ({id, date, author, text, emotion}) => (
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">
-          ${getFormattedDateTime(date)}
+          ${getRelativeTime(date)}
         </span>
         <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
       </p>
@@ -65,18 +74,33 @@ class CommentsListView extends AbstractView {
     return createCommentsListTemplate(this._eventType, this._ids, this._comments);
   }
 
-  _clickHandler(evt) {
-    evt.preventDefault();
-    const target = evt.target;
+  shake(id) {
+    const deleteButton = this.getElement().querySelector(`[data-comment-id="${id}"]`);
+    const container = deleteButton.closest('li');
 
-    if (!target.classList.contains('film-details__comment-delete')) return;
-
-    this._callback.click(target, target.dataset.commentId);
+    deleteButton.disabled = false;
+    deleteButton.textContent = ButtonText.DELETE;
+    reportError(container);
   }
 
   setClickHandler(callback) {
     this._callback.click = callback;
+
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    const target = evt.target;
+
+    if (!target.classList.contains('film-details__comment-delete')) {
+      return;
+    }
+
+    target.disabled = true;
+    target.textContent = ButtonText.DELETING;
+
+    this._callback.click(target.dataset.commentId);
   }
 }
 
