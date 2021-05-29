@@ -22,3 +22,7 @@ const updateBoard = (films) => {
 
 boardPresenter.init();
 api.getFilms().then(updateBoard).catch(updateBoard);
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
