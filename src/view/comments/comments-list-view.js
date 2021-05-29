@@ -1,5 +1,6 @@
 import {
-  reportError
+  reportError,
+  isOnline
 } from 'utils/common-util';
 
 import AbstractView from '../abstract-view';
@@ -97,8 +98,10 @@ class CommentsListView extends AbstractView {
       return;
     }
 
-    target.disabled = true;
-    target.textContent = ButtonText.DELETING;
+    if (isOnline()) {
+      target.disabled = true;
+      target.textContent = ButtonText.DELETING;
+    }
 
     this._callback.click(target.dataset.commentId);
   }

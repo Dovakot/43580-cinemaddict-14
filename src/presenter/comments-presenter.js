@@ -12,6 +12,12 @@ import {
   remove
 } from 'utils/render-util';
 
+import {
+  isOnline
+} from 'utils/common-util';
+
+import toast from 'utils/toast-util';
+
 import CommentsView from 'view/comments/comments-view';
 import CommentsTitleView from 'view/comments/comments-title-view';
 import CommentsListView from 'view/comments/comments-list-view';
@@ -45,6 +51,16 @@ class CommentsPresenter {
 
   destroy() {
     remove(this._commentsComponent);
+  }
+
+  rerenderComments(eventType) {
+    this._eventType = eventType;
+
+    this._renderCommentList();
+
+    if (!this._eventType) {
+      this._commentFormComponent.enableForm();
+    }
   }
 
   changeComments(target) {
@@ -112,6 +128,13 @@ class CommentsPresenter {
       return;
     }
 
+    if (!isOnline()) {
+      toast('You can\'t add comment offline');
+      this._commentFormComponent.shake();
+
+      return;
+    }
+
     this._commentFormComponent.disableForm();
 
     this._api.addComment({comment, emotion: this._currentEmotion, movie: this._film.filmInfo.id})
@@ -120,6 +143,13 @@ class CommentsPresenter {
   }
 
   _deleteClickHandler(id) {
+    if (!isOnline()) {
+      toast('You can\'t delete comment offline');
+      this._commentsListComponent.shake(id);
+
+      return;
+    }
+
     this._api.deleteComment(id)
       .then(() => this._commentsModel.deleteComment(UpdateType.MINOR, id, true))
       .catch(() => this._commentsListComponent.shake(id));

@@ -45,6 +45,10 @@ class FilmCardPresenter extends AbstractFilmPresenter {
     this._renderFilmCard();
   }
 
+  sync() {
+    this._filmDetailsPresenter.sync();
+  }
+
   destroy() {
     remove(this._filmCardComponent);
   }

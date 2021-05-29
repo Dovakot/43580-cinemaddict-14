@@ -27,6 +27,10 @@ class CommentFormView extends AbstractView {
     this.getElement().disabled = true;
   }
 
+  enableForm() {
+    this.getElement().disabled = false;
+  }
+
   shake() {
     const form = this.getElement();
 

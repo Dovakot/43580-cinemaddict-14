@@ -51,6 +51,10 @@ class BoardPresenter {
     }
   }
 
+  sync() {
+    this._filmsPresenter.sync();
+  }
+
   _clearBord() {
     remove(this._loadingComponent);
     this._loadingComponent = null;

@@ -1159,3 +1159,28 @@ button {
 .shake {
   animation: shake 0.6s;
 }
+.network,
+.toast {
+  position: fixed;
+  left: 0;
+  z-index: 1000;
+}
+.network {
+  top: 0;
+  padding: 6px 30px;
+  background-color: rgba(246, 71, 71, 0.8);
+}
+.network--online {
+  background-color: rgba(42, 187, 155, 0.8);
+}
+.toast {
+  top: 32px;
+}
+.toast__item {
+  margin-bottom: 2px;
+  padding: 4px 10px;
+  background-color: rgba(226, 106, 106, 0.7);
+  border-top: 1px solid pink;
+  border-bottom: 1px solid pink;
+  font-size: 14px;
+}
