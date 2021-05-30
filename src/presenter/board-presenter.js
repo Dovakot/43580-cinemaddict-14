@@ -5,7 +5,7 @@ import {
 
 import MenuModel from 'model/menu-model';
 
-import UserLevelView from 'view/user-level-view';
+import ProfileView from 'view/profile-view';
 import FooterStatisticsView from 'view/footer-statistics-view';
 import LoadingView from 'view/loading-view';
 
@@ -21,7 +21,7 @@ class BoardPresenter {
 
     this._menuModel = new MenuModel();
     this._filmsModel = filmsModel;
-    this._userLevelComponent = null;
+    this._profileComponent = null;
     this._loadingComponent = null;
     this._footerStatisticsComponent = null;
     this._menuPresenter = null;
@@ -76,11 +76,11 @@ class BoardPresenter {
     this._filmsPresenter.init();
   }
 
-  _renderUserLevel(filmCount) {
-    remove(this._userLevelComponent);
+  _renderProfile(filmCount) {
+    remove(this._profileComponent);
 
-    this._userLevelComponent = new UserLevelView(filmCount);
-    render(this._containerHeader, this._userLevelComponent);
+    this._profileComponent = new ProfileView(filmCount);
+    render(this._containerHeader, this._profileComponent);
   }
 
   _renderFooterStatistics() {
@@ -97,7 +97,7 @@ class BoardPresenter {
 
   _updateUserLevel(oldCount, newCount) {
     if (oldCount !== newCount) {
-      this._renderUserLevel(newCount);
+      this._renderProfile(newCount);
     }
   }
 }

@@ -2,14 +2,16 @@ import getUserRankValue from 'utils/user-level-util';
 
 import AbstractView from '../abstract-view';
 
-const getUserRank = (count) => `<span class="statistic__rank-label">${getUserRankValue(count)}</span>`;
+const createUserRankTemplate = (count) => (
+  `<span class="statistic__rank-label">${getUserRankValue(count)}</span>`
+);
 
 const createStatsViewTemplate = (count) => (
   `<section class="statistic">
     <p class="statistic__rank">
       Your rank
-      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      ${count > 0 ? getUserRank(count) : ''}
+      <img class="statistic__img" src="./images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+      ${count > 0 ? createUserRankTemplate(count) : ''}
     </p>
     <div class="statistic__container"></div>
     <div class="statistic__chart-wrap">

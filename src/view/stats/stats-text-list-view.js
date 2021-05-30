@@ -1,6 +1,6 @@
 import AbstractView from '../abstract-view';
 
-const getTotalDuration = (duration) => {
+const createTotalDurationTemplate = (duration) => {
   const hours = Math.trunc(duration / 60);
   const minutes = duration % 60;
 
@@ -21,7 +21,7 @@ const createStatsTextListTemplate = (totalWatched, totalDuration, topGenre) => (
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-      <p class="statistic__item-text">${getTotalDuration(totalDuration)}</p>
+      <p class="statistic__item-text">${createTotalDurationTemplate(totalDuration)}</p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
