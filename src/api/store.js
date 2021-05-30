@@ -8,7 +8,7 @@ class Store {
     try {
       return JSON.parse(this._storage.getItem(this._storeKey)) || {};
     } catch (err) {
-      return {};
+      throw new Error(err);
     }
   }
 

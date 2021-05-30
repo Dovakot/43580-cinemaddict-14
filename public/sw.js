@@ -38,9 +38,24 @@ const SwConfig = {
   ],
 };
 
+const getPromisesToDelete = (keys) => {
+  const setOfPromisesDelete = [];
+
+  for (const key of keys) {
+    if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+      const deletePromise = caches.delete(key);
+
+      setOfPromisesDelete.push(deletePromise);
+    }
+  }
+
+  return setOfPromisesDelete;
+};
+
 self.addEventListener('install', (evt) => {
   evt.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then((cache) => cache.addAll(SwConfig.STATIC_FILES)),
   );
 });
@@ -48,12 +63,9 @@ self.addEventListener('install', (evt) => {
 self.addEventListener('activate', (evt) => {
   evt.waitUntil(
     caches.keys()
-      .then(
-        (keys) => Promise.all(
-          keys.map((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME
-            ? caches.delete(key) : null).filter((key) => key !== null),
-        ),
-      ),
+      .then((keys) => Promise.all(
+        getPromisesToDelete(keys),
+      )),
   );
 });
 
@@ -69,14 +81,18 @@ const handleFetch = (evt) => {
 
         return fetch(request)
           .then((response) => {
-            if (!response || response.status !== SwConfig.HTTP_STATUS_OK
-              || response.type !== SwConfig.RESPONSE_SAFE_TYPE) {
+            const isResponse = !response
+              || response.status !== SwConfig.HTTP_STATUS_OK
+              || response.type !== SwConfig.RESPONSE_SAFE_TYPE;
+
+            if (isResponse) {
               return response;
             }
 
             const clonedResponse = response.clone();
 
-            caches.open(CACHE_NAME)
+            caches
+              .open(CACHE_NAME)
               .then((cache) => cache.put(request, clonedResponse));
 
             return response;
