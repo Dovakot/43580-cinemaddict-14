@@ -1,3 +1,5 @@
+const SHOW_TIME = 5000;
+
 const RenderPosition = {
   AFTERBEGIN: 'prepend',
   BEFOREEND: 'append',
@@ -12,6 +14,8 @@ const DateFormat = {
 const AppConfig = {
   AUTHORIZATION: 'Basic Wdib32uK0Tj26ba',
   END_POINT: 'https://14.ecmascript.pages.academy/cinemaddict',
+  STORE_PREFIX: 'cinemaddict-localstorage',
+  STORE_VER: 'v1',
   MAX_FILMS_PER_STEP: 5,
   EXTRA_FILM_COUNT: 2,
   MAX_NUMBER_CHAR: 140,
@@ -46,6 +50,7 @@ const DatePeriod = {
 };
 
 export {
+  SHOW_TIME,
   RenderPosition,
   DateFormat,
   AppConfig,

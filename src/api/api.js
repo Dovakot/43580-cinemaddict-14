@@ -17,6 +17,7 @@ const ApiConfig = {
   URLS: {
     films: 'movies',
     comments: 'comments/',
+    sync: 'movies/sync',
   },
   HEADERS: {'Content-Type': 'application/json'},
   AUTHORIZATION: 'Authorization',
@@ -67,6 +68,16 @@ class Api {
 
   deleteComment(id) {
     return this._load({url: `${ApiConfig.URLS.comments}${id}`, method: Method.DELETE});
+  }
+
+  sync(data) {
+    return this._load({
+      url: ApiConfig.URLS.sync,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers(ApiConfig.HEADERS),
+    })
+      .then(Api.toJSON);
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

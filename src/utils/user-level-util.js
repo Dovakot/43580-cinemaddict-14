@@ -11,15 +11,13 @@ const UserRankList = {
 };
 
 const getUserRankValue = (count) => {
-  let userRank = UserRankList.DEFAULT;
-
   if (count <= UserRankList.NOVICE.count) {
-    userRank = UserRankList.NOVICE.name;
+    return UserRankList.NOVICE.name;
   } else if (count > UserRankList.NOVICE.count && count <= UserRankList.FAN.count) {
-    userRank = UserRankList.FAN.name;
+    return UserRankList.FAN.name;
   }
 
-  return userRank;
+  return UserRankList.DEFAULT;
 };
 
 export default getUserRankValue;

@@ -1,12 +1,12 @@
 import AbstractView from '../abstract-view';
 
-const getEmoji = (emotion) => (
-  `<img src="images/emoji/${emotion}.png" alt="emoji-smile" width="55" height="55">`
+const createEmojiTemplate = (emotion) => (
+  `<img src="./images/emoji/${emotion}.png" alt="emoji-smile" width="55" height="55">`
 );
 
 const createCommentEmojiLabelTemplate = (emotion) => (
   `<div class="film-details__add-emoji-label">
-    ${emotion ? getEmoji(emotion) : ''}
+    ${emotion ? createEmojiTemplate(emotion) : ''}
   </div>`
 );
 

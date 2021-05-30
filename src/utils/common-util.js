@@ -5,6 +5,7 @@ const truncateText = (text, amount) => text.length > amount
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const isSubmit = (evt) => evt.key === 'Enter' && (evt.metaKey || evt.ctrlKey);
+const isOnline = () => window.navigator.onLine;
 
 const reportError = (element) => {
   element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
@@ -18,5 +19,6 @@ export {
   truncateText,
   isEscEvent,
   isSubmit,
+  isOnline,
   reportError
 };

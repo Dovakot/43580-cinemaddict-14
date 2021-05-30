@@ -56,6 +56,23 @@ class FilmDetailsPresenter extends AbstractFilmPresenter {
     this._commentsModel.removeObserver(this._modelEventHandler);
   }
 
+  sync() {
+    if (this._commentsModel.comments.length > 0) {
+      return;
+    }
+
+    this._commentsPresenter.rerenderComments(EventType.LOADING);
+
+    this._api.getComments(this._film.filmInfo.id)
+      .then((comments) => {
+        this._commentsModel.init(comments);
+        this._commentsPresenter.rerenderComments();
+      })
+      .catch(() => {
+        this._commentsPresenter.rerenderComments(EventType.ERROR);
+      });
+  }
+
   _createFilmDetails() {
     this._filmDetailsComponent = new DetailsComponentView(this._film.filmInfo, {
       closeClick: this._closeClickHandler,

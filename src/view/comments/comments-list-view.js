@@ -1,5 +1,6 @@
 import {
-  reportError
+  reportError,
+  isOnline
 } from 'utils/common-util';
 
 import AbstractView from '../abstract-view';
@@ -13,20 +14,20 @@ const ButtonText = {
   DELETE: 'Delete',
 };
 
-const getLoading = () => (
+const createLoadingTemplate = () => (
   '<p class="film-details__text">Loading...</p>'
 );
 
-const getError = () => (
+const createErrorTemplate = () => (
   '<p class="film-details__text film-details__text--error">Loading Error</p>'
 );
 
 const eventType = {
-  loading: getLoading,
-  error: getError,
+  loading: createLoadingTemplate,
+  error: createErrorTemplate,
 };
 
-const createComment = ({id, date, author, text, emotion}) => (
+const createCommentTemplate = ({id, date, author, text, emotion}) => (
   `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
@@ -44,20 +45,20 @@ const createComment = ({id, date, author, text, emotion}) => (
   </li>`
 );
 
-const createComments = (ids, comments) => (
+const createCommentsTemplate = (ids, comments) => (
   `<ul class="film-details__comments-list">
-    ${ids.map(getComment(comments)).join('')}
+    ${ids.map(getCommentTemplate(comments)).join('')}
   </ul>`
 );
 
-const getComment = (comments) => (id) => {
+const getCommentTemplate = (comments) => (id) => {
   const comment = comments.filter((comment) => comment.id === id);
 
-  return createComment(...comment);
+  return createCommentTemplate(...comment);
 };
 
 const createCommentsListTemplate = (type, ids, comments) => {
-  return eventType[type] ? eventType[type]() : createComments(ids, comments);
+  return eventType[type] ? eventType[type]() : createCommentsTemplate(ids, comments);
 };
 
 class CommentsListView extends AbstractView {
@@ -97,8 +98,10 @@ class CommentsListView extends AbstractView {
       return;
     }
 
-    target.disabled = true;
-    target.textContent = ButtonText.DELETING;
+    if (isOnline()) {
+      target.disabled = true;
+      target.textContent = ButtonText.DELETING;
+    }
 
     this._callback.click(target.dataset.commentId);
   }

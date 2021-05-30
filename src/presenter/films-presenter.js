@@ -69,6 +69,14 @@ class FilmsPresenter {
     this._renderFilmsSections();
   }
 
+  sync() {
+    for (const presenter of this._filmCardPresenter.keys()) {
+      if (!presenter.defaultMode) {
+        return presenter.sync();
+      }
+    }
+  }
+
   _createFilmSection() {
     this._filmsSectionComponent = new FilmsView();
     this._filmsSection = this._filmsSectionComponent.getElement();
